@@ -1,0 +1,50 @@
+{
+  "name": "@pbotapps/common",
+  "version": "1.0.0",
+  "description": "Common components for applications",
+  "main": "dist/common.umd.js",
+  "module": "dist/common.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/common.es.js",
+      "require": "./dist/common.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "dist/types",
+  "scripts": {
+    "build": "vite build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.2",
+    "@tailwindcss/typography": "^0.5.2",
+    "@types/crypto-js": "^4.1.1",
+    "@vitejs/plugin-vue": "^2.3.3",
+    "autoprefixer": "^10.4.7",
+    "color": "^4.2.3",
+    "postcss": "^8.4.14",
+    "react": "^18.1.0",
+    "tailwindcss": "^3.0.24",
+    "typescript": "^4.6.4",
+    "vite": "^2.9.9",
+    "vite-plugin-eslint": "^1.6.1",
+    "vitepress": "^0.22.4",
+    "vue-tsc": "^0.34.15"
+  },
+  "dependencies": {
+    "@arcgis/core": "^4.23.7",
+    "crypto-js": "^4.1.1"
+  },
+  "peerDependencies": {
+    "axios": "^0.27.2",
+    "vue": "^3.2.35",
+    "vue-router": "^4.0.15"
+  }
+}
