@@ -1,0 +1,6 @@
+.pnpm-store/
+node_modules/
+out/
+
+**/.env
+*.tsbuildinfo
