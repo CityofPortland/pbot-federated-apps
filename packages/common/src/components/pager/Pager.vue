@@ -68,7 +68,7 @@ import { defineComponent } from 'vue';
 import Box from '@/elements/box/Box';
 import Button from '@/elements/button/Button.vue';
 import Icon from '@/elements/icon/Icon.vue';
-import Select from '@/elements/inputs/Select.vue';
+import Select from '@/elements/input/Select.vue';
 
 export default defineComponent({
   name: 'Pager',

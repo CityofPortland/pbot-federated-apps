@@ -41,7 +41,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, toRefs, watch } from 'vue';
 
-import debounce from 'lodash-es/debounce';
+import { debounce } from 'lodash';
 
 import { whenTrue } from '@arcgis/core/core/watchUtils';
 import Extent from '@arcgis/core/geometry/Extent';
@@ -131,7 +131,7 @@ export default defineComponent({
         });
       }
 
-      props.map.layers.forEach((layer) => {
+      props.map.layers.forEach(layer => {
         emit('layer-view', {
           id: layer.id,
           promise: view.whenLayerView(layer),
@@ -151,16 +151,16 @@ export default defineComponent({
         }
       });
 
-      view.on('click', (event) => {
+      view.on('click', event => {
         emit('click', event);
-        view.hitTest(event).then((response) => {
+        view.hitTest(event).then(response => {
           emit('click-hit', response.results);
         });
       });
 
-      view.on('pointer-move', (event) => {
+      view.on('pointer-move', event => {
         emit('pointer-move', event);
-        view.hitTest(event).then((response) => {
+        view.hitTest(event).then(response => {
           emit('pointer-hit', response.results);
         });
       });
@@ -171,18 +171,14 @@ export default defineComponent({
     });
 
     watch(center, () => {
-      view
-        .goTo({
-          center: new Point({
-            x: center.value?.x,
-            y: center.value?.y,
-            spatialReference: center.value?.spatialReference,
-          }),
-          zoom: 18,
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      view.goTo({
+        center: new Point({
+          x: center.value?.x,
+          y: center.value?.y,
+          spatialReference: center.value?.spatialReference,
+        }),
+        zoom: 18,
+      });
     });
 
     watch(zoom, () => {
