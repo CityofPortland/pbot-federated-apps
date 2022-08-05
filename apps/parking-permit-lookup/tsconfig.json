@@ -11,7 +11,7 @@
       "path": "./tsconfig.node.json"
     },
     {
-      "path": "../common/tsconfig.json"
+      "path": "../../packages/common/tsconfig.json"
     }
   ]
 }

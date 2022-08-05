@@ -5,21 +5,17 @@ import axios from 'axios';
 import { AreaPermit, AreaPermitZone, GraphQLResponse, State } from './types';
 
 async function submitQuery<T>(query: unknown) {
-  if (!process.env.VUE_APP_GRAPHQL_URL) {
+  if (!import.meta.env.GRAPHQL_URL) {
     throw Error(
-      'VUE_APP_GRAPHQL_URL is not defined and required to query the GraphQL server!'
+      'GRAPHQL_URL is not defined and required to query the GraphQL server!'
     );
   }
 
-  return axios.post<GraphQLResponse<T>>(
-    process.env.VUE_APP_GRAPHQL_URL,
-    query,
-    {
-      headers: {
-        'content-type': 'application/json',
-      },
-    }
-  );
+  return axios.post<GraphQLResponse<T>>(import.meta.env.GRAPHQL_URL, query, {
+    headers: {
+      'content-type': 'application/json',
+    },
+  });
 }
 
 export default createStore<State>({
