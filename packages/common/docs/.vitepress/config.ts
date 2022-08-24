@@ -8,14 +8,15 @@ export default defineConfig({
         text: "Elements",
         link: "./elements/",
         children: [
-          { text: "Boxes", link: "./elements/box/"}
+          { text: "Boxes", link: "./elements/box"}
         ]
       },
       {
         text: "Components",
         link: "./components/",
         children: [
-          { text: "Fields", link: "./components/field/"}
+          { text: "Fields", link: "./components/field"},
+          { text: "Panels", link: "./components/panel"}
         ]
       }
     ]

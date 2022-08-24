@@ -207,7 +207,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style postcss>
 @import url('https://js.arcgis.com/4.20/esri/themes/light/main.css');
 
 .esri-ui {

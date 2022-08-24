@@ -1,10 +1,13 @@
 import { unref } from 'vue';
 
 export function useBox(
+  border: boolean,
   color: string,
   variant: string
 ): {
-  colorClasses: string[] | undefined;
+  borderClasses?: Array<string>;
+  colorClasses: Array<string> | undefined;
+  classes: Array<string>;
 } {
   const classMap = new Map([
     [
@@ -81,7 +84,14 @@ export function useBox(
     ],
   ]);
 
+  const classes = [
+    ...(border ? ['border', 'border-current'] : []),
+    ...(classMap.get(unref(color))?.get(unref(variant)) || []),
+  ];
+
   return {
+    borderClasses: border ? ['border', 'border-current'] : undefined,
     colorClasses: classMap.get(unref(color))?.get(unref(variant)),
+    classes,
   };
 }

@@ -1,5 +1,5 @@
 <template>
-  <Box :as="as" class="grid grid-cols-1">
+  <Box :as="as">
     <slot></slot>
   </Box>
 </template>

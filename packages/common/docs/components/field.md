@@ -15,8 +15,6 @@
 
 Fields deal with data either during entry or display. We provide components for both modes.
 
-    Some code
-
 <div class="grid grid-cols-1 gap-2 mb-6">
     <Entry id="id" label="ID" inline v-slot="{ id, required }">
         <Input

@@ -1,19 +1,15 @@
 <template>
-  <Box
-    as="section"
-    :color="color"
-    :variant="variant"
-    class="border-current rounded-md shadow"
-  >
+  <Box as="section" :color="color" :variant="variant" border rounded shadow>
     <Box
       as="header"
       :color="color"
       :variant="variant"
-      class="w-full border-current border rounded-t-md"
+      class="w-full rounded-t-md"
       :class="{
         'border-b-0': open,
         'rounded-b-md': !open,
       }"
+      border
     >
       <button
         type="button"

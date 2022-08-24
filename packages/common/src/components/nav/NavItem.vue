@@ -1,7 +1,7 @@
 <template>
   <li>
     <slot>
-      <Anchor :url="url" v-bind="$attrs">
+      <Anchor v-if="url" :url="url" v-bind="$attrs">
         {{ display }}
       </Anchor>
     </slot>

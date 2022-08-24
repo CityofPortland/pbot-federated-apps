@@ -1,9 +1,15 @@
-import axios from 'axios';
+import axios, { AxiosRequestHeaders } from 'axios';
 import sha256 from 'crypto-js/sha256';
 
 type GraphQLError = {
   message: string;
   locations: Array<{ line: number; column: number }>;
+};
+
+type GraphQLOptions = {
+  operation: string;
+  headers?: AxiosRequestHeaders;
+  variables?: Record<string, unknown>;
 };
 
 export type GraphQLResponse<T> = {
@@ -13,29 +19,39 @@ export type GraphQLResponse<T> = {
 
 const cache: Map<string, GraphQLResponse<unknown>> = new Map();
 
-export async function query<T>(q: string): Promise<GraphQLResponse<T>> {
-  if (!process.env.VUE_APP_GRAPHQL_URL) {
+export async function query<T>(
+  options: GraphQLOptions
+): Promise<GraphQLResponse<T>> {
+  if (!import.meta.env.VITE_GRAPHQL_URL) {
     throw Error(
-      'VUE_APP_GRAPHQL_URL is not defined and required to query the GraphQL server!'
+      'GRAPHQL_URL is not defined and required to query the GraphQL server!'
     );
   }
 
-  q = q.replace(/\s+/g, ' ').trim();
+  let { operation } = options;
 
-  const hash = sha256(q).toString();
+  operation = operation.replace(/\s+/g, ' ').trim();
+
+  const hash = sha256(operation).toString();
 
   if (cache.has(hash)) {
     return cache.get(hash) as GraphQLResponse<T>;
   }
 
+  const body = {
+    query: operation,
+    variables: options && options.variables,
+  };
+
+  const headers = options && options.headers;
+
   const res = await axios.post<GraphQLResponse<T>>(
-    process.env.VUE_APP_GRAPHQL_URL,
-    {
-      query: q,
-    },
+    import.meta.env.VITE_GRAPHQL_URL,
+    body,
     {
       headers: {
-        'content-type': 'application/json',
+        ...headers,
+        'Content-Type': 'application/json',
       },
     }
   );

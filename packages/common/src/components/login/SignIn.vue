@@ -1,39 +1,30 @@
 <template>
   <Button
-    as="button"
+    label="Sign in"
     size="small"
     color="gray"
     variant="light"
-    @click="handleSignIn"
-    >Sign in</Button
-  >
+    @click="signIn"
+  />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 
-import Button from '@/elements/button/Button.vue';
-import { useLogin } from '@/composables/use-login';
+import { useLogin } from '../../composables/use-login';
+import Button from '../../elements/button/Button.vue';
 
 export default defineComponent({
   components: { Button },
   setup() {
-    const { clientId, authority, challenge, redirectURI } = useLogin();
+    const { redirectTo, signIn } = useLogin();
+    const { currentRoute } = useRouter();
 
     return {
-      handleSignIn() {
-        window.localStorage.setItem('pbotapps.auth.initiated', 'true');
-
-        const url = new URL(`${authority}/oauth2/v2.0/authorize`);
-        let { searchParams } = url;
-        searchParams.append('client_id', clientId || '');
-        searchParams.append('redirect_uri', redirectURI);
-        searchParams.append('response_type', 'code');
-        searchParams.append('scope', `User.Read`);
-        searchParams.append('code_challenge_method', 'S256');
-        searchParams.append('code_challenge', challenge.value || '');
-
-        window.location.assign(url.toString());
+      signIn: () => {
+        redirectTo.value = currentRoute.value;
+        signIn(true);
       },
     };
   },

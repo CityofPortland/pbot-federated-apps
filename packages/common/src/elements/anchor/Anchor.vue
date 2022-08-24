@@ -1,15 +1,15 @@
 <template>
   <a
     :href="url"
-    class="rounded focus:outline-none focus:ring-2 focus:ring-black"
+    class="rounded focus:outline-none focus:ring-2 focus:ring-black visited:text-purple-700"
   >
     <slot name="before"></slot>
     <span :class="{ ...borderClasses }">
       <slot>{{ url }}</slot>
     </span>
-    <slot name="after">
+    <slot name="after" :is-external="isExternal">
       <Icon
-        v-if="externalIcon"
+        v-if="isExternal"
         type="solid"
         name="external-link"
         class="h-4 w-4 ml-1 inline"
@@ -41,7 +41,7 @@ export default defineComponent({
   },
   setup(props) {
     return {
-      externalIcon:
+      isExternal:
         props.external === undefined
           ? props.external
           : /[////]{2}/.test(props.url), // matches '//'

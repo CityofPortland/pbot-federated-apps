@@ -1,95 +1,136 @@
-import { onMounted, Ref, ref } from 'vue';
-import { useRouter, RouteRecordRaw, RouteLocationNormalized } from 'vue-router';
+import { Ref, ref, watchEffect } from 'vue';
+import { useRouter, RouteRecordRaw, RouteLocation } from 'vue-router';
 
-import CryptoJS from 'crypto-js';
+import {
+  AccountInfo,
+  Configuration,
+  PublicClientApplication,
+} from '@azure/msal-browser';
+import { RemovableRef, useStorage } from '@vueuse/core';
 
-export type PkceCodes = {
-  verifier: string;
-  challenge: string;
+import { Login, Logout, OAuth } from '../pages';
+import { query } from './use-graphql';
+
+type User = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  photo?: Blob;
 };
 
-export type LoginContext = {
-  clientId?: string;
-  authority?: string;
-  challenge: Ref<string | undefined>;
-  redirectURI: string;
-  getReturnLocation: () => RouteRecordRaw;
-  saveReturnLocation: (to: RouteLocationNormalized) => void;
+type LoginContext = {
+  accessToken: RemovableRef<string>;
+  account: Ref<AccountInfo | undefined>;
+  msal: PublicClientApplication;
+  redirectTo: Ref<RouteLocation | undefined>;
+  signIn: (redirect: boolean) => Promise<void>;
+  user: Ref<User | undefined>;
 };
 
-/**
- * Generates a random 32 byte buffer and returns the base64
- * encoded string to be used as a PKCE Code Verifier
- */
-const generateCodeVerifier = (): string =>
-  CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Base64url);
+export const authRoutes: Array<RouteRecordRaw> = [
+  {
+    path: '/oauth/callback',
+    name: 'OAuthCallback',
+    component: OAuth,
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: Logout,
+  },
+];
 
-/**
- * Creates a base64 encoded PKCE Code Challenge string from the
- * hash created from the PKCE Code Verifier supplied
- */
-const generateCodeChallenge = (pkceCodeVerifier: string): string => {
-  try {
-    return CryptoJS.SHA256(pkceCodeVerifier).toString(CryptoJS.enc.Base64url);
-  } catch (e) {
-    throw Error('PKCE not generated');
-  }
-};
+const accessToken = useStorage('pbotapps.auth.accessToken', '');
+const account: Ref<AccountInfo | undefined> = ref(undefined);
+const authority = `https://login.microsoftonline.com/${
+  import.meta.env.VITE_AZURE_TENANT_ID
+}`;
+const clientId = import.meta.env.VITE_AZURE_CLIENT_ID;
+const user: Ref<User | undefined> = ref(undefined);
 
-/**
- * Generates PKCE Codes. See the RFC for more information: https://tools.ietf.org/html/rfc7636
- */
-const generateCodes = (): PkceCodes => {
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = generateCodeChallenge(codeVerifier);
-  return {
-    verifier: codeVerifier,
-    challenge: codeChallenge,
-  };
-};
+if (!authority) throw new Error('Must pass "VITE_AZURE_TENANT_ID"!');
+if (!clientId) throw new Error('Must pass "VITE_AZURE_CLIENT_ID"!');
 
 export function useLogin(): LoginContext {
   const router = useRouter();
-  const challenge: Ref<string | undefined> = ref(undefined);
+  const redirectTo = useStorage('pbotapps.auth.route', {} as RouteLocation);
 
-  onMounted(() => {
-    const initiated = window.localStorage.getItem('pbotapps.auth.initiated');
-    const codes = window.localStorage.getItem('pbotapps.auth.codes');
+  const callback = router?.resolve({
+    name: 'OAuthCallback',
+  });
 
-    if (!initiated && !codes) {
-      const codes: PkceCodes = generateCodes();
-      challenge.value = codes.challenge;
-      window.localStorage.setItem('pbotapps.auth.codes', JSON.stringify(codes));
-    } else {
-      challenge.value = JSON.parse(codes || '{}').challenge;
+  const msalConfig: Configuration = {
+    auth: {
+      clientId,
+      authority,
+      navigateToLoginRequestUrl: false,
+      redirectUri: callback?.href,
+    },
+  };
+
+  const msal = new PublicClientApplication(msalConfig);
+
+  watchEffect(() => msal.setActiveAccount(account.value || null));
+
+  watchEffect(async () => {
+    if (accessToken.value) {
+      const graphql = await query<{ me: User }>({
+        operation: `
+        query {
+          me {
+            firstName
+            lastName
+            email
+          }
+        }`,
+        headers: { Authorization: `Bearer ${accessToken.value}` },
+      });
+
+      if (graphql.data) {
+        user.value = graphql.data.me;
+      }
     }
   });
 
-  const getReturnLocation = () => {
-    return JSON.parse(window.localStorage.getItem('pbotapps.auth.route') || '');
-  };
-  const saveReturnLocation = (to: RouteLocationNormalized) => {
-    const { name, path, params, query, hash } = to;
-    window.localStorage.setItem(
-      'pbotapps.auth.route',
-      JSON.stringify({ name, path, params, query, hash })
-    );
-  };
+  const scopes = [`${clientId}/.default`, 'offline_access'];
 
-  const redirectURI = new URL(
-    router &&
-      router.resolve({
-        name: 'OAuthCallback',
-      }).href,
-    window.location.origin
-  ).toString();
+  const signIn = async (redirect = false) => {
+    if (account.value) {
+      // we have logged in before
+      // try to handle a background login
+      const res = await msal.acquireTokenSilent({
+        scopes,
+        account: account.value,
+      });
+
+      if (res) {
+        // refreshed token successfully
+        account.value = res.account || undefined;
+        accessToken.value = res.accessToken;
+        return;
+      }
+    }
+
+    if (redirect) {
+      msal.acquireTokenRedirect({
+        scopes,
+        account: account.value,
+        redirectUri: msal.getConfiguration().auth.redirectUri,
+      });
+    }
+  };
 
   return {
-    authority: `https://login.microsoftonline.com/${process.env.VUE_APP_AZURE_TENANT_ID}`,
-    clientId: process.env.VUE_APP_AZURE_CLIENT_ID,
-    challenge,
-    redirectURI,
-    getReturnLocation,
-    saveReturnLocation,
+    accessToken,
+    account,
+    msal,
+    redirectTo,
+    signIn,
+    user,
   };
 }

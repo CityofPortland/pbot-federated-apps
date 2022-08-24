@@ -48,9 +48,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import Anchor from '@/elements/anchor/Anchor.vue';
-import Box, { BoxColor, BoxColorVariant } from '@/elements/box/Box';
-import Copyright from '@/components/copyright/Copyright.vue';
+import Anchor from '../../elements/anchor/Anchor.vue';
+import Box, { BoxColor, BoxColorVariant } from '../../elements/box/Box';
+import Copyright from '../copyright/Copyright.vue';
 
 export default defineComponent({
   name: 'Footer',

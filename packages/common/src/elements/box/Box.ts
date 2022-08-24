@@ -29,9 +29,21 @@ export const BoxProps = {
     type: String,
     default: 'div',
   },
+  border: {
+    type: Boolean,
+    default: false,
+  },
   color: {
     type: String as () => BoxColor,
     default: 'transparent',
+  },
+  rounded: {
+    type: Boolean,
+    default: false,
+  },
+  shadow: {
+    type: Boolean,
+    default: false,
   },
   variant: {
     type: String as () => BoxColorVariant,
@@ -42,11 +54,13 @@ export const BoxProps = {
 export default defineComponent({
   props: BoxProps,
   render() {
-    const { colorClasses } = useBox(this.color, this.variant);
+    const { classes } = useBox(this.border, this.color, this.variant);
 
     return h(
       this.as,
-      { class: colorClasses },
+      {
+        class: classes,
+      },
       this.$slots.default && this.$slots.default()
     );
   },

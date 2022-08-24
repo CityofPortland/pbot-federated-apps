@@ -1,6 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    // "composite": true,
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["./src/*"]
     }

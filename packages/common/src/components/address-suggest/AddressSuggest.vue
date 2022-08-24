@@ -31,7 +31,7 @@
         role="searchbox"
         :placeholder="placeholder"
         tabindex="0"
-        required="required"
+        required
         v-model="query"
         class="flex-1 min-w-0 appearance-none bg-transparent border-transparent placeholder-gray-600"
       />
@@ -84,9 +84,9 @@
 <script lang="ts">
 import { computed, defineComponent, Ref, ref } from 'vue';
 
-import Box from '@/elements/box/Box';
-import Button from '@/elements/button/Button.vue';
-import Icon from '@/elements/icon/Icon.vue';
+import Box from '../../elements/box/Box';
+import Button from '../../elements/button/Button.vue';
+import Icon from '../../elements/icon/Icon.vue';
 
 export default defineComponent({
   name: 'AddressSuggest',
@@ -122,6 +122,9 @@ export default defineComponent({
       handleSubmit() {
         open.value = false;
         emit('search', { query: query.value, type: type.value });
+      },
+      handleTab() {
+        open.value = false;
       },
     };
   },

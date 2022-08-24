@@ -15,11 +15,13 @@
     >
       <slot name="label" :open="open" :id="id">
         <span>{{ label }}</span>
-        <Icon
-          type="solid"
-          :name="open ? 'chevron-up' : 'chevron-down'"
-          class="ml-2 w-5 h-5"
-      /></slot>
+      </slot>
+      <Icon
+        type="solid"
+        name="chevron-down"
+        class="w-5 h-5 transition ease-in-out duration-100"
+        :class="{ transform: open, 'rotate-180': open }"
+      />
     </Button>
     <!--
     Dropdown menu, show/hide based on menu state.
