@@ -22,12 +22,6 @@ const menuOpen = ref(false);
     <Footer color="gray" variant="light">
       <template #middle>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Nav title="Application information">
-            <NavItem
-              url="https://pdx.maps.arcgis.com/apps/MapSeries/index.html?appid=ad171d005d4442bba3c640735d070aa3&entry=3"
-              text="Area parking permit zones map"
-            />
-          </Nav>
           <Nav title="General information">
             <NavItem>
               <Anchor url="//portland.gov">City of Portland</Anchor>
@@ -35,20 +29,6 @@ const menuOpen = ref(false);
             <NavItem>
               <Anchor url="//portland.gov/transportation"
                 >Portland Bureau of Transportation</Anchor
-              >
-            </NavItem>
-            <NavItem>
-              <Anchor url="//portland.gov/transportation/parking"
-                >PBOT Parking Enforcement and Operations</Anchor
-              >
-            </NavItem>
-          </Nav>
-          <Nav title="Legal notices">
-            <NavItem>
-              <router-link
-                to="/disclaimer"
-                class="border-b-2 border-current font-medium"
-                >Disclaimer</router-link
               >
             </NavItem>
           </Nav>
