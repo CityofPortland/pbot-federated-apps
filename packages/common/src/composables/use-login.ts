@@ -44,19 +44,18 @@ export const authRoutes: Array<RouteRecordRaw> = [
     component: Logout,
   },
 ];
-
-const accessToken = useStorage('pbotapps.auth.accessToken', '');
-const account: Ref<AccountInfo | undefined> = ref(undefined);
-const authority = `https://login.microsoftonline.com/${
-  import.meta.env.VITE_AZURE_TENANT_ID
-}`;
-const clientId = import.meta.env.VITE_AZURE_CLIENT_ID;
-const user: Ref<User | undefined> = ref(undefined);
-
-if (!authority) throw new Error('Must pass "VITE_AZURE_TENANT_ID"!');
-if (!clientId) throw new Error('Must pass "VITE_AZURE_CLIENT_ID"!');
-
 export function useLogin(): LoginContext {
+  const accessToken = useStorage('pbotapps.auth.accessToken', '');
+  const account: Ref<AccountInfo | undefined> = ref(undefined);
+  const authority = `https://login.microsoftonline.com/${
+    import.meta.env.VITE_AZURE_TENANT_ID || 'common'
+  }`;
+  const clientId = import.meta.env.VITE_AZURE_CLIENT_ID;
+
+  if (!clientId) throw new Error('Must pass "VITE_AZURE_CLIENT_ID"!');
+
+  const user: Ref<User | undefined> = ref(undefined);
+
   const router = useRouter();
   const redirectTo = useStorage('pbotapps.auth.route', {} as RouteLocation);
 
