@@ -15,6 +15,9 @@ const menuOpen = ref(false);
           <span class="truncate text-xl">PUDL</span>
         </router-link>
       </template>
+      <template #menu>
+        <router-link to="/zones">Zones</router-link>
+      </template>
     </Header>
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 mt-4">
       <router-view />
