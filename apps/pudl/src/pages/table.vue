@@ -16,8 +16,6 @@ defineProps({ table: { type: Object, required: true } });
             </div>
           </li>
         </ul>
-        <!-- <h2 class="indent-8">{{ schema.tables.length }} tables</h4> -->
-        <!-- list the column and column descriptions-->
       </div>
     </div>
   </article>

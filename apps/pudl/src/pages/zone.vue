@@ -12,9 +12,7 @@ defineProps({ zone: { type: Object, required: true } });
             <router-link :to="`/zones/${zone.name}/${schema.name}`">
               <h2>{{ schema.name }}</h2>
             </router-link>
-            <!--<span> {{ zone.schemas.length }} schemas </span>-->
           </div>
-          <!--{{ schema.name }}-->
         </li>
       </ul>
     </main>

@@ -26,31 +26,5 @@ const { path } = useRoute();
         </ul>
       </div>
     </div>
-    <!-- <main>
-      <ul>
-        <li v-for="(schema, index) in zone.schemas" :key="index">
-          <div>
-            <router-link :to="`/zones/${zone.name}/${schema.name}`">
-              <h2>{{ schema.name }}</h2>
-            </router-link>
-            <span> {{ zone.schemas.length }} schemas </span>
-          </div>
-          {{ schema.name }}
-        </li>
-      </ul>
-    </main> -->
-    <!-- <main>
-      <ul>
-        <li v-for="(schema, index) in zone.schemas" :key="index">
-          <div>
-            <router-link :to="`/zones/${zone.name}/${schema.name}`">
-              <h2>{{ schema.name }}</h2>
-            </router-link>
-            <span> {{ zone.schemas.length }} schemas </span>
-          </div>
-          {{ schema.name }}
-        </li>
-      </ul>
-    </main> -->
   </article>
 </template>
