@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 import { Anchor, Footer, Header, Logo, Nav, NavItem } from '@pbotapps/common';
+import { ref } from 'vue';
 
 const menuOpen = ref(false);
 </script>
@@ -15,8 +14,13 @@ const menuOpen = ref(false);
           <span class="truncate text-xl">PUDL</span>
         </router-link>
       </template>
+      <template #menu>
+        <router-link to="/zones" custom v-slot="{ href, navigate }">
+          <Anchor :url="href" @click="navigate">Zones</Anchor>
+        </router-link>
+      </template>
     </Header>
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 mt-4">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 mt-4 mb-12">
       <router-view />
     </main>
     <Footer color="gray" variant="light">
