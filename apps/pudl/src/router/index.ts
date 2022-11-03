@@ -44,7 +44,17 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
+
+router.beforeResolve(async () => {
+  const store = useStore();
+
+  if (!store.zones.length) {
+    await store.getZones();
+  }
+});
+
+export default router;
