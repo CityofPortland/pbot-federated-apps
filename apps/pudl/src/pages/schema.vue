@@ -1,30 +1,33 @@
 <script setup lang="ts">
+import { Anchor } from '@pbotapps/common';
 import { useRoute } from 'vue-router';
+
 defineProps({
   schema: { type: Object, required: true },
 });
+
 const { path } = useRoute();
 </script>
 
 <template>
-  <article>
-    <div class="flex flex-col space-y-4">
-      <div>
-        <h1 class="text-3xl capitalize">{{ schema.name }}</h1>
-        <h2>{{ schema.description }}</h2>
-      </div>
-      <div>
-        <h4 class="indent-8">{{ schema.tables.length }} tables</h4>
-        <ul>
-          <li v-for="(table, index) in schema.tables" :key="index">
-            <div>
-              <router-link :to="`${path}/${table.name}`">
-                <h2>{{ table.name }}</h2>
-              </router-link>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
+  <article class="flex flex-col space-y-4">
+    <h1 class="text-3xl capitalize">{{ schema.name }}</h1>
+    <p v-if="schema.description">{{ schema.description }}</p>
+    <h2 class="text-2xl">Tables</h2>
+    <ul>
+      <li v-for="(table, index) in schema.tables" :key="index">
+        <div>
+          <router-link
+            :to="`${path}/${table.name}`"
+            custom
+            v-slot="{ href, navigate }"
+          >
+            <Anchor :url="href" @click="navigate">
+              {{ table.name }}
+            </Anchor>
+          </router-link>
+        </div>
+      </li>
+    </ul>
   </article>
 </template>
