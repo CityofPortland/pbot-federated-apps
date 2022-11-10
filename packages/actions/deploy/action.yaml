@@ -1,0 +1,46 @@
+name: Deploy to Kubernetes
+description: Deploy a Helm chart to Kubernetes
+inputs:
+  credentials:
+    description: Azure credentials for logging in via Azure CLI
+    required: true
+  cluster-name:
+    description: Name of AKS cluster
+    required: true
+  cluster-rg:
+    description: Azure resource group of AKS cluster
+    required: true
+  namespace:
+    description: Kubernetes namespace to deploy to
+    required: true
+  chart:
+    description: Path to the helm chart
+    required: true
+  release-name:
+    description: Name of the helm release
+    required: true
+  values-file:
+    description: Helm values file to use
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: azure/setup-helm@v3
+    - uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+    - name: Log into AKS
+      shell: bash
+      run: |
+        az aks get-credentials \
+        --name ${{ inputs.cluster-name }} \
+        --resource-group ${{ inputs.cluster-rg }}
+    - name: Deploy with CLI
+      shell: bash
+      run: |
+        helm upgrade --install \
+        ${{ inputs.release-name }} \
+        ${{ inputs.chart }} \
+        --namespace ${{ inputs.namespace }} \
+        --values ${{ inputs.values-file }}

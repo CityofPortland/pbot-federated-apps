@@ -1,0 +1,15 @@
+name: Merge values
+description: Takes an input values file, merges those values with provided yaml string, and outputs to designated file
+inputs:
+  input:
+    description: Path to the beginning values YAML files
+    required: true
+  values:
+    description: YAML string to merge with values file
+    required: true
+  output:
+    description: Path to output the merged YAML string
+    required: true
+runs:
+  using: 'node16'
+  main: ../out/merge-values.js
