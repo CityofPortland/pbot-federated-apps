@@ -1,0 +1,41 @@
+name: PuPullsh image
+description: Pull Azure Container REgistry image into artifact
+inputs:
+  artifact-name:
+    description: What name to give your artifact
+    required: false
+  credentials:
+    description: Azure credentials JSON string to use
+  registry:
+    description: Azure Container Registry to use
+  repository:
+    description: Repository to pull from
+  tag:
+    description: What tag to pull
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+    - name: Log in to Azure Container Registry
+      shell: bash
+      run: az acr login --name ${{ inputs.registry }}
+    - name: Pull image
+      shell: bash
+      run: |
+        docker pull \
+        ${{ format('{0}.azurecr.io', inputs.registry) }}/${{ inputs.repository }}:${{ inputs.tag }}
+    - name: Save image
+      shell: bash
+      run: |
+        docker save \
+        --output ${{ github.sha }}.tar \
+        ${{ format('{0}.azurecr.io', inputs.registry) }}/${{ inputs.repository }}:${{ inputs.tag }}
+    - uses: actions/upload-artifact@v3
+      if: inputs.artifact-name
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ github.sha }}.tar

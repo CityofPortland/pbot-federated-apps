@@ -1,0 +1,35 @@
+name: Build image
+description: Build and push docker image to specified repository
+inputs:
+  directory:
+    description: 'Which app to build'
+    required: true
+  artifact-name:
+    description: What name to give your artifact
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: install dependencies
+      shell: bash
+      run: pnpm install
+    - name: Set up builder
+      shell: bash
+      run: docker buildx create --use
+    - name: Run docker build
+      shell: bash
+      run: |
+        docker buildx \
+        build \
+        --file .docker/Dockerfile \
+        --build-arg WORKDIR=${{ inputs.directory }} \
+        --tag ${{ github.sha }} \
+        --output type=docker,dest=${{ github.sha }}.tar \
+        .
+    - name: Upload build
+      if: inputs.artifact-name
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ github.sha }}.tar

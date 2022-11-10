@@ -1,0 +1,47 @@
+name: Push image
+description: Push artifact image to specified Azure registry
+inputs:
+  artifact-name:
+    description: What name to give your artifact
+    required: false
+  credentials:
+    description: Azure credentials JSON string to use
+  registry:
+    description: Azure Container Registry to use
+  repository:
+    description: Repository to save to
+  tag:
+    description: What tag to use for this image
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Download build
+      if: inputs.artifact-name
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ github.sha }}.tar
+    - name: Import build
+      shell: bash
+      run: |
+        docker load \
+        --input ${{ github.sha }}.tar
+    - name: Tag build
+      shell: bash
+      run: |
+        docker tag \
+        ${{ github.sha }} \
+        ${{ format('{0}.azurecr.io', inputs.registry) }}/${{ inputs.repository }}:${{ inputs.tag }}
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+    - name: Log in to Azure Container Registry
+      shell: bash
+      run: az acr login --name ${{ inputs.registry }}
+    - name: Push
+      shell: bash
+      run: |
+        docker push \
+        ${{ format('{0}.azurecr.io', inputs.registry) }}/${{ inputs.repository }}:${{ inputs.tag }}

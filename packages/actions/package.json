@@ -1,0 +1,47 @@
+{
+  "name": "@pbotapps/actions",
+  "version": "1.0.0",
+  "description": "Common classes and utilities used throughout the monorepo",
+  "type": "module",
+  "files": [
+    "out"
+  ],
+  "scripts": {
+    "build": "rollup --config rollup.config.ts --configPlugin typescript",
+    "dev": "pnpm build -w",
+    "lint": "eslint ./src/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+  },
+  "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+  },
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^23.0.0",
+    "@rollup/plugin-multi-entry": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@rollup/plugin-typescript": "^8.3.1",
+    "@types/js-yaml": "^4.0.5",
+    "@types/lodash": "^4.14.186",
+    "@types/node": "^16.11.10",
+    "@vercel/ncc": "^0.34.0",
+    "bytes": "^3.1.2",
+    "glob": "^8.0.3",
+    "mkdirp": "^1.0.4",
+    "nodemon": "^2.0.15",
+    "rollup": "^2.70.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.3"
+  }
+}
