@@ -21,6 +21,9 @@ jobs:
             directory: apps/pudl
             registry: pbotapps
             repository: federation/apps/pudl
+            files: |
+              packages/common/.env:
+                - VITE_GRAPHQL_URL=https://pudl-test.portland.gov/graphql
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2.2.4
@@ -36,6 +39,11 @@ jobs:
           key: v1-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             v1-pnpm-store-
+      - uses: ./packages/actions/file-writer
+        if: matrix.files
+        name: Create files
+        with:
+          input: ${{ matrix.files }}
       - name: Build
         uses: ./packages/actions/build
         with:
@@ -95,7 +103,7 @@ jobs:
               tag: ${{ github.sha }}
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.service }}-values
+          name: ${{ matrix.app }}-values
           path: values.yaml
       - name: Run deploy action
         uses: ./packages/actions/deploy
@@ -105,5 +113,5 @@ jobs:
           cluster-rg: ${{ matrix.cluster-rg }}
           namespace: ${{ matrix.cluster-ns }}
           chart: ./chart
-          release-name: ${{ matrix.service }}
+          release-name: ${{ matrix.app }}
           values-file: values.yaml
