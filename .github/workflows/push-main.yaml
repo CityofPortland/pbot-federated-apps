@@ -71,9 +71,9 @@ jobs:
             cluster-ns: pudl-test
             values: |
               ingress:
-              annotations:
-                nginx.ingress.kubernetes.io/server-snippet: |-
-                  add_header X-Robots-Tag "noindex, nofollow";
+                annotations:
+                  nginx.ingress.kubernetes.io/server-snippet: |-
+                    add_header X-Robots-Tag "noindex, nofollow";
                 hosts:
                   - host: pudl-test.portland.gov
                     paths:
