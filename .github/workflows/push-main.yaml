@@ -20,7 +20,7 @@ jobs:
           - app: pudl
             directory: apps/pudl
             registry: pbotapps
-            repository: federation/apps/pudl
+            repository: federation/app/pudl
             files: |
               packages/common/.env:
                 - VITE_GRAPHQL_URL=https://pudl-test.portland.gov/graphql
@@ -113,5 +113,5 @@ jobs:
           cluster-rg: ${{ matrix.cluster-rg }}
           namespace: ${{ matrix.cluster-ns }}
           chart: ./chart
-          release-name: ${{ matrix.app }}
+          release-name: federated-app-${{ matrix.app }}
           values-file: values.yaml
