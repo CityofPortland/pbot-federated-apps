@@ -1,0 +1,12 @@
+name: File writer
+description: |
+  Take multiline YAML string that specifies a map of files and their text
+inputs:
+  input:
+    description: |
+      YAML string that is a map of relative paths and array of lines
+      to write to the paths
+    required: true
+runs:
+  using: 'node16'
+  main: ../out/file-writer.js
