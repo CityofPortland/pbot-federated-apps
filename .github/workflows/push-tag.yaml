@@ -1,0 +1,35 @@
+name: Push tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  push-tag:
+    name: Push tag
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - service: pudl
+            directory: services/pudl
+            registry: pbotapps
+            repository: federation/pudl
+    steps:
+      - uses: actions/checkout@v3
+      - name: Pull
+        uses: ./packages/actions/pull
+        with:
+          credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          registry: ${{ matrix.registry }}
+          repository: ${{ matrix.repository }}
+          tag: ${{ github.sha }}
+      - name: Push
+        uses: ./packages/actions/push
+        with:
+          credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          registry: ${{ matrix.registry }}
+          repository: ${{ matrix.repository }}
+          tag: ${{ github.ref_name }}

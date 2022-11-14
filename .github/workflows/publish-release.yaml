@@ -1,0 +1,53 @@
+name: Publish release
+
+on:
+  release:
+    types:
+      - published
+
+concurrency:
+  group: production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - app: pudl
+            directory: apps/pudl
+            repository: federation/app/pudl
+            cluster-name: pudl-kube-data-1
+            cluster-rg: pudl-kube-rg
+            cluster-ns: pudl
+            values: |
+              ingress:
+                hosts:
+                  - host: pudl.portland.gov
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                tls:
+                  - secretName: pudl-portland-gov-tls
+                    hosts:
+                      - pudl.portland.gov
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create values file
+        uses: ./packages/actions/merge-values
+        with:
+          input: chart/values.yaml
+          output: values.yaml
+          values: ${{ matrix.values }}
+      - uses: ./packages/actions/deploy
+        with:
+          credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ matrix.cluster-name }}
+          cluster-rg: ${{ matrix.cluster-rg }}
+          namespace: ${{ matrix.cluster-ns }}
+          chart: ./chart
+          release-name: federated-app-${{ matrix.app }}
+          values-file: values.yaml
