@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as fs from 'fs';
-import { dump, load } from 'js-yaml';
+import { load } from 'js-yaml';
 import * as path from 'path';
 
 // most @actions toolkit packages have async methods
