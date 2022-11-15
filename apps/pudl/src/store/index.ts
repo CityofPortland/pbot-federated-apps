@@ -39,30 +39,43 @@ export const useStore = defineStore('pudl', {
   },
   actions: {
     async getZones() {
+      this.data.findZone = [] as Array<Zone>;
       try {
-        const res = await query<{ findZone: Array<Zone> }>({
-          operation: `query FindZone {
-          findZone {
-            name
-            schemas {
-              name
-              description
-              tables {
-                name
-                columns {
-                  name
-                  type
-                  index
-                }
-              }
-            }
-          }
-        }`,
-        });
+        const res = await Promise.all(
+          ['raw', 'enriched'].map(async zone => {
+            const res = await query<{ findZone: Array<Zone> }>({
+              operation: `
+                query ($zone: String) {
+                  findZone(zone: $zone) {
+                    name
+                    schemas {
+                      name
+                      description
+                      tables {
+                        name
+                        columns {
+                          name
+                          type
+                          index
+                        }
+                      }
+                    }
+                  }
+                }`,
+              variables: {
+                zone,
+              },
+            });
 
-        if (res.data) {
-          this.data = res.data;
-        }
+            if (res.data) {
+              return res.data.findZone;
+            } else {
+              return [];
+            }
+          })
+        ).then(data => data.flat());
+
+        this.data.findZone = res;
       } catch (err) {
         this.errors.push(err);
       }
