@@ -1,8 +1,20 @@
 <script setup lang="ts">
-import { Anchor, Footer, Header, Logo, Nav, NavItem } from '@pbotapps/common';
-import { ref } from 'vue';
+import {
+  Anchor,
+  Breadcrumbs,
+  Footer,
+  Header,
+  Logo,
+  Nav,
+  NavItem,
+} from '@pbotapps/common';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const menuOpen = ref(false);
+const { currentRoute } = useRouter();
+
+const path = computed(() => currentRoute.value.path);
 </script>
 
 <template>
@@ -21,6 +33,7 @@ const menuOpen = ref(false);
       </template>
     </Header>
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 mt-4 mb-12">
+      <Breadcrumbs v-if="path != '/'" :path="path" class="mb-4" />
       <router-view />
     </main>
     <Footer color="gray" variant="light">
