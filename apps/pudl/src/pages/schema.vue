@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Anchor } from '@pbotapps/common';
 import { useRoute } from 'vue-router';
-import { Breadcrumbs } from '@pbotapps/common';
 
 defineProps({
   schema: { type: Object, required: true },
@@ -12,7 +11,6 @@ const { path } = useRoute();
 
 <template>
   <article class="flex flex-col space-y-4">
-    <Breadcrumbs :path="path"></Breadcrumbs>
     <h1 class="text-3xl capitalize">{{ schema.name }}</h1>
     <p v-if="schema.description">{{ schema.description }}</p>
     <h2 class="text-2xl">Tables</h2>
