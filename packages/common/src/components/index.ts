@@ -1,4 +1,5 @@
 export * from './address-suggest';
+export * from './breadcrumbs';
 export * from './copyright';
 export * from './dropdown';
 export * from './field';

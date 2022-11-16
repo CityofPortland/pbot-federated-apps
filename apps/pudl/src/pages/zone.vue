@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Anchor } from '@pbotapps/common';
+import { stringify } from 'querystring';
 import { useRoute } from 'vue-router';
+import { Breadcrumbs } from '@pbotapps/common';
+import { RouterLink } from 'vue-router';
 
 defineProps({ zone: { type: Object, required: true } });
 
@@ -9,6 +12,7 @@ const { path } = useRoute();
 
 <template>
   <article class="flex flex-col space-y-4">
+    <Breadcrumbs :path="path"></Breadcrumbs>
     <h1 class="text-3xl capitalize">{{ zone.name }}</h1>
     <h2 class="text-2xl">Schemas</h2>
     <ul>
