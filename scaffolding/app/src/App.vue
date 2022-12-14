@@ -12,7 +12,7 @@ const menuOpen = ref(false);
       <template #branding>
         <router-link to="/" class="w-full flex items-center">
           <Logo class="w-16 md:w-20 mr-3 flex-shrink-0" />
-          <span class="truncate text-xl">App Management</span>
+          <span class="truncate text-xl">App</span>
         </router-link>
       </template>
     </Header>
