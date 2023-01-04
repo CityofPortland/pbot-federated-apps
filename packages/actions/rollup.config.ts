@@ -5,9 +5,9 @@ import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
 
 const config: RollupOptions = {
-  input: ['src/file-writer.ts', 'src/secret-writer.ts', 'src/merge-values.ts'],
+  input: ['src/secret-writer.ts', 'src/merge-values.ts'],
   output: {
-    dir: 'out',
+    dir: 'dist',
     format: 'esm',
     compact: true,
     sourcemap: false,

@@ -1,0 +1,14 @@
+replicaCount: 1
+image:
+  tag: main
+  pullPolicy: Always
+ingress:
+  hosts:
+    - host: pbotapps-test.portland.gov
+      paths:
+        - path: /graphql
+          pathType: Exact
+  tls:
+    - secretName: pbotapps-test-portland-gov-tls
+      hosts:
+        - pbotapps-test.portland.gov
