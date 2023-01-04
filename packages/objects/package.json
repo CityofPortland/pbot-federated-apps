@@ -1,7 +1,7 @@
 {
-  "name": "@pbotapps/graphql",
+  "name": "@pbotapps/objects",
   "version": "1.0.0",
-  "description": "Things related to running an Apollo GraphQL Server",
+  "description": "Very low-level objects shared by more than one service or app",
   "main": "dist/index",
   "typings": "dist/index",
   "files": [
@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
     "lint": "eslint ./src/**/*.ts",
-    "dev": "nodemon",
+    "start": "nodemon",
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "repository": {
@@ -24,38 +24,19 @@
   },
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
   "devDependencies": {
-    "@apollo/server": "^4.3.0",
-    "@types/express": "^4.17.15",
-    "@types/jsonwebtoken": "^8.5.9",
-    "@types/passport": "^1.0.11",
-    "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "@typescript-eslint/parser": "^5.47.0",
-    "axios": "^1.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
     "dataloader": "^2.1.0",
     "eslint": "^8.30.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-typescript": "^3.0.0",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^8.5.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "knex": "^2.3.0",
+    "prettier": "^2.8.1",
     "typescript": "^4.9.4"
   },
-  "dependencies": {
-    "@apollo/subgraph": "^2.2.2",
-    "@pbotapps/authorization": "workspace:^1.0.0",
-    "@pbotapps/common": "workspace:^1.0.0",
-    "@pbotapps/objects": "workspace:^1.0.0",
-    "graphql": "^16.6.0",
-    "graphql-tag": "^2.12.6",
-    "passport": "^0.5.3",
-    "passport-anonymous": "^1.0.1"
-  },
   "peerDependencies": {
-    "@apollo/server": "^4.3.0",
-    "axios": "^1.2.1",
     "dataloader": "^2.1.0",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^8.5.1",
     "knex": "^2.3.0"
   }
 }

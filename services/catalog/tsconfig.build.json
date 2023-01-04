@@ -9,7 +9,13 @@
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../objects/tsconfig.build.json"
+      "path": "../../packages/common/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/graphql/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/misc/tsconfig.build.json"
     }
   ]
 }

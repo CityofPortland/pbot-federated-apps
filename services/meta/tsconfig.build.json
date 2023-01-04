@@ -3,13 +3,13 @@
   "compilerOptions": {
     "composite": true,
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "./out",
     "rootDir": "./src"
   },
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../objects/tsconfig.build.json"
+      "path": "../../packages/common/tsconfig.build.json"
     }
   ]
 }
