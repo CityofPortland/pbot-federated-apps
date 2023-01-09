@@ -2,7 +2,7 @@ FROM node:16 as builder
 
 ENV NODE_ENV=ci
 
-COPY .docker/rootfs /
+COPY .docker/apps/rootfs /
 
 RUN update-ca-certificates && \
     sed -i 's/CipherString = DEFAULT@SECLEVEL=2/CipherString = DEFAULT@SECLEVEL=1/' /etc/ssl/openssl.cnf && \
@@ -23,7 +23,7 @@ RUN pnpm --filter "{.}..." build
 FROM nginx
 
 # Copy in our NGINX configuration file(s)
-COPY .docker/rootfs /
+COPY .docker/apps/rootfs /
 
 # Switch to a directory and use as starting directory for following commands and entrypoint
 WORKDIR /usr/share/nginx/html

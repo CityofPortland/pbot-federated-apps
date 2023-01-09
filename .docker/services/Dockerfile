@@ -2,7 +2,7 @@ FROM node:16 as builder
 
 ENV NODE_ENV=ci
 
-COPY .docker/rootfs /
+COPY .docker/services/rootfs /
 
 RUN update-ca-certificates && \
     sed -i 's/CipherString = DEFAULT@SECLEVEL=2/CipherString = DEFAULT@SECLEVEL=1/' /etc/ssl/openssl.cnf && \
