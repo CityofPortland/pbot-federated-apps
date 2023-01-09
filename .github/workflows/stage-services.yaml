@@ -1,0 +1,163 @@
+name: Deploy services to staging
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: staging
+  cancel-in-progress: true
+
+jobs:
+  create-image:
+    name: Create images
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - service: meta
+            directory: services/meta
+            registry: pbotapps
+            repository: federation/meta
+          - service: pudl
+            directory: services/pudl
+            registry: pbotapps
+            repository: federation/pudl
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node_modules
+        id: cli-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./node_modules
+          key: v1-cache-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: v1-cache-
+      - name: Build
+        uses: ./packages/actions/build
+        with:
+          dockerfile: ./.docker/services/Dockerfile
+          artifact-name: ${{ matrix.service }}-image
+          directory: ${{ matrix.directory }}
+      - name: Push
+        uses: ./packages/actions/push
+        with:
+          credentials: ${{ secrets. AZURE_CREDENTIALS }}
+          registry: ${{ matrix.registry }}
+          repository: ${{ matrix.repository }}
+          tag: ${{ github.sha }}
+
+  deploy-staging:
+    name: Deploy to staging
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - service: meta
+            directory: services/meta
+            repository: federation/meta
+            cluster-name: pudl-kube-web-2
+            cluster-rg: pudl-kube-rg
+            cluster-ns: test
+            secrets: |
+              chart/.secrets/DATASOURCE_PASSWORD:
+                - ${{ secrets.COCKROACH_PASSWORD }}
+            values: |
+              ingress:
+                hosts:
+                  - paths:
+                      - path: /graphql/meta
+                        pathType: Prefix
+              extraEnv:
+                - name: DATASOURCE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: DATASOURCE_PASSWORD
+                - name: DATASOURCE_USERNAME
+                  value: meta
+                - name: DATASOURCE_HOST
+                  value: cockroachdb-public
+                - name: DATASOURCE_PORT
+                  value: "26257"
+            password: META_DATASOURCE_PASSWORD
+          - service: pudl-graph
+            directory: services/pudl
+            repository: federation/pudl
+            cluster-name: pudl-kube-data-1
+            cluster-rg: pudl-kube-rg
+            cluster-ns: pudl-test
+            values: |
+              ingress:
+                hosts:
+                  - host: pudl-test.portland.gov
+                    paths:
+                      - path: /graphql
+                        pathType: Prefix
+                tls:
+                  - secretName: pudl-test-portland-gov-tls
+                    hosts:
+                      - pudl-test.portland.gov
+              extraEnv:
+                - name: PUDL_POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: pudl-test-raw-metastore
+                      key: POSTGRES_PASSWORD
+                - name: PUDL_POSTGRES_HOST
+                  value: pudl-test-postgres
+                - name: PUDL_POSTGRES_PORT
+                  value: "5432"
+                - name: PUDL_POSTGRES_USERNAME
+                  value: hive_admin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create azure secrets
+        uses: ./packages/actions/file-writer
+        with:
+          files: |
+            chart/.secrets/AZURE_TENANT_ID:
+              - ${{ secrets.AZURE_TENANT_ID }}
+            chart/.secrets/AZURE_CLIENT_ID:
+              - ${{ secrets.AZURE_CLIENT_ID }}
+            chart/.secrets/AZURE_CLIENT_SECRET:
+              - ${{ secrets.AZURE_CLIENT_SECRET }}
+      - name: Create strategy secrets
+        if: matrix.files
+        uses: ./packages/actions/secret-writer
+        with:
+          variables: ${{ matrix.secrets }}
+          output: chart/.secrets
+      - name: Create values file
+        uses: ./packages/actions/merge-values
+        with:
+          input: chart/values-test.yaml
+          output: values.yaml
+          values: ${{ matrix.values }}
+      - name: Modify values file
+        uses: ./packages/actions/merge-values
+        with:
+          input: values.yaml
+          output: values.yaml
+          values: |
+            fullNameOverride: ${{ matrix.service }}-service
+            image:
+              repository: ${{ format('{0}.azurecr.io', matrix.registry || 'pbotapps') }}/${{ matrix.repository }}
+              tag: ${{ github.sha }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.service }}-values
+          path: values.yaml
+      - name: Run deploy action
+        uses: ./packages/actions/deploy
+        with:
+          credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ matrix.cluster-name }}
+          cluster-rg: ${{ matrix.cluster-rg }}
+          namespace: ${{ matrix.cluster-ns }}
+          chart: ./chart
+          release-name: ${{ matrix.service }}-service
+          values-file: values.yaml

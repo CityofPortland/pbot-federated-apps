@@ -3,7 +3,7 @@ description: Build and push docker image to specified repository
 inputs:
   dockerfile:
     description: 'Which Dockerfile to use'
-    default: .docker/Dockerfile
+    required: true
   directory:
     description: 'Which app to build'
     required: true

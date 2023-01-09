@@ -47,6 +47,7 @@ jobs:
       - name: Build
         uses: ./packages/actions/build
         with:
+          dockerfile: ./.docker/apps/Dockerfile
           artifact-name: ${{ matrix.app }}-image
           directory: ${{ matrix.directory }}
       - name: Push
@@ -98,6 +99,7 @@ jobs:
           input: values.yaml
           output: values.yaml
           values: |
+            fullNameOverride: ${{ matrix.app }}-app
             image:
               repository: ${{ format('{0}.azurecr.io', matrix.registry || 'pbotapps') }}/${{ matrix.repository }}
               tag: ${{ github.sha }}
@@ -113,5 +115,5 @@ jobs:
           cluster-rg: ${{ matrix.cluster-rg }}
           namespace: ${{ matrix.cluster-ns }}
           chart: ./chart
-          release-name: federated-app-${{ matrix.app }}
+          release-name: ${{ matrix.app }}-app
           values-file: values.yaml
