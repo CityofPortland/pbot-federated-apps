@@ -61,9 +61,7 @@ jobs:
             cluster-name: pudl-kube-web-2
             cluster-rg: pudl-kube-rg
             cluster-ns: test
-            secrets: |
-              chart/.secrets/DATASOURCE_PASSWORD:
-                - ${{ secrets.COCKROACH_PASSWORD }}
+            password: META_PASSWORD
             values: |
               ingress:
                 hosts:
@@ -126,11 +124,12 @@ jobs:
             chart/.secrets/AZURE_CLIENT_SECRET:
               - ${{ secrets.AZURE_CLIENT_SECRET }}
       - name: Create strategy secrets
-        if: matrix.files
-        uses: ./packages/actions/secret-writer
+        if: matrix.password
+        uses: ./packages/actions/file-writer
         with:
-          variables: ${{ matrix.secrets }}
-          output: chart/.secrets
+          files: |
+            chart/.secrets/DATASOURCE_PASSWORD:
+              - ${{ secrets[matrix.password] }}
       - name: Create values file
         uses: ./packages/actions/merge-values
         with:
