@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@types/express-jwt": "^6.0.4",
-    "@types/node": "^16.18.10",
+    "@types/node": "^16.18.11",
     "@types/passport-azure-ad": "^4.3.1",
     "@types/validator": "^13.7.10",
     "nodemon": "^2.0.20",

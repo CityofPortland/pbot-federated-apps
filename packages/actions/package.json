@@ -27,13 +27,13 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^23.0.5",
+    "@rollup/plugin-commonjs": "^23.0.7",
     "@rollup/plugin-multi-entry": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.5.0",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^16.18.10",
+    "@types/node": "^16.18.11",
     "@vercel/ncc": "^0.34.0",
     "bytes": "^3.1.2",
     "glob": "^8.0.3",
