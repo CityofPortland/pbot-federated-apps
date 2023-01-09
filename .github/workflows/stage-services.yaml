@@ -61,7 +61,6 @@ jobs:
             cluster-name: pudl-kube-web-2
             cluster-rg: pudl-kube-rg
             cluster-ns: test
-            password: META_PASSWORD
             values: |
               ingress:
                 hosts:
