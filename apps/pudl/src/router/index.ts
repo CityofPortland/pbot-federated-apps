@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import { authRoutes } from '@pbotapps/components';
 
 import Home from '../pages/Home.vue';
 import zones from '../pages/zones.vue';
@@ -42,6 +43,7 @@ const routes: RouteRecordRaw[] = [
       return { table };
     },
   },
+  ...authRoutes,
 ];
 
 const router = createRouter({

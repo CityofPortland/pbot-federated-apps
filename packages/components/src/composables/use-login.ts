@@ -1,15 +1,17 @@
 import { Ref, ref, watchEffect } from 'vue';
 import { useRouter, RouteRecordRaw, RouteLocation } from 'vue-router';
-
+import axios from 'axios';
 import {
   AccountInfo,
   Configuration,
   PublicClientApplication,
 } from '@azure/msal-browser';
-import { RemovableRef, useStorage } from '@vueuse/core';
+import { autoResetRef, RemovableRef, useStorage } from '@vueuse/core';
 
 import { Login, Logout, OAuth } from '../pages';
 import { query } from './use-graphql';
+import { access } from 'fs';
+import { x64 } from 'crypto-js';
 
 type User = {
   firstName?: string;
@@ -78,25 +80,34 @@ export function useLogin(): LoginContext {
 
   watchEffect(async () => {
     if (accessToken.value) {
-      const graphql = await query<{ me: User }>({
-        operation: `
-        query {
-          me {
-            firstName
-            lastName
-            email
-          }
-        }`,
-        headers: { Authorization: `Bearer ${accessToken.value}` },
+      const res = await axios.get('https://graph.microsoft.com/v1.0/me/', {
+        headers: {
+          Authorization: `Bearer ${accessToken.value}`,
+        },
       });
 
-      if (graphql.data) {
-        user.value = graphql.data.me;
-      }
+      const photoRes = await axios.get(
+        'https://graph.microsoft.com/v1.0/me/photos/48x48/$value',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken.value}`,
+          },
+          responseType: 'blob',
+        }
+      );
+
+      user.value = {
+        firstName: res.data.givenName,
+        lastName: res.data.surname,
+        email: res.data.mail,
+        photo: photoRes.data,
+      };
+
     }
   });
 
-  const scopes = [`${clientId}/.default`, 'offline_access'];
+  //  const scopes = [`${clientId}/.default`, 'offline_access'];
+  const scopes = [`User.Read`];
 
   const signIn = async (redirect = false) => {
     if (account.value) {

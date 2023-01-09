@@ -4,15 +4,19 @@ import {
   Breadcrumbs,
   Footer,
   Header,
+  LoggedIn,
   Logo,
   Nav,
   NavItem,
+  SignIn,
+  useLogin,
 } from '@pbotapps/components';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const menuOpen = ref(false);
 const { currentRoute } = useRouter();
+const { accessToken } = useLogin();
 
 const path = computed(() => currentRoute.value.path);
 </script>
@@ -30,6 +34,10 @@ const path = computed(() => currentRoute.value.path);
         <router-link to="/zones" custom v-slot="{ href, navigate }">
           <Anchor :url="href" @click="navigate">Zones</Anchor>
         </router-link>
+        <Nav class="mt-3 md:mt-0 md:ml-auto">
+          <SignIn v-if="!accessToken" />
+          <LoggedIn v-else />
+        </Nav>
       </template>
     </Header>
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 mt-4 mb-12">
