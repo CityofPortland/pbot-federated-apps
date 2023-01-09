@@ -89,7 +89,7 @@ export default defineComponent({
       default: 'light',
     },
   },
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     return {
       toggle() {
         emit('toggle', !open);

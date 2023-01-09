@@ -32,7 +32,7 @@
         @update:modelValue="handleSelect"
       >
         <option
-          v-for="(item, index) in list"
+          v-for="(_, index) in list"
           :key="index"
           :value="index"
           :selected="index == value"

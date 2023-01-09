@@ -13,11 +13,11 @@ export const boxColors = [
   'white',
 ] as const;
 
-export type BoxColor = typeof boxColors[number];
+export type BoxColor = (typeof boxColors)[number];
 
 export const boxVariants = ['light', 'neutral', 'dark'] as const;
 
-export type BoxColorVariant = typeof boxVariants[number];
+export type BoxColorVariant = (typeof boxVariants)[number];
 
 export interface ColorProps {
   color: BoxColor;
