@@ -16,7 +16,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - service: pudl-graph
+          - service: pudl
             directory: services/pudl
             repository: federation/service/pudl
             cluster-name: pudl-kube-data-1
@@ -48,7 +48,7 @@ jobs:
       - name: Create values file
         uses: ./packages/actions/merge-values
         with:
-          input: chart/values-prod.yaml
+          input: chart/values.yaml
           output: values.yaml
           values: ${{ matrix.values }}
       - name: Modify values file
@@ -57,7 +57,7 @@ jobs:
           input: values.yaml
           output: values.yaml
           values: |
-            fullNameOverride: ${{ matrix.service }}-app
+            fullNameOverride: ${{ matrix.service }}-service
             image:
               repository: ${{ format('{0}.azurecr.io', matrix.registry || 'pbotapps') }}/${{ matrix.repository }}
               tag: ${{ github.ref_name }}
@@ -68,5 +68,5 @@ jobs:
           cluster-rg: ${{ matrix.cluster-rg }}
           namespace: ${{ matrix.cluster-ns }}
           chart: ./chart
-          release-name: ${{ matrix.service }}
+          release-name: ${{ matrix.service }}-service
           values-file: values.yaml

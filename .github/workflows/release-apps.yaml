@@ -48,7 +48,7 @@ jobs:
           input: values.yaml
           output: values.yaml
           values: |
-            fullNameOverride: ${{ matrix.service }}-service
+            fullNameOverride: ${{ matrix.app }}-app
             image:
               repository: ${{ format('{0}.azurecr.io', matrix.registry || 'pbotapps') }}/${{ matrix.repository }}
               tag: ${{ github.ref_name }}

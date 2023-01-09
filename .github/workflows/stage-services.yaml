@@ -83,7 +83,7 @@ jobs:
                 - name: DATASOURCE_PORT
                   value: "26257"
             password: META_DATASOURCE_PASSWORD
-          - service: pudl-graph
+          - service: pudl
             directory: services/pudl
             repository: federation/pudl
             cluster-name: pudl-kube-data-1

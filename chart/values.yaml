@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: pbotapps.azurecr.io/federation/app
+  repository: pbotapps.azurecr.io/federation
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ''

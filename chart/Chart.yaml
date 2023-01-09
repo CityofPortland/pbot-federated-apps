@@ -1,6 +1,6 @@
 apiVersion: v2
-name: federated-app
-description: Helm chart for deploying federated applications
+name: federation
+description: Helm chart for deploying federated applications and services
 
 # A chart can be either an 'application' or a 'library' chart.
 #
