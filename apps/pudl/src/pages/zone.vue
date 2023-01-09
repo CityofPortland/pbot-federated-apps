@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Anchor } from '@pbotapps/common';
+import { Anchor } from '@pbotapps/components';
 import { useRoute } from 'vue-router';
 import { RouterLink } from 'vue-router';
 

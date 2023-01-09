@@ -53,7 +53,14 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
-import { Anchor, Footer, Header, Logo, Nav, NavItem } from '@pbotapps/common';
+import {
+  Anchor,
+  Footer,
+  Header,
+  Logo,
+  Nav,
+  NavItem,
+} from '@pbotapps/components';
 
 export default defineComponent({
   setup() {

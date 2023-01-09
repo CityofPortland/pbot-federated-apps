@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FieldList, Field } from '@pbotapps/common';
+import { FieldList, Field } from '@pbotapps/components';
 import { Rule } from '../../models/rule';
 
 defineProps({

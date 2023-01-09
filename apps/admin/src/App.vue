@@ -11,7 +11,7 @@ import {
   NavItem,
   SignIn,
   useLogin,
-} from '@pbotapps/common';
+} from '@pbotapps/components';
 
 const menuOpen = ref(false);
 const { accessToken } = useLogin();

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Anchor, Box } from '@pbotapps/common';
+import { Anchor, Box } from '@pbotapps/components';
 import { Application } from '../../models/application';
 
 defineProps({

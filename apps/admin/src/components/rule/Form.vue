@@ -8,7 +8,7 @@ import {
   Textarea,
   query,
   useAuthStore,
-} from '@pbotapps/common';
+} from '@pbotapps/components';
 
 import { Application } from '../../models/application';
 import { Rule } from '../../models/rule';

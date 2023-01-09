@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
 
-import { query, Box, Button } from '@pbotapps/common';
+import { query, Box, Button } from '@pbotapps/components';
 import { Application } from '../models/application';
 import Listing from '../components/application/List.vue';
 

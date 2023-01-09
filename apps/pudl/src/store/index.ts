@@ -1,4 +1,4 @@
-import { query } from '@pbotapps/common';
+import { query } from '@pbotapps/components';
 import { defineStore } from 'pinia';
 
 interface Zone {

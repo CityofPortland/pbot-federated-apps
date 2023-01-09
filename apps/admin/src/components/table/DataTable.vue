@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 
-import { Box } from '@pbotapps/common';
+import { Box } from '@pbotapps/components';
 
 const props = defineProps({
   data: {

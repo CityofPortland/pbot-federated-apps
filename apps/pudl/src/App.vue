@@ -7,7 +7,7 @@ import {
   Logo,
   Nav,
   NavItem,
-} from '@pbotapps/common';
+} from '@pbotapps/components';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 

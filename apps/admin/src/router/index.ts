@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import { authRoutes } from '@pbotapps/common';
+import { authRoutes } from '@pbotapps/components';
 
 import Application from '../pages/Application.vue';
 import Applications from '../pages/Applications.vue';

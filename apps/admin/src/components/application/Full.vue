@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Box, Button } from '@pbotapps/common';
+import { Box, Button } from '@pbotapps/components';
 import { Application } from '../../models/application.js';
 import DataTable from '../table/DataTable.vue';
 

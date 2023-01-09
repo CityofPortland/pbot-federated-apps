@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Box } from '@pbotapps/common';
+import { Box } from '@pbotapps/components';
 </script>
 
 <template>

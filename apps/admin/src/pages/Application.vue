@@ -2,7 +2,7 @@
 import { ref, Ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { query, Box } from '@pbotapps/common';
+import { query, Box } from '@pbotapps/components';
 import { Application } from '../models/application';
 import Full from '../components/application/Full.vue';
 
