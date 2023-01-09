@@ -1,6 +1,9 @@
 name: Build image
 description: Build and push docker image to specified repository
 inputs:
+  dockerfile:
+    description: 'Which Dockerfile to use'
+    required: true
   directory:
     description: 'Which app to build'
     required: true
@@ -22,7 +25,7 @@ runs:
       run: |
         docker buildx \
         build \
-        --file .docker/Dockerfile \
+        --file ${{ inputs.dockerfile }} \
         --build-arg WORKDIR=${{ inputs.directory }} \
         --tag ${{ github.sha }} \
         --output type=docker,dest=${{ github.sha }}.tar \

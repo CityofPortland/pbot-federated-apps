@@ -1,0 +1,54 @@
+{
+  "name": "@pbotapps/authorization",
+  "version": "1.0.0",
+  "description": "Very low-level objects shared by more than one service or app",
+  "main": "dist/index",
+  "typings": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "lint": "eslint ./src/**/*.ts",
+    "start": "nodemon",
+    "typeorm": "typeorm-ts-node-commonjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+  },
+  "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+  },
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.15",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "eslint": "^8.31.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-typescript": "^3.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "express": "^4.18.2",
+    "knex": "^2.4.0",
+    "passport": "^0.5.3",
+    "passport-anonymous": "^1.0.1",
+    "passport-azure-ad": "^4.3.4",
+    "prettier": "^2.8.2",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@pbotapps/objects": "workspace:^1.0.0",
+    "jose": "^4.11.2",
+    "node-fetch": "^3.3.0"
+  },
+  "peerDependencies": {
+    "express": "^4.18.2",
+    "knex": "^2.3.0",
+    "passport": "^0.5.3",
+    "passport-anonymous": "^1.0.1",
+    "passport-azure-ad": "^4.3.4"
+  }
+}

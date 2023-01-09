@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 4000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORTLANDMAPS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                    name: {{ include "chart.fullname" . }}
+                    key: PORTLANDMAPS_API_KEY
+            - name: CALE_WEBOFFICE_HOST
+              valueFrom:
+                secretKeyRef:
+                    name: {{ include "chart.fullname" . }}
+                    key: CALE_WEBOFFICE_HOST
+            - name: AREA_PERMIT_CALE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                    name: {{ include "chart.fullname" . }}
+                    key: AREA_PERMIT_CALE_USERNAME
+            - name: AREA_PERMIT_CALE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                    name: {{ include "chart.fullname" . }}
+                    key: AREA_PERMIT_CALE_PASSWORD
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

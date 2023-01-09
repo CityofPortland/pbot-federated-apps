@@ -1,0 +1,10 @@
+{
+  "restartable": "rs",
+  "ignore": [".git", "node_modules/**/node_modules", "src/**/*.spec.ts"],
+  "watch": ["src"],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "ts",
+  "exec": "pnpm --filter=\"{.}...\" build && cp .env dist/ && node dist/index.js"
+}

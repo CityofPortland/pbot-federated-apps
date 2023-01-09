@@ -1,0 +1,42 @@
+{
+  "name": "@pbotapps/objects",
+  "version": "1.0.0",
+  "description": "Very low-level objects shared by more than one service or app",
+  "main": "dist/index",
+  "typings": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "lint": "eslint ./src/**/*.ts",
+    "start": "nodemon",
+    "typeorm": "typeorm-ts-node-commonjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+  },
+  "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+  },
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "dataloader": "^2.1.0",
+    "eslint": "^8.31.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-typescript": "^3.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "knex": "^2.4.0",
+    "prettier": "^2.8.2",
+    "typescript": "^4.9.4"
+  },
+  "peerDependencies": {
+    "dataloader": "^2.1.0",
+    "knex": "^2.3.0"
+  }
+}

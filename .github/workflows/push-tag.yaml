@@ -7,16 +7,16 @@ on:
 
 jobs:
   push-tag:
-    name: Push tag
+    name: Tag image
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
         include:
-          - service: pudl
-            directory: services/pudl
-            registry: pbotapps
-            repository: federation/pudl
+          - registry: pbotapps
+            repository: federation/service/pudl
+          - registry: pbotapps
+            repository: federation/app/pudl
     steps:
       - uses: actions/checkout@v3
       - name: Pull

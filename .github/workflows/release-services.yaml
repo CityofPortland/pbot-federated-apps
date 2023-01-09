@@ -1,0 +1,72 @@
+name: Release services
+
+on:
+  release:
+    types:
+      - published
+
+concurrency:
+  group: production-services
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - service: pudl
+            directory: services/pudl
+            repository: federation/service/pudl
+            cluster-name: pudl-kube-data-1
+            cluster-rg: pudl-kube-rg
+            cluster-ns: pudl
+            values: |
+              ingress:
+                hosts:
+                  - host: pudl.portland.gov
+                    path: /
+                tls:
+                  - secretName: pudl-portland-gov-tls
+                    hosts:
+                      - pudl.portland.gov
+              extraEnv:
+                - name: PUDL_POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: pudl-raw-metastore
+                      key: POSTGRES_PASSWORD
+                - name: PUDL_POSTGRES_HOST
+                  value: pudl-postgres
+                - name: PUDL_POSTGRES_PORT
+                  value: 5432
+                - name: PUDL_POSTGRES_USERNAME
+                  value: hive_admin
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create values file
+        uses: ./packages/actions/merge-values
+        with:
+          input: chart/values.yaml
+          output: values.yaml
+          values: ${{ matrix.values }}
+      - name: Modify values file
+        uses: ./packages/actions/merge-values
+        with:
+          input: values.yaml
+          output: values.yaml
+          values: |
+            fullNameOverride: ${{ matrix.service }}-service
+            image:
+              repository: ${{ format('{0}.azurecr.io', matrix.registry || 'pbotapps') }}/${{ matrix.repository }}
+              tag: ${{ github.ref_name }}
+      - uses: ./packages/actions/deploy
+        with:
+          credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: ${{ matrix.cluster-name }}
+          cluster-rg: ${{ matrix.cluster-rg }}
+          namespace: ${{ matrix.cluster-ns }}
+          chart: ./chart
+          release-name: ${{ matrix.service }}-service
+          values-file: values.yaml
