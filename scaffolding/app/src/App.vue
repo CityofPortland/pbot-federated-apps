@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { Anchor, Footer, Header, Logo, Nav, NavItem } from '@pbotapps/common';
+import { Anchor, Footer, Header, Logo, Nav, NavItem } from '@pbotapps/components';
 
 const menuOpen = ref(false);
 </script>
