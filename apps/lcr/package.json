@@ -1,0 +1,23 @@
+{
+  "name": "@pbotapps/{appName}",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@pbotapps/components": "workspace:^1.0.0",
+    "axios": "^1.2.2",
+    "pinia": "^2.0.28",
+    "vue": "^3.2.25",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.3",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9",
+    "vue-tsc": "^0.34.7"
+  }
+}
