@@ -22,15 +22,18 @@ import { useLogin } from '../composables';
 export default defineComponent({
   name: 'Logout',
   setup() {
-    const { accessToken, msal, redirectTo } = useLogin();
-    const { resolve } = useRouter();
+    const { accessToken, msal, route } = useLogin();
+    const router = useRouter();
 
-    redirectTo.value = resolve({ path: '/' });
-    accessToken.value = null;
+    route.value = router.resolve({ path: '/' });
 
-    msal.logoutRedirect({
-      postLogoutRedirectUri: msal.getConfiguration().auth.redirectUri,
-    });
+    if (accessToken.value && accessToken.value !== '') {
+      accessToken.value = '';
+      msal.logoutRedirect({
+        postLogoutRedirectUri: useRouter().resolve({ name: 'OAuthCallback' })
+          .href,
+      });
+    }
   },
   components: { SignIn },
 });

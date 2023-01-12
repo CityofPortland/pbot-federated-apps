@@ -1,32 +1,15 @@
-import { Ref, ref, watchEffect } from 'vue';
-import { useRouter, RouteRecordRaw, RouteLocation } from 'vue-router';
-import axios from 'axios';
-import {
-  AccountInfo,
-  Configuration,
-  PublicClientApplication,
-} from '@azure/msal-browser';
-import { autoResetRef, RemovableRef, useStorage } from '@vueuse/core';
+import { RouteRecordRaw, RouteLocation } from 'vue-router';
+import { Configuration, PublicClientApplication } from '@azure/msal-browser';
+import { assert, RemovableRef, useStorage } from '@vueuse/core';
 
 import { Login, Logout, OAuth } from '../pages';
-import { query } from './use-graphql';
-import { access } from 'fs';
-import { x64 } from 'crypto-js';
-
-type User = {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  photo?: Blob;
-};
 
 type LoginContext = {
   accessToken: RemovableRef<string>;
-  account: Ref<AccountInfo | undefined>;
+  clientId: string;
   msal: PublicClientApplication;
-  redirectTo: Ref<RouteLocation | undefined>;
-  signIn: (redirect: boolean) => Promise<void>;
-  user: Ref<User | undefined>;
+  getToken(scopes: Array<string>): Promise<string | void>;
+  route: RemovableRef<RouteLocation>;
 };
 
 export const authRoutes: Array<RouteRecordRaw> = [
@@ -46,101 +29,54 @@ export const authRoutes: Array<RouteRecordRaw> = [
     component: Logout,
   },
 ];
+
+const authority = `https://login.microsoftonline.com/${
+  import.meta.env.VITE_AZURE_TENANT_ID || 'common'
+}`;
+const clientId = import.meta.env.VITE_AZURE_CLIENT_ID;
+
+assert(clientId, 'Must set VITE_AZURE_CLIENT_ID!');
+
+const msalConfig: Configuration = {
+  auth: {
+    clientId,
+    authority,
+    navigateToLoginRequestUrl: false,
+  },
+};
+
+const msal = new PublicClientApplication(msalConfig);
+
 export function useLogin(): LoginContext {
   const accessToken = useStorage('pbotapps.auth.accessToken', '');
-  const account: Ref<AccountInfo | undefined> = ref(undefined);
-  const authority = `https://login.microsoftonline.com/${
-    import.meta.env.VITE_AZURE_TENANT_ID || 'common'
-  }`;
-  const clientId = import.meta.env.VITE_AZURE_CLIENT_ID;
+  const route = useStorage('pbotapps.auth.route', {} as RouteLocation);
 
-  if (!clientId) throw new Error('Must pass "VITE_AZURE_CLIENT_ID"!');
+  const getToken = async (
+    scopes: Array<string> = [`${clientId}/.default`, 'offline_access'],
+    redirect?: string
+  ) => {
+    const request = {
+      scopes,
+    };
 
-  const user: Ref<User | undefined> = ref(undefined);
-
-  const router = useRouter();
-  const redirectTo = useStorage('pbotapps.auth.route', {} as RouteLocation);
-
-  const callback = router?.resolve({
-    name: 'OAuthCallback',
-  });
-
-  const msalConfig: Configuration = {
-    auth: {
-      clientId,
-      authority,
-      navigateToLoginRequestUrl: false,
-      redirectUri: callback?.href,
-    },
-  };
-
-  const msal = new PublicClientApplication(msalConfig);
-
-  watchEffect(() => msal.setActiveAccount(account.value || null));
-
-  watchEffect(async () => {
-    if (accessToken.value) {
-      const res = await axios.get('https://graph.microsoft.com/v1.0/me/', {
-        headers: {
-          Authorization: `Bearer ${accessToken.value}`,
-        },
-      });
-
-      const photoRes = await axios.get(
-        'https://graph.microsoft.com/v1.0/me/photos/48x48/$value',
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken.value}`,
-          },
-          responseType: 'blob',
+    return msal
+      .acquireTokenSilent(request)
+      .then(result => {
+        accessToken.value = result.accessToken;
+        return result.accessToken;
+      })
+      .catch(() => {
+        if (redirect) {
+          msal.acquireTokenRedirect({ ...request, redirectUri: redirect });
         }
-      );
-
-      user.value = {
-        firstName: res.data.givenName,
-        lastName: res.data.surname,
-        email: res.data.mail,
-        photo: photoRes.data,
-      };
-
-    }
-  });
-
-  //  const scopes = [`${clientId}/.default`, 'offline_access'];
-  const scopes = [`User.Read`];
-
-  const signIn = async (redirect = false) => {
-    if (account.value) {
-      // we have logged in before
-      // try to handle a background login
-      const res = await msal.acquireTokenSilent({
-        scopes,
-        account: account.value,
       });
-
-      if (res) {
-        // refreshed token successfully
-        account.value = res.account || undefined;
-        accessToken.value = res.accessToken;
-        return;
-      }
-    }
-
-    if (redirect) {
-      msal.acquireTokenRedirect({
-        scopes,
-        account: account.value,
-        redirectUri: msal.getConfiguration().auth.redirectUri,
-      });
-    }
   };
 
   return {
     accessToken,
-    account,
+    clientId,
     msal,
-    redirectTo,
-    signIn,
-    user,
+    getToken,
+    route,
   };
 }

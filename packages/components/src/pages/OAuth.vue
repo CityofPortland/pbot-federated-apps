@@ -24,11 +24,11 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, Ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useLogin } from '../composables/use-login';
 import Message from '../components/message/Message.vue';
 import Spinner from '../elements/icon/Spinner.vue';
-import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'OAuth',
@@ -37,7 +37,7 @@ export default defineComponent({
     const loading = ref(true),
       error: Ref<unknown | undefined> = ref(undefined);
 
-    const { accessToken, msal, redirectTo } = useLogin();
+    const { accessToken, msal, route } = useLogin();
     const router = useRouter();
 
     onMounted(async () => {
@@ -46,14 +46,15 @@ export default defineComponent({
 
         if (res) {
           accessToken.value = res.accessToken;
+          msal.setActiveAccount(res.account);
         }
       } catch (err) {
         error.value = err;
       } finally {
         loading.value = false;
 
-        if (redirectTo.value) {
-          router.push(redirectTo.value);
+        if (route.value) {
+          router.push(route.value);
         }
       }
     });
