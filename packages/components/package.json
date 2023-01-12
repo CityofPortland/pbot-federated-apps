@@ -17,7 +17,7 @@
   "files": [
     "dist"
   ],
-  "types": "dist/types",
+  "types": "dist/types/index.d",
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
     "dev": "vite build --watch",

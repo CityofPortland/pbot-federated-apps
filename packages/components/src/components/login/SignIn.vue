@@ -17,14 +17,19 @@ import Button from '../../elements/button/Button.vue';
 
 export default defineComponent({
   components: { Button },
-  setup() {
-    const { redirectTo, signIn } = useLogin();
-    const { currentRoute } = useRouter();
+  props: {
+    redirect: String,
+  },
+  setup(props) {
+    const { getToken, route } = useLogin();
+    const { currentRoute, resolve } = useRouter();
 
     return {
       signIn: () => {
-        redirectTo.value = currentRoute.value;
-        signIn(true);
+        route.value = props.redirect
+          ? resolve({ path: props.redirect })
+          : currentRoute.value;
+        getToken(['User.Read'], resolve({ name: 'OAuthCallback' }).href);
       },
     };
   },

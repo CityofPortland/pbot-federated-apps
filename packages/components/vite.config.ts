@@ -7,7 +7,11 @@ import { defineConfig } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
-    lib: { entry: './src/index.ts', name: 'common', formats: ['es', 'cjs'] },
+    lib: {
+      entry: './src/index.ts',
+      name: 'components',
+      formats: ['es', 'cjs'],
+    },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
@@ -24,13 +28,7 @@ export default defineConfig({
       },
     },
   },
-  plugins: [
-    typescript({
-      emitDeclarationOnly: true,
-    }),
-    vue(),
-    eslint(),
-  ],
+  plugins: [typescript(), vue(), eslint()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
