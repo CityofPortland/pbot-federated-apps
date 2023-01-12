@@ -31,7 +31,12 @@ const path = computed(() => currentRoute.value.path);
         </router-link>
       </template>
       <template #menu>
-        <router-link to="/zones" custom v-slot="{ href, navigate }">
+        <router-link
+          v-if="accessToken"
+          to="/zones"
+          custom
+          v-slot="{ href, navigate }"
+        >
           <Anchor :url="href" @click="navigate">Zones</Anchor>
         </router-link>
         <Nav class="mt-3 md:mt-0 md:ml-auto">

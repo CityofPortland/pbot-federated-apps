@@ -1,5 +1,3 @@
-const defaultConfig = require('../../tailwind.config');
-
 module.exports = {
-  ...defaultConfig,
+  presets: [require('../../tailwind.config')],
 };

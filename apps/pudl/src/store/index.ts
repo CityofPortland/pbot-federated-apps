@@ -1,4 +1,4 @@
-import { query } from '@pbotapps/components';
+import { useLogin, query } from '@pbotapps/components';
 import { defineStore } from 'pinia';
 
 interface Zone {
@@ -39,7 +39,14 @@ export const useStore = defineStore('pudl', {
   },
   actions: {
     async getZones() {
+      const { clientId, getToken } = useLogin();
+
+      const token = await getToken([`${clientId}/.default`]);
+
       this.data.findZone = [] as Array<Zone>;
+
+      if (!token) return;
+
       try {
         const res = await Promise.all(
           ['raw', 'enriched'].map(async zone => {
@@ -64,6 +71,9 @@ export const useStore = defineStore('pudl', {
                 }`,
               variables: {
                 zone,
+              },
+              headers: {
+                Authorization: `Bearer ${token}`,
               },
             });
 
