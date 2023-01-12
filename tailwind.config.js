@@ -65,6 +65,7 @@ module.exports = {
     './index.html',
     './src/**/*.{vue,js,ts,jsx,tsx,md}',
     './docs/**/*.{vue,ts,md}',
+    '../../packages/components/src/**/*.{vue,js,ts,jsx,tsx,md}',
   ],
   theme: {
     fontFamily: {
