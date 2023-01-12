@@ -6,7 +6,7 @@ on:
       - main
 
 concurrency:
-  group: staging
+  group: stage-services
   cancel-in-progress: true
 
 jobs:
@@ -27,14 +27,6 @@ jobs:
             repository: federation/pudl
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node_modules
-        id: cli-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ./node_modules
-          key: v1-cache-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: v1-cache-
       - name: Build
         uses: ./packages/actions/build
         with:

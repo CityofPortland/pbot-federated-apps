@@ -6,7 +6,7 @@ on:
       - main
 
 concurrency:
-  group: staging
+  group: stage-apps
   cancel-in-progress: true
 
 jobs:
@@ -26,19 +26,6 @@ jobs:
                 - VITE_GRAPHQL_URL=https://pudl-test.portland.gov/graphql
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.2.4
-        with:
-          version: latest
-      - name: Get pnpm store directory
-        id: pnpm-store
-        run: echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-store.outputs.pnpm_cache_dir }}
-          key: v1-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            v1-pnpm-store-
       - uses: ./packages/actions/file-writer
         if: matrix.files
         name: Create files

@@ -6,7 +6,7 @@ on:
       - published
 
 concurrency:
-  group: production
+  group: release-apps
   cancel-in-progress: true
 
 jobs:

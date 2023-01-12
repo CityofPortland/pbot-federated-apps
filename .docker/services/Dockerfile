@@ -1,18 +1,18 @@
 FROM node:16 as builder
 
+ARG WORKDIR
+
 ENV NODE_ENV=ci
 
 COPY .docker/services/rootfs /
 
-RUN update-ca-certificates && \
-    sed -i 's/CipherString = DEFAULT@SECLEVEL=2/CipherString = DEFAULT@SECLEVEL=1/' /etc/ssl/openssl.cnf && \
-    npm install -g pnpm
+RUN npm install -g pnpm &&\
+    pnpm config set store-dir /home/node/.pnpm-store
 
 WORKDIR /home/node/
 
-COPY . .
+COPY . /home/node/
 
-ARG WORKDIR
 WORKDIR /home/node/${WORKDIR}
 
 RUN pnpm --filter "{.}..." install
@@ -20,18 +20,19 @@ RUN pnpm --filter "{.}..." build
 
 FROM node:16-bullseye-slim
 
+ARG WORKDIR
+
 ENV NODE_ENV=production
 
 COPY --from=builder /home/node /home/node
 
-WORKDIR /home/node/
-
 RUN npm install -g pnpm && \
     # remove any node_modules folders
-    find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+    find /home/node/ -name "node_modules" -type d -prune -exec rm -rf '{}' +
 
-ARG WORKDIR
-WORKDIR ${WORKDIR}
+WORKDIR /home/node/${WORKDIR}
 
 # install only the production dependencies
 RUN pnpm --filter "{.}..." install --prod
+
+CMD ["node", "dist/index.js"]
