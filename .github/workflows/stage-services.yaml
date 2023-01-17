@@ -124,7 +124,7 @@ jobs:
       - name: Create values file
         uses: ./packages/actions/merge-values
         with:
-          input: chart/values-test.yaml
+          input: chart/values.yaml
           output: values.yaml
           values: ${{ matrix.values }}
       - name: Modify values file

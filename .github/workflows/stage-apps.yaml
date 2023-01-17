@@ -14,7 +14,7 @@ jobs:
     name: Create images
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - app: pudl
@@ -48,7 +48,7 @@ jobs:
   deploy-staging:
     name: Deploy to staging
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - app: pudl
