@@ -450,23 +450,19 @@ importers:
     specifiers:
       '@typescript-eslint/eslint-plugin': ^5.48.1
       '@typescript-eslint/parser': ^5.48.1
-      dataloader: ^2.1.0
       eslint: ^8.31.0
       eslint-config-prettier: ^8.6.0
       eslint-config-typescript: ^3.0.0
       eslint-plugin-prettier: ^4.2.1
-      knex: ^2.4.0
       prettier: ^2.8.2
       typescript: ^4.9.4
     devDependencies:
       '@typescript-eslint/eslint-plugin': 5.48.1_3jon24igvnqaqexgwtxk6nkpse
       '@typescript-eslint/parser': 5.48.1_iukboom6ndih5an6iafl45j2fe
-      dataloader: 2.1.0
       eslint: 8.31.0
       eslint-config-prettier: 8.6.0_eslint@8.31.0
       eslint-config-typescript: 3.0.0_ddkuuvdrd7nn3bjshfkuqupluq
       eslint-plugin-prettier: 4.2.1_iu5s7nk6dw7o3tajefwfiqfmge
-      knex: 2.4.0
       prettier: 2.8.2
       typescript: 4.9.4
 
