@@ -1,7 +1,4 @@
-import userRepository from './repository';
-
-export * from './middleware';
-export * from './passport';
-export * from './rule';
-
-export { userRepository };
+export * from './middleware.js';
+export * from './passport.js';
+export * from './repository.js';
+export * from './rule.js';

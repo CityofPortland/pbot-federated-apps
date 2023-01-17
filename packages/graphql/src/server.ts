@@ -1,17 +1,17 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { RuleType } from '@pbotapps/authorization';
-import { generateSource } from '@pbotapps/common';
+import { handleToken } from '@pbotapps/authorization';
 import { User } from '@pbotapps/objects';
+import cors from 'cors';
 import DataLoader from 'dataloader';
-import express, { Express, RequestHandler } from 'express';
+import express, { json, Express, RequestHandler } from 'express';
 import { GraphQLSchema } from 'graphql';
 import { Server } from 'http';
 import { AddressInfo } from 'net';
 
 import { Context } from './context';
 
-function createURL(httpServer: Server, subPath: string = '/') {
+function createURL(httpServer: Server, subPath = '/') {
   const { address, port } = httpServer.address() as AddressInfo;
 
   const hostname = address === '' || address === '::' ? 'localhost' : address;
@@ -22,23 +22,27 @@ function createURL(httpServer: Server, subPath: string = '/') {
 }
 
 type BootstrapOptions = {
+  allowedOrigins?: Array<string>;
   application: string;
   handlers: Array<RequestHandler>;
   loaderCallback: () => Record<string, DataLoader<string, any>>;
+  requireToken?: boolean;
   schema: GraphQLSchema;
 };
 
 export async function createServer({
   application,
   handlers = [],
+  requireToken = false,
   schema,
-  loaderCallback = () => ({}),
 }: BootstrapOptions): Promise<{ app: Express; server: ApolloServer<Context> }> {
   // to initialize initial connection with the database, register all entities
   // and "synchronize" database schema, call "initialize()" method of a newly created database
   // once in your application bootstrap
 
   const app = express();
+
+  app.use(cors({}));
 
   // The ApolloServer constructor requires two parameters: your schema
   // definition and your set of resolvers.
@@ -53,27 +57,14 @@ export async function createServer({
 
   app.use(
     '/graphql',
+    json(),
+    handleToken({ fail: requireToken }),
     ...handlers,
     expressMiddleware(server, {
       context: async ({ req }) => {
         const user = req.user as User | undefined;
-        const loaders = loaderCallback();
 
-        let rules = [];
-
-        if (user && user._id) {
-          rules = await generateSource({ database: 'meta' })('user_rule')
-            .where({
-              user_id: user._id,
-            })
-            .leftJoin('rule', {
-              id: 'user_rule.rule_id',
-              application_id: application,
-            })
-            .select<RuleType<any>[]>('rule.*');
-        }
-
-        return { application, client: null, user, rules, loaders };
+        return { application, client: null, user };
       },
     })
   );

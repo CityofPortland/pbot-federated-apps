@@ -1,27 +1,11 @@
-import { User } from '@pbotapps/objects';
 import { RequestHandler } from 'express';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
-import { Knex } from 'knex';
 import fetch from 'node-fetch';
-
-import { getUser } from './repository';
-
-type TOptions = {
-  fail: boolean;
-};
+import { UserRepository } from './repository.js';
 
 export const handleToken =
-  (source: Knex, { fail = true }: TOptions): RequestHandler =>
+  ({ fail = true }): RequestHandler =>
   async (req, res, next) => {
-    const jwksURI = fetch(
-      `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}/v2.0/.well-known/openid-configuration`,
-      {
-        method: 'GET',
-      }
-    )
-      .then(res => res.json())
-      .then((json: { jwks_uri: string }) => json.jwks_uri);
-
     const token = req['token'];
 
     if (!token && fail) {
@@ -32,6 +16,15 @@ export const handleToken =
       });
       return;
     } else if (token) {
+      const jwksURI = fetch(
+        `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}/v2.0/.well-known/openid-configuration`,
+        {
+          method: 'GET',
+        }
+      )
+        .then(res => res.json())
+        .then((json: { jwks_uri: string }) => json.jwks_uri);
+
       const { payload } = await jwtVerify(
         token,
         createRemoteJWKSet(new URL(await jwksURI)),
@@ -42,6 +35,19 @@ export const handleToken =
       );
 
       req['token'] = payload;
+    }
+
+    next();
+  };
+
+export const handleUser =
+  (repository: UserRepository): RequestHandler =>
+  async (req, _, next) => {
+    const token = req['token'];
+
+    if (token) {
+      // Presume this to be verified and replaced with decrypted payload
+      req.user = await repository.getUser({ oauthId: token['oid'] });
     }
 
     next();

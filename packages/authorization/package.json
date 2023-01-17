@@ -2,7 +2,9 @@
   "name": "@pbotapps/authorization",
   "version": "1.0.0",
   "description": "Very low-level objects shared by more than one service or app",
-  "main": "dist/index",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index",
   "typings": "dist/index",
   "files": [
     "dist"

@@ -2,7 +2,7 @@
   "name": "@pbotapps/catalog",
   "version": "1.0.0",
   "description": "Application for managing metadata of objects in the Federation",
-  "main": "dist/index",
+  "main": "dist/index.js",
   "types": "dist/index",
   "files": [
     "dist"

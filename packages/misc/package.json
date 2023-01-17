@@ -2,7 +2,9 @@
   "name": "@pbotapps/misc",
   "version": "1.0.0",
   "description": "Miscellanious functions",
-  "main": "dist/index",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index",
   "typings": "dist/index",
   "files": [
     "dist"
