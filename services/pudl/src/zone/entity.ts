@@ -1,9 +1,9 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Schema } from '../schema/entity';
+import { Schema } from '../schema/entity.js';
 
 const zones = ['enriched', 'raw'] as const;
 
-export type ZoneType = typeof zones[number];
+export type ZoneType = (typeof zones)[number];
 
 @ObjectType()
 export class Zone {

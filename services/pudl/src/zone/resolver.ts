@@ -1,8 +1,8 @@
 import { Args, Ctx, FieldResolver, Query, Resolver, Root } from 'type-graphql';
-import { Schema } from '../schema/entity';
-import { findSchema } from '../schema/resolver';
-import { Zone } from './entity';
-import { FindZoneInput } from './input';
+import { Schema } from '../schema/entity.js';
+import { findSchema } from '../schema/resolver.js';
+import { Zone } from './entity.js';
+import { FindZoneInput } from './input.js';
 
 @Resolver(() => Zone)
 export class ZoneResolver {

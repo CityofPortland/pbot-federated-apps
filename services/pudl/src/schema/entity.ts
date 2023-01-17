@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { Zone } from '../zone/entity';
+import { Zone } from '../zone/entity.js';
 
 @Entity('DBS', { schema: 'public' })
 @ObjectType()

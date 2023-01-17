@@ -2,16 +2,18 @@
   "name": "@pbotapps/pudl",
   "version": "1.0.0",
   "description": "Meta application for managing applications and users of applications",
-  "main": "out/index",
-  "types": "out/index",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index",
+  "types": "dist/index",
   "files": [
     "out"
   ],
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
-    "clean": "rm -rf ./out",
+    "clean": "rm -rf ./dist",
     "dev": "nodemon",
-    "start": "node out/index.js",
+    "start": "node dist/index.js",
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "repository": {
@@ -26,22 +28,23 @@
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
   "dependencies": {
     "@apollo/server": "^4.3.0",
-    "@apollo/subgraph": "^2.2.2",
+    "@apollo/subgraph": "^2.2.3",
     "@casl/ability": "^5.4.4",
     "@graphql-tools/schema": "^8.5.1",
-    "@pbotapps/common": "workspace:*",
+    "@pbotapps/graphql": "workspace:^1.0.0",
     "class-validator": "^0.13.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-jwt": "^7.7.7",
-    "graphql": "^15.8.0",
+    "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "passport": "^0.5.3",
     "passport-anonymous": "^1.0.1",
     "passport-azure-ad": "^4.3.4",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
-    "type-graphql": "^1.1.1",
+    "type-graphql": "2.0.0-beta.1",
     "typeorm": "^0.3.11"
   },
   "devDependencies": {
