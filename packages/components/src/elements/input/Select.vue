@@ -7,7 +7,7 @@
     :multiple="multiple"
     @change="handleChange"
   >
-    <option v-if="placeholder" value="" disabled selected>
+    <option v-if="placeholder && !modelValue" value="">
       {{ placeholder }}
     </option>
     <slot></slot>
