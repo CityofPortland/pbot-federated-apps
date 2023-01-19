@@ -21,7 +21,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['keypress', 'update:modelValue']);
+const emit = defineEmits(['changed', 'keypress', 'update:modelValue']);
 
 const { required, disabled, modelValue } = toRefs(props);
 
@@ -31,7 +31,10 @@ const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
   let value: string | undefined = target.value;
 
-  !(value == modelValue?.value) && emit('update:modelValue', value);
+  if (!(value == modelValue?.value)) {
+    emit('update:modelValue', value);
+    emit('changed', value);
+  }
 };
 </script>
 

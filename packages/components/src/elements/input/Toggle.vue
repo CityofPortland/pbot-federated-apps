@@ -61,6 +61,7 @@ export default defineComponent({
       classes,
       toggle() {
         emit('update:modelValue', !modelValue.value);
+        emit('changed', modelValue.value);
       },
     };
   },
