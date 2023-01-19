@@ -142,6 +142,37 @@ importers:
       vite: 4.0.4_@types+node@17.0.45
       vue-tsc: 1.0.24_typescript@4.9.4
 
+  apps/sign-library:
+    specifiers:
+      '@pbotapps/components': workspace:^1.0.0
+      '@tailwindcss/typography': ^0.5.8
+      '@vitejs/plugin-vue': ^2.3.3
+      autoprefixer: ^10.4.13
+      pinia: ^2.0.28
+      postcss: ^8.4.21
+      postcss-import: ^14.1.0
+      tailwindcss: ^3.2.4
+      typescript: ^4.5.4
+      vite: ^2.9.9
+      vue: ^3.2.25
+      vue-router: ^4.1.6
+      vue-tsc: ^0.34.7
+    dependencies:
+      '@pbotapps/components': link:../../packages/components
+      pinia: 2.0.28_prq2uz4lho2pwp6irk4cfkrxwu
+      vue: 3.2.45
+      vue-router: 4.1.6_vue@3.2.45
+    devDependencies:
+      '@tailwindcss/typography': 0.5.8_tailwindcss@3.2.4
+      '@vitejs/plugin-vue': 2.3.4_vite@2.9.15+vue@3.2.45
+      autoprefixer: 10.4.13_postcss@8.4.21
+      postcss: 8.4.21
+      postcss-import: 14.1.0_postcss@8.4.21
+      tailwindcss: 3.2.4_postcss@8.4.21
+      typescript: 4.9.4
+      vite: 2.9.15
+      vue-tsc: 0.34.17_typescript@4.9.4
+
   packages/actions:
     specifiers:
       '@actions/core': ^1.10.0
