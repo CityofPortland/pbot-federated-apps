@@ -28,7 +28,6 @@ const layoutClasses = computed(() => ({
 }));
 
 const labelClasses = computed(() => ({
-  'text-red-500': required.value,
   'font-semibold': true,
 }));
 
@@ -39,7 +38,15 @@ const inputClasses = computed(() => ({
 
 <template>
   <div :class="layoutClasses">
-    <label :id="`${id}-label`" :class="labelClasses">{{ label }}</label>
+    <slot
+      name="label"
+      :id="id"
+      :required="required"
+      :disabled="disabled"
+      :label="label"
+    >
+      <label :id="`${id}-label`" :class="labelClasses">{{ label }}</label>
+    </slot>
     <div :class="inputClasses">
       <slot :id="id" :required="required" :disabled="disabled"></slot>
     </div>
