@@ -24,6 +24,13 @@ jobs:
             files: |
               packages/common/.env:
                 - VITE_GRAPHQL_URL=https://pudl-test.portland.gov/graphql
+          - app: sign-library
+            directory: apps/sign-library
+            registry: pbotapps
+            repository: federation/app/sign-library
+            files: |
+              packages/common/.env:
+                - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql
     steps:
       - uses: actions/checkout@v3
       - uses: ./packages/actions/file-writer
@@ -33,6 +40,9 @@ jobs:
           input: ${{ matrix.files }}
       - name: Build
         uses: ./packages/actions/build
+        env:
+          VITE_AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          VITE_AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         with:
           dockerfile: ./.docker/apps/Dockerfile
           artifact-name: ${{ matrix.app }}-image
@@ -71,6 +81,26 @@ jobs:
                   - secretName: pudl-test-portland-gov-tls
                     hosts:
                       - pudl-test.portland.gov
+          - app: sign-library
+            directory: apps/sign-library
+            repository: federation/app/sign-library
+            cluster-name: pudl-kube-web-2
+            cluster-rg: pudl-kube-rg
+            cluster-ns: test
+            values: |
+              ingress:
+                annotations:
+                  nginx.ingress.kubernetes.io/server-snippet: |-
+                    add_header X-Robots-Tag "noindex, nofollow";
+                hosts:
+                  - host: pbotapps-test.portland.gov
+                    paths:
+                      - path: /sign-library
+                        pathType: Prefix
+                tls:
+                  - secretName: pbotapps-test-portland-gov-tls
+                    hosts:
+                      - pbotapps-test.portland.gov
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
