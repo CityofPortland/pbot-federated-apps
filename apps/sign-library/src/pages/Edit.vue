@@ -41,7 +41,8 @@ const sign = computed(() => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const revision = {} as Record<keyof Sign, any>;
 
-const change = (key: keyof Sign, value: unknown) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const change = (key: keyof Sign, value: any) => {
   revision[key] = value;
 };
 
@@ -61,7 +62,6 @@ const save = ({ redirect }: T) => {
 
 <template>
   <form ref="formRef" class="flex flex-col gap-4">
-    <div>Checked names: {{ sign.color }}</div>
     <Entry id="code" label="Code" required v-slot="{ id, required }">
       <Input
         :id="id"
