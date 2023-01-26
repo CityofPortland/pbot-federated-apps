@@ -1,6 +1,8 @@
 import Anchor from './anchor/Anchor.vue';
 import Box from './box/Box';
 import Button from './button/Button.vue';
+import Checkbox from './input/Checkbox.vue';
+import Checkboxes from './input/Checkboxes.vue';
 import Icon from './icon/Icon.vue';
 import Image from './img/Image.vue';
 import Input from './input/Input.vue';
@@ -16,6 +18,8 @@ export {
   Anchor,
   Box,
   Button,
+  Checkbox,
+  Checkboxes,
   Icon,
   Image,
   Input,

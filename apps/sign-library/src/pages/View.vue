@@ -7,16 +7,14 @@ import { Sign } from '../types';
 const store = useStore();
 
 const props = defineProps({
-  code: String,
+  code: { type: String, required: true },
 });
 
-const sign = computed(() =>
-  props.code ? store.sign(props.code) : ({} as Sign)
-);
+const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
 </script>
 
 <template>
-  <article class="">
+  <article>
     <header class="prose prose-lg flex">
       <h1 class="flex-1">{{ sign.code }}</h1>
       <router-link :to="`/${sign.code}/edit`">
@@ -37,25 +35,25 @@ const sign = computed(() =>
         <section>
           <FieldList>
             <Field name="Status" display="above">
-              {{ sign.status }}
+              {{ sign.status || 'NULL' }}
             </Field>
             <Field name="Type" display="above">
-              {{ sign.type }}
+              {{ sign.type || 'NULL' }}
             </Field>
             <Field name="Shape" display="above">
-              {{ sign.shape }}
+              {{ sign.shape || 'NULL' }}
             </Field>
             <Field name="Color" display="above">
-              {{ sign.color }}
+              {{ sign.color || 'NULL' }}
             </Field>
             <Field name="Size" display="above">
-              {{ `${sign.width}" by ${sign.height}"` }}
+              {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
             </Field>
             <Field name="Legend" display="above">
-              {{ sign.legend }}
+              {{ sign.legend || 'NULL' }}
             </Field>
             <Field v-if="sign.description" name="Comments" display="above">
-              {{ sign.description }}
+              {{ sign.description || 'NULL' }}
             </Field>
           </FieldList>
         </section>
@@ -69,7 +67,9 @@ const sign = computed(() =>
             {{ sign._changed.toLocaleString() }}
           </Field>
           <Field v-if="sign._revisions" name="Revisions" display="above">
-            {{ `${sign._revisions.length} revisions` }}
+            <router-link :to="`/${sign.code}/revisions`">{{
+              `${sign._revisions.length} revisions`
+            }}</router-link>
           </Field>
         </FieldList>
       </aside>

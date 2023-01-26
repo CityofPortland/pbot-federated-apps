@@ -2,12 +2,13 @@
 import {
   Anchor,
   Button,
+  Checkboxes,
   Entry,
   Input,
   Select,
   Textarea,
 } from '@pbotapps/components';
-import { computed, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useStore } from '../store';
@@ -31,15 +32,16 @@ const sign = computed(() => {
   if (props.code) {
     const s = store.sign(props.code);
 
-    return reactive(s ? s : d);
+    return s ? s : d;
   }
 
-  return reactive(d);
+  return d;
 });
 
-const revision = {} as Partial<Record<keyof Sign, any>>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const revision = {} as Record<keyof Sign, any>;
 
-const change = (key: keyof Sign, value: any) => {
+const change = (key: keyof Sign, value: unknown) => {
   revision[key] = value;
 };
 
@@ -51,7 +53,7 @@ const save = ({ redirect }: T) => {
   if (formRef.value?.reportValidity()) {
     store
       .addRevision({ ...revision, code: sign.value.code })
-      .then(sign => router.push(redirect(sign)))
+      .then(sign => router.push(redirect(sign || {})))
       .catch(err => console.error(err));
   }
 };
@@ -59,6 +61,7 @@ const save = ({ redirect }: T) => {
 
 <template>
   <form ref="formRef" class="flex flex-col gap-4">
+    <div>Checked names: {{ sign.color }}</div>
     <Entry id="code" label="Code" required v-slot="{ id, required }">
       <Input
         :id="id"
@@ -83,6 +86,7 @@ const save = ({ redirect }: T) => {
           :key="status"
           :value="status"
           :selected="status == sign.status"
+          class="capitalize"
         >
           {{ status }}
         </option>
@@ -103,6 +107,7 @@ const save = ({ redirect }: T) => {
           :key="type"
           :value="type"
           :selected="type == sign.type"
+          class="capitalize"
         >
           {{ type }}
         </option>
@@ -120,6 +125,7 @@ const save = ({ redirect }: T) => {
           :name="id"
           :required="required"
           v-model="sign.mutcdCode"
+          @changed="change('mutcdCode', $event)"
         />
       </template>
     </Entry>
@@ -138,35 +144,30 @@ const save = ({ redirect }: T) => {
           :key="shape"
           :value="shape"
           :selected="shape == sign.shape"
+          class="capitalize"
         >
           {{ shape }}
         </option>
       </Select>
     </Entry>
-    <Entry id="color" label="Color" required v-slot="{ id, required }">
-      <Select
-        :id="id"
-        :name="id"
-        :required="required"
-        multiple
-        v-model="sign.color"
-        @changed="change('color', $event)"
-        class="px-2 py-1"
-      >
-        <option
-          v-for="color in COLORS"
-          :key="color"
-          :value="color"
-          :selected="sign.color?.some(s => s == color)"
-        >
-          {{ color }}
-        </option>
-      </Select>
-    </Entry>
-    <Entry id="size" label="Size" required v-slot="{ id, required }">
+    <Checkboxes
+      :options="
+        COLORS.map(c => ({
+          id: c,
+          label: c,
+          value: c,
+          checked: sign.color?.some(s => s == c) ? true : false,
+        }))
+      "
+      id="colors"
+      label="Colors"
+      v-model="sign.color"
+      @changed="change('color', $event)"
+    />
+    <Entry id="size" label="Size" required v-slot="{ required }">
       <Input
-        :id="`${id}-width`"
-        :name="`${id}-width`"
+        id="width"
+        name="width"
         :required="required"
         type="number"
         :min="1"
@@ -175,8 +176,8 @@ const save = ({ redirect }: T) => {
       />
       <span class="mx-2">inches wide and</span>
       <Input
-        :id="`${id}-height`"
-        :name="`${id}-height`"
+        id="height"
+        name="height"
         :required="required"
         type="number"
         :min="1"

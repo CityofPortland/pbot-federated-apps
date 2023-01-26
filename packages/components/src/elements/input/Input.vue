@@ -57,9 +57,9 @@ export default defineComponent({
   },
   emits: ['changed', 'keypress', 'update:modelValue'],
   setup(props, { emit }) {
-    const { required, disabled, modelValue } = toRefs(props);
+    const { disabled, modelValue } = toRefs(props);
 
-    const { classes } = useInput(required, disabled, modelValue);
+    const { classes } = useInput(disabled);
 
     const handleInput = (event: Event) => {
       const target = event.target as HTMLInputElement;

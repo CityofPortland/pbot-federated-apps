@@ -9,13 +9,13 @@ export const useStore = defineStore('sign-library', {
     errors: new Array<unknown>(),
   }),
   getters: {
-    sign: state => (code: string) => {
-      const sign = state.data.signs.find(s => s.code == code);
+    sign:
+      state =>
+      (code: string): Partial<Sign> | undefined => {
+        const sign = state.data.signs.find(s => s.code == code);
 
-      if (!sign) throw new Error(`Sign with code '${code}' does not exist!`);
-
-      return { ...sign };
-    },
+        return sign ? { ...sign } : undefined;
+      },
   },
   actions: {
     async getSigns() {
@@ -39,21 +39,30 @@ export const useStore = defineStore('sign-library', {
         },
       ];
     },
-    async addRevision(sign: Partial<Sign>) {
-      let existing = this.data.signs.find(s => s.code == sign.code);
+    async addRevision(revision: Partial<Sign>) {
+      const { code, ...sign } = revision;
+      const _changed = new Date();
+
+      if (!code) {
+        this.errors.push(new Error('Must have code to add revision'));
+        return;
+      }
+
+      let existing = this.sign(code);
 
       if (!existing) {
-        existing = { ...sign, _created: new Date() };
+        existing = { code, ...sign, _created: _changed };
         this.data.signs.push(existing);
       }
 
-      const revisions = existing._revisions ? [...existing._revisions] : [];
-      revisions.push(sign);
+      const _revisions = existing._revisions ? [...existing._revisions] : [];
+      _revisions.push({ ...sign, _changed });
 
-      Object.assign(existing, sign, {
-        _changed: new Date(),
-        _revisions: [...revisions],
-      });
+      this.data.signs.splice(
+        this.data.signs.findIndex(s => s.code == code),
+        1,
+        { ...existing, ...sign, _changed, _revisions }
+      );
 
       return existing;
     },

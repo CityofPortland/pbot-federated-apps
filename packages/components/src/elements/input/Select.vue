@@ -68,9 +68,9 @@ export default defineComponent({
       emit('changed', value);
     };
 
-    const { disabled, modelValue, required } = toRefs(props);
+    const { disabled } = toRefs(props);
 
-    const { classes } = useInput(required, disabled, modelValue);
+    const { classes } = useInput(disabled);
 
     return {
       classes,
