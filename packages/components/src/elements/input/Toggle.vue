@@ -55,12 +55,13 @@ export default defineComponent({
   setup(props, { emit }) {
     const { modelValue } = toRefs(props);
 
-    const { classes } = useInput(ref(false), ref(false), modelValue);
+    const { classes } = useInput(ref(false));
 
     return {
       classes,
       toggle() {
         emit('update:modelValue', !modelValue.value);
+        emit('changed', modelValue.value);
       },
     };
   },

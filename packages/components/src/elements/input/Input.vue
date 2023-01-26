@@ -47,7 +47,7 @@ export default defineComponent({
       type: Number,
     },
     modelValue: {
-      type: String,
+      type: [String, Number],
       default: undefined,
     },
     modelModifiers: {
@@ -55,11 +55,11 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-  emits: ['keypress', 'update:modelValue'],
+  emits: ['changed', 'keypress', 'update:modelValue'],
   setup(props, { emit }) {
-    const { required, disabled, modelValue } = toRefs(props);
+    const { disabled, modelValue } = toRefs(props);
 
-    const { classes } = useInput(required, disabled, modelValue);
+    const { classes } = useInput(disabled);
 
     const handleInput = (event: Event) => {
       const target = event.target as HTMLInputElement;
@@ -101,7 +101,10 @@ export default defineComponent({
         });
       }
 
-      !(value == modelValue.value) && emit('update:modelValue', value);
+      if (!(value == modelValue.value)) {
+        emit('update:modelValue', value);
+        emit('changed', value);
+      }
     };
 
     return {
