@@ -28,6 +28,7 @@ jobs:
             directory: apps/sign-library
             registry: pbotapps
             repository: federation/app/sign-library
+            baseURL: /sign-library
             files: |
               packages/common/.env:
                 - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql
@@ -90,12 +91,13 @@ jobs:
             values: |
               ingress:
                 annotations:
+                  nginx.ingress.kubernetes.io/rewrite-target: /$2
                   nginx.ingress.kubernetes.io/server-snippet: |-
                     add_header X-Robots-Tag "noindex, nofollow";
                 hosts:
                   - host: pbotapps-test.portland.gov
                     paths:
-                      - path: /sign-library
+                      - path: /sign-library(/|$)(.*)
                         pathType: Prefix
                 tls:
                   - secretName: pbotapps-test-portland-gov-tls
