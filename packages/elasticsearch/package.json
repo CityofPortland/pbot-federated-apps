@@ -1,0 +1,46 @@
+{
+  "name": "@pbotapps/elasticsearch",
+  "version": "1.0.0",
+  "description": "Things for using an Elasticsearch database",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "lint": "eslint ./src/**/*.ts",
+    "dev": "tsc -b tsconfig.build.json -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+  },
+  "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+  },
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "devDependencies": {
+    "@elastic/elasticsearch": "^8.5.0",
+    "@types/node": "^18.11.18",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "dataloader": "^2.1.0",
+    "eslint": "^8.31.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-typescript": "^3.0.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@pbotapps/authorization": "workspace:^1.0.0",
+    "@pbotapps/common": "workspace:^1.0.0",
+    "@pbotapps/objects": "workspace:^1.0.0"
+  },
+  "peerDependencies": {
+    "@elastic/elasticsearch": "^8.5.0",
+    "dataloader": "^2.1.0"
+  }
+}
