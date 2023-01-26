@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== 'production') {
 createServer({
   application: 'catalog',
   schema: buildSubgraphSchema(schema),
-  handlers: [json(), handleToken(source, { fail: true })],
+  handlers: [json(), handleToken({ fail: true })],
   loaderCallback() {
     return {
       dataset: createLoader(source, 'dataset'),
