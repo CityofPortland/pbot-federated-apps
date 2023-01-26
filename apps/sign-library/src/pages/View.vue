@@ -40,6 +40,9 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
             <Field name="Type" display="above">
               {{ sign.type || 'NULL' }}
             </Field>
+            <Field name="MUTCD code" display="above">
+              {{ sign.mutcdCode || 'NULL' }}
+            </Field>
             <Field name="Shape" display="above">
               {{ sign.shape || 'NULL' }}
             </Field>
