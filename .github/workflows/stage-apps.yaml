@@ -39,7 +39,7 @@ jobs:
         name: Create files
         with:
           input: |
-            packages/components/.env.prod.local:
+            packages/components/.env.production.local:
               - VITE_AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}
               - VITE_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
       - uses: ./packages/actions/file-writer

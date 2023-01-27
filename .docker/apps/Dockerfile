@@ -2,8 +2,6 @@ FROM node:16 as builder
 
 ARG WORKDIR
 
-ENV NODE_ENV=ci
-
 COPY .docker/apps/rootfs /
 
 WORKDIR /home/node/
