@@ -22,7 +22,7 @@ jobs:
             registry: pbotapps
             repository: federation/app/pudl
             files: |
-              packages/common/.env:
+              packages/components/.env.local:
                 - VITE_GRAPHQL_URL=https://pudl-test.portland.gov/graphql
           - app: sign-library
             directory: apps/sign-library
@@ -30,7 +30,7 @@ jobs:
             repository: federation/app/sign-library
             baseURL: /sign-library
             files: |
-              packages/common/.env:
+              packages/components/.env.local:
                 - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql
     steps:
       - uses: actions/checkout@v3
@@ -38,12 +38,17 @@ jobs:
         if: matrix.files
         name: Create files
         with:
+          input: |
+            packages/components/.env.prod.local:
+              - VITE_AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}
+              - VITE_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
+      - uses: ./packages/actions/file-writer
+        if: matrix.files
+        name: Create files
+        with:
           input: ${{ matrix.files }}
       - name: Build
         uses: ./packages/actions/build
-        env:
-          VITE_AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          VITE_AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         with:
           dockerfile: ./.docker/apps/Dockerfile
           artifact-name: ${{ matrix.app }}-image
