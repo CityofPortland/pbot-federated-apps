@@ -43,6 +43,7 @@ const msalConfig: Configuration = {
     authority,
     navigateToLoginRequestUrl: false,
   },
+  cache: { cacheLocation: 'localStorage' },
 };
 
 const msal = new PublicClientApplication(msalConfig);
