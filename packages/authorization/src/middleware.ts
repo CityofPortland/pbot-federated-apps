@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 export const handleToken =
   ({ fail = true }): RequestHandler =>
   async (req, res, next) => {
-    const token = req['token'] || req.header('Authorization').split(' ')[1];
+    const token = req['token'] || req.header('Authorization')?.split(' ')[1];
 
     if (!token && fail) {
       res.status(401);
