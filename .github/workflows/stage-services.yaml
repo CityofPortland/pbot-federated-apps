@@ -153,6 +153,7 @@ jobs:
             image:
               repository: ${{ format('{0}.azurecr.io', matrix.registry || 'pbotapps') }}/${{ matrix.repository }}
               tag: ${{ github.sha }}
+            containerPort: 4000
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.service }}-values
