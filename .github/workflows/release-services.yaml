@@ -26,7 +26,7 @@ jobs:
               ingress:
                 hosts:
                   - host: pudl.portland.gov
-                    path: /
+                    path: /graphql
                 tls:
                   - secretName: pudl-portland-gov-tls
                     hosts:
