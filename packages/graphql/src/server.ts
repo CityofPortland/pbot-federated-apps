@@ -55,6 +55,10 @@ export async function createServer({
 
   await server.start();
 
+  app.use('/', (_, res) =>
+    res.send('Use the "/graphql" endpoint to send queries')
+  );
+
   app.use(
     '/graphql',
     json(),
