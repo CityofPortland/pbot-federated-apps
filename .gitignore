@@ -3,5 +3,5 @@ node_modules/
 dist/
 out/
 
-**/.env
+**/*.local
 *.tsbuildinfo
