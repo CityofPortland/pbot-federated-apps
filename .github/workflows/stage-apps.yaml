@@ -31,7 +31,7 @@ jobs:
             baseURL: /sign-library
             files: |
               packages/components/.env.local:
-                - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql
+                - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql/sign
     steps:
       - uses: actions/checkout@v3
       - uses: ./packages/actions/file-writer
