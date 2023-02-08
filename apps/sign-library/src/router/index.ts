@@ -1,3 +1,4 @@
+import { authRoutes } from '@pbotapps/components';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 import Edit from '../pages/Edit.vue';
@@ -11,6 +12,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/:code/edit', component: Edit, props: true },
   { path: '/:code/revisions', component: Revisions, props: true },
   { path: '/add', component: Edit },
+  ...authRoutes,
 ];
 
 export default createRouter({

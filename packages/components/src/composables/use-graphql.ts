@@ -60,3 +60,58 @@ export async function query<T>(
 
   return res.data;
 }
+
+export async function formData<T>(
+  options: GraphQLOptions,
+  files: Array<File> | FileList,
+  map: Map<string, string>
+): Promise<GraphQLResponse<T>> {
+  if (!import.meta.env.VITE_GRAPHQL_URL) {
+    throw Error(
+      'GRAPHQL_URL is not defined and required to query the GraphQL server!'
+    );
+  }
+
+  let { operation } = options;
+
+  operation = operation.replace(/\s+/g, ' ').trim();
+
+  const body = new FormData();
+
+  body.append(
+    'operations',
+    JSON.stringify({
+      query: operation,
+      variables: options.variables,
+    })
+  );
+
+  const headers = options && options.headers;
+
+  body.append(
+    'map',
+    `{${[...map].map(
+      (e, i, a) =>
+        '"' + e[1] + '":["' + e[0] + '"]' + (a.length - 1 == i ? '' : ',')
+    )}}`
+  );
+
+  let index = 0;
+  for (const file of files) {
+    body.append((index++).toLocaleString(), file);
+  }
+
+  const res = await axios.post<GraphQLResponse<T>>(
+    import.meta.env.VITE_GRAPHQL_URL,
+    body,
+    {
+      headers: {
+        ...headers,
+        'apollo-require-preflight': 'False',
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return res.data;
+}

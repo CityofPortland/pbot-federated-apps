@@ -40,6 +40,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useLogin } from '../../composables/use-login';
 import Box from '../../elements/box/Box';
@@ -62,9 +63,13 @@ export default defineComponent({
   setup() {
     const user = ref(undefined);
     const { getToken } = useLogin();
+    const { resolve } = useRouter();
 
     onMounted(async () => {
-      const token = await getToken(['User.Read']);
+      const token = await getToken(
+        ['User.Read'],
+        resolve({ name: 'OAuthCallback' }).href
+      );
 
       const res = await axios.get('https://graph.microsoft.com/v1.0/me/', {
         headers: {

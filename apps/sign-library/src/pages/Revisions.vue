@@ -23,12 +23,14 @@ const property = (key: string, object: Record<string, unknown>) => object[key];
       <ul>
         <li
           v-for="revision in sign?._revisions"
-          :key="revision._changed?.toLocaleDateString()"
+          :key="revision._changed?.toString()"
         >
           <article class="prose w-full md:w-3/4">
             <FieldList>
               <Field
-                v-for="key in Object.keys(revision)"
+                v-for="key in Object.keys(revision).filter(key =>
+                  property(key, revision)
+                )"
                 :key="key"
                 :name="key"
                 display="above"

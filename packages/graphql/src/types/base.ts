@@ -4,12 +4,12 @@ _id: ID!
 
 export const changeableDefs = `
 ${baseDefs}
-_created: Date!
-_changed: Date!
+_changed: DateTime!
+_created: DateTime!
 `;
 
 export const userChangeableDefs = `
 ${changeableDefs}
-_createdBy: ID!
 _changedBy: ID!
+_createdBy: ID!
 `;

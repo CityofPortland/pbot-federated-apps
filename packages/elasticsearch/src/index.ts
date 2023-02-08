@@ -1,7 +1,7 @@
 import { Client, ClientOptions } from '@elastic/elasticsearch';
 import DataLoader from 'dataloader';
 
-export function client({
+export function createClient({
   caFingerprint = process.env.ELASTICSEARCH_CERTIFICATE_FINGERPRINT,
   password = process.env.ELASTICSEARCH_PASSWORD,
   url = process.env.ELASTICSEARCH_URL,
@@ -22,7 +22,7 @@ export function dataLoader<TValue>(index: string, options: ClientOptions = {}) {
     Promise.all(
       keys.map(
         async key =>
-          await client(options)
+          await createClient(options)
             .get<TValue>({
               index,
               id: key,

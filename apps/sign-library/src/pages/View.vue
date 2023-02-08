@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Box, Button, FieldList, Field } from '@pbotapps/components';
 import { computed } from 'vue';
+import Status from '../components/Status.vue';
 import { useStore } from '../store';
 import { Sign } from '../types';
 
@@ -25,17 +26,23 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
       <section class="prose w-full md:w-3/4">
         <figure>
           <Box
+            v-if="!sign.image"
             color="gray"
             variant="light"
-            class="flex items-center justify-center w-64 h-64"
+            class="flex justify-center items-center h-64 w-64 p-4"
           >
             Sign image here
           </Box>
+          <img
+            v-else
+            class="flex justify-center items-center h-64"
+            :src="sign.image.full"
+          />
         </figure>
         <section>
           <FieldList>
             <Field name="Status" display="above">
-              {{ sign.status || 'NULL' }}
+              <Status :status="sign.status" />
             </Field>
             <Field name="Type" display="above">
               {{ sign.type || 'NULL' }}
@@ -64,10 +71,26 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
       <aside class="w-full md:w-1/4 prose prose-sm">
         <FieldList>
           <Field v-if="sign._created" name="Created" display="above">
-            {{ sign._created.toLocaleString() }}
+            {{
+              new Date(Date.parse(sign._created.toString())).toLocaleString(
+                'en-US',
+                {
+                  dateStyle: 'long',
+                  timeStyle: 'medium',
+                }
+              )
+            }}
           </Field>
           <Field v-if="sign._changed" name="Changed" display="above">
-            {{ sign._changed.toLocaleString() }}
+            {{
+              new Date(Date.parse(sign._changed.toString())).toLocaleString(
+                'en-US',
+                {
+                  dateStyle: 'long',
+                  timeStyle: 'medium',
+                }
+              )
+            }}
           </Field>
           <Field v-if="sign._revisions" name="Revisions" display="above">
             <router-link :to="`/${sign.code}/revisions`">{{

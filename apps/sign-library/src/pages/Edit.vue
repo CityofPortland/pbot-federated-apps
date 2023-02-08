@@ -4,6 +4,7 @@ import {
   Button,
   Checkboxes,
   Entry,
+  File,
   Input,
   Select,
   Textarea,
@@ -12,7 +13,7 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useStore } from '../store';
-import { COLORS, SHAPES, Sign, STATUSES, TYPES } from '../types';
+import { COLORS, SHAPES, Sign, SignInput, STATUSES, TYPES } from '../types';
 
 const router = useRouter();
 const store = useStore();
@@ -39,11 +40,11 @@ const sign = computed(() => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const revision = {} as Record<keyof Sign, any>;
+const payload = {} as Record<keyof SignInput, any>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const change = (key: keyof Sign, value: any) => {
-  revision[key] = value;
+const change = (key: keyof SignInput, value: any) => {
+  payload[key] = value;
 };
 
 type T = {
@@ -53,15 +54,19 @@ type T = {
 const save = ({ redirect }: T) => {
   if (formRef.value?.reportValidity()) {
     store
-      .addRevision({ ...revision, code: sign.value.code })
-      .then(sign => router.push(redirect(sign || {})))
+      .addRevision({ ...payload, code: sign.value.code })
+      .then(sign => (sign ? router.push(redirect(sign)) : undefined))
       .catch(err => console.error(err));
   }
 };
 </script>
 
 <template>
-  <form ref="formRef" class="flex flex-col gap-4">
+  <form
+    ref="formRef"
+    class="flex flex-col gap-4"
+    @submit.prevent="save({ redirect: (sign: Sign) => `/${sign.code}` })"
+  >
     <Entry id="code" label="Code" required v-slot="{ id, required }">
       <Input
         :id="id"
@@ -69,6 +74,24 @@ const save = ({ redirect }: T) => {
         :required="required"
         :disabled="code ? true : false"
         v-model="sign.code"
+      />
+    </Entry>
+    <Entry id="image" label="Image" v-slot="{ id, required }">
+      <File
+        :id="id"
+        :name="id"
+        :required="required"
+        accept="image/*"
+        @changed="change('image', $event)"
+      />
+    </Entry>
+    <Entry id="design" label="Design file" v-slot="{ id, required }">
+      <File
+        :id="id"
+        :name="id"
+        :required="required"
+        accept=".eps"
+        @changed="change('design', $event)"
       />
     </Entry>
     <Entry id="status" label="Status" required v-slot="{ id, required }">
@@ -88,7 +111,7 @@ const save = ({ redirect }: T) => {
           :selected="status == sign.status"
           class="capitalize"
         >
-          {{ status }}
+          {{ status.replace('_', ' ') }}
         </option>
       </Select>
     </Entry>
@@ -172,7 +195,7 @@ const save = ({ redirect }: T) => {
         type="number"
         :min="1"
         v-model="sign.width"
-        @changed="change('width', $event)"
+        @changed="change('width', Number.parseInt($event))"
       />
       <span class="mx-2">inches wide and</span>
       <Input
@@ -182,7 +205,7 @@ const save = ({ redirect }: T) => {
         type="number"
         :min="1"
         v-model="sign.height"
-        @changed="change('height', $event)"
+        @changed="change('height', Number.parseInt($event))"
       />
       <span class="ml-2">inches high</span>
     </Entry>
@@ -204,11 +227,7 @@ const save = ({ redirect }: T) => {
       />
     </Entry>
     <section class="flex gap-4">
-      <Button
-        type="button"
-        label="Save"
-        @click="save({ redirect: (sign: Sign) => `/${sign.code}` })"
-      />
+      <Button label="Save" />
       <Button
         type="button"
         label="Save and add another"
