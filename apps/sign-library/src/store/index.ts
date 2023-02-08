@@ -2,9 +2,6 @@ import { formData, query, useLogin } from '@pbotapps/components';
 import { defineStore } from 'pinia';
 import { Sign, SignInput } from '../types';
 
-const { clientId, getToken } = useLogin();
-const token = await getToken([`${clientId}/.default`]);
-
 const fragment = `
 fragment fields on SignInterface {
   _changed
@@ -44,6 +41,8 @@ export const useStore = defineStore('sign-library', {
   },
   actions: {
     async getSigns() {
+      const { clientId, getToken } = useLogin();
+      const token = await getToken([`${clientId}/.default`]);
       const res = await query<{ signs: Array<Sign> }>({
         operation: `
         query getSignsList {
@@ -72,6 +71,8 @@ export const useStore = defineStore('sign-library', {
       this.data.signs = res || [];
     },
     async addRevision(payload: Partial<SignInput>) {
+      const { clientId, getToken } = useLogin();
+      const token = await getToken([`${clientId}/.default`]);
       const { code, image, design, ...rest } = payload;
 
       if (!code) {
