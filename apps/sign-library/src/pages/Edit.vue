@@ -77,6 +77,20 @@ const save = ({ redirect }: T) => {
       />
     </Entry>
     <Entry id="image" label="Image" v-slot="{ id, required }">
+      <dl v-if="sign.image" class="mb-4">
+        <div v-if="sign.image?.full" class="flex gap-1">
+          <dt>Full image:</dt>
+          <dd>
+            <Anchor :url="sign.image?.full" />
+          </dd>
+        </div>
+        <div v-if="sign.image?.thumbnail" class="flex gap-1">
+          <dt>Thumbnail image:</dt>
+          <dd>
+            <Anchor :url="sign.image?.thumbnail" />
+          </dd>
+        </div>
+      </dl>
       <File
         :id="id"
         :name="id"
@@ -86,6 +100,14 @@ const save = ({ redirect }: T) => {
       />
     </Entry>
     <Entry id="design" label="Design file" v-slot="{ id, required }">
+      <dl v-if="sign.image?.design" class="mb-4">
+        <div v-if="sign.image?.design" class="flex gap-1">
+          <dt>Design file:</dt>
+          <dd>
+            <Anchor :url="sign.image?.design" />
+          </dd>
+        </div>
+      </dl>
       <File
         :id="id"
         :name="id"

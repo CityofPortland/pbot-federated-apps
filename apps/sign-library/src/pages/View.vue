@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Box, Button, FieldList, Field } from '@pbotapps/components';
+import { Anchor, Box, Button, FieldList, Field } from '@pbotapps/components';
 import { computed } from 'vue';
 import Status from '../components/Status.vue';
 import { useStore } from '../store';
@@ -41,6 +41,34 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
         </figure>
         <section>
           <FieldList>
+            <Field
+              v-if="sign.image"
+              name="Image"
+              display="above"
+              class="not-prose"
+            >
+              <ul class="flex gap-1 list-none">
+                <li>
+                  <Anchor :url="sign.image.thumbnail" class="no-underline">
+                    Thumbnail
+                  </Anchor>
+                </li>
+                <li>
+                  <Anchor :url="sign.image.full" class="no-underline">
+                    Full
+                  </Anchor>
+                </li>
+                <li>
+                  <Anchor
+                    v-if="sign.image.design"
+                    :url="sign.image.design"
+                    class="no-underline"
+                  >
+                    Design file
+                  </Anchor>
+                </li>
+              </ul>
+            </Field>
             <Field name="Status" display="above">
               <Status :status="sign.status" />
             </Field>
