@@ -101,6 +101,18 @@ jobs:
                   value: "5432"
                 - name: PUDL_POSTGRES_USERNAME
                   value: hive_admin
+          - service: sign
+            directory: services/sign
+            repository: federation/service/sign
+            cluster-name: pudl-kube-web-2
+            cluster-rg: pudl-kube-rg
+            cluster-ns: test
+            values: |
+              ingress:
+                hosts:
+                  - paths:
+                      - path: /graphql/sign
+                        pathType: Prefix
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
