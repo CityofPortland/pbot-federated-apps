@@ -25,6 +25,10 @@ jobs:
             directory: services/pudl
             registry: pbotapps
             repository: federation/pudl
+          - service: sign
+            directory: services/sign
+            registry: pbotapps
+            repository: federation/service/sign
     steps:
       - uses: actions/checkout@v3
       - name: Build
