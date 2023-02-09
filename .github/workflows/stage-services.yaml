@@ -59,6 +59,7 @@ jobs:
             cluster-ns: test
             values: |
               ingress:
+                enabled: true
                 hosts:
                   - paths:
                       - path: /graphql/meta
@@ -84,6 +85,7 @@ jobs:
             cluster-ns: pudl-test
             values: |
               ingress:
+                enabled: true
                 hosts:
                   - host: pudl-test.portland.gov
                     paths:
@@ -113,6 +115,7 @@ jobs:
             cluster-ns: test
             values: |
               ingress:
+                enabled: true
                 hosts:
                   - paths:
                       - path: /graphql/sign

@@ -75,6 +75,7 @@ jobs:
             cluster-ns: pudl-test
             values: |
               ingress:
+                enabled: true
                 annotations:
                   nginx.ingress.kubernetes.io/server-snippet: |-
                     add_header X-Robots-Tag "noindex, nofollow";
@@ -95,6 +96,7 @@ jobs:
             cluster-ns: test
             values: |
               ingress:
+                enabled: true
                 annotations:
                   nginx.ingress.kubernetes.io/rewrite-target: /$2
                   nginx.ingress.kubernetes.io/server-snippet: |-
