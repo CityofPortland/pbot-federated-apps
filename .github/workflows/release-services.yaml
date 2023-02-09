@@ -61,6 +61,8 @@ jobs:
             image:
               repository: ${{ format('{0}.azurecr.io', matrix.registry || 'pbotapps') }}/${{ matrix.repository }}
               tag: ${{ github.ref_name }}
+            containerPort: 4000
+            probePath: /probe
       - uses: ./packages/actions/deploy
         with:
           credentials: ${{ secrets.AZURE_CREDENTIALS }}

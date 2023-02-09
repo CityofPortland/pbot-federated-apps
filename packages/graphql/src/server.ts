@@ -42,8 +42,6 @@ export async function createServer({
 
   const app = express();
 
-  app.use(cors({}));
-
   // The ApolloServer constructor requires two parameters: your schema
   // definition and your set of resolvers.
   const server = new ApolloServer<Context>({
@@ -55,8 +53,11 @@ export async function createServer({
 
   await server.start();
 
+  app.get('/probe', (_, res) => res.status(200).send('Success!'));
+
   app.use(
     '/',
+    cors(),
     json(),
     handleToken({ fail: requireToken }),
     ...handlers,
@@ -69,7 +70,7 @@ export async function createServer({
     })
   );
 
-  const url = createURL(httpServer, '/graphql');
+  const url = createURL(httpServer);
 
   console.log(`🚀 Server ready at ${url}`);
 
