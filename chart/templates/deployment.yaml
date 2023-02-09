@@ -33,6 +33,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: NODE_ENV
+              value: production
+              {{- if .Values.extraEnv }}
+              {{- toYaml .Values.extraEnv | nindent 12 }}
+              {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.containerPort | default 80 }}
