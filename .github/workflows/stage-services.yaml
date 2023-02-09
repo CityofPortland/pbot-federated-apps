@@ -117,7 +117,8 @@ jobs:
               ingress:
                 enabled: true
                 hosts:
-                  - paths:
+                  - host: pbotapps-test.portland.gov
+                    paths:
                       - path: /graphql/sign
                         pathType: Prefix
     runs-on: ubuntu-latest
