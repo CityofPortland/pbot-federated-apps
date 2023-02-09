@@ -121,6 +121,22 @@ jobs:
                     paths:
                       - path: /graphql/sign
                         pathType: Prefix
+              extraEnv:
+                - name: AZURE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_ID
+                - name: AZURE_TENANT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_TENANT_ID
+                - name: AZURE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_SECRET
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -141,13 +157,13 @@ jobs:
           input: |
             chart/.secrets/DATASOURCE_PASSWORD:
               - ${{ secrets[matrix.password] }}
-      - name: Create values file
+      - name: Create values file from matrix
         uses: ./packages/actions/merge-values
         with:
           input: chart/values.yaml
           output: values.yaml
           values: ${{ matrix.values }}
-      - name: Modify values file
+      - name: Add default service values
         uses: ./packages/actions/merge-values
         with:
           input: values.yaml
