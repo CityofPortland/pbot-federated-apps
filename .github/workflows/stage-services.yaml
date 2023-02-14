@@ -144,18 +144,18 @@ jobs:
         uses: ./packages/actions/file-writer
         with:
           input: |
-            chart/.secrets/AZURE_TENANT_ID:
+            chart/.secret/AZURE_TENANT_ID:
               - ${{ secrets.AZURE_TENANT_ID }}
-            chart/.secrets/AZURE_CLIENT_ID:
+            chart/.secret/AZURE_CLIENT_ID:
               - ${{ secrets.AZURE_CLIENT_ID }}
-            chart/.secrets/AZURE_CLIENT_SECRET:
+            chart/.secret/AZURE_CLIENT_SECRET:
               - ${{ secrets.AZURE_CLIENT_SECRET }}
       - name: Create strategy secrets
         if: matrix.password
         uses: ./packages/actions/file-writer
         with:
           input: |
-            chart/.secrets/DATASOURCE_PASSWORD:
+            chart/.secret/DATASOURCE_PASSWORD:
               - ${{ secrets[matrix.password] }}
       - name: Create values file from matrix
         uses: ./packages/actions/merge-values
