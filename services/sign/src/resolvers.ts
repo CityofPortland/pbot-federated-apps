@@ -1,12 +1,14 @@
 import { GraphQLResolverMap } from '@apollo/subgraph/dist/schema-helper';
+import {
+  SearchHit,
+  SearchRequest,
+} from '@elastic/elasticsearch/lib/api/types.js';
 import { Context } from '@pbotapps/graphql';
 import { DateTimeResolver } from 'graphql-scalars';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
 import sharp from 'sharp';
-import { blobServiceClient } from './client.js';
+import { blobServiceClient, elasticsearchClient } from './client.js';
 import { FindSignInput, Sign, SignInput } from './types.js';
-
-const signs = new Array<Sign>();
 
 async function uploadDesignFile(
   file: Promise<FileUpload>,
@@ -38,7 +40,7 @@ async function uploadImageFiles(
     const _buf = Array<Uint8Array>();
 
     stream.on('data', chunk => _buf.push(chunk));
-    stream.on('end', () => resolve(Buffer.concat(_buf)));
+    stream.on('close', () => resolve(Buffer.concat(_buf)));
     stream.on('error', err => reject(`error converting stream - ${err}`));
   });
 
@@ -71,50 +73,81 @@ async function uploadImageFiles(
   return { full: fullClient.url, thumbnail: thumbnailClient.url };
 }
 
+function parseHit<T>(hit: SearchHit<T>) {
+  const { _id, _source } = hit;
+  return { _id, ..._source };
+}
+
 export const resolvers: GraphQLResolverMap<Context> = {
   Query: {
     signs: async (
       _root,
       { input }: { input?: FindSignInput }
     ): Promise<Array<Sign>> => {
-      let ret = signs;
+      const search: SearchRequest = {
+        index: 'sign-library',
+        query: {
+          match_all: {},
+        },
+      };
 
       if (input) {
+        search.query = {};
+
         if (input._id) {
-          ret = ret.filter(s => s._id == input._id);
+          search.query = {
+            ...search.query,
+            match: {
+              code: input._id,
+            },
+          };
         }
 
         if (input.query) {
-          const r = new RegExp(input.query);
-          ret = ret.filter(
-            s => r.test(s.description) || r.test(s.code) || r.test(s.legend)
-          );
-        }
-
-        if (input.code) {
-          ret = ret.filter(s => s.code == input.code);
+          search.query = {
+            ...search.query,
+            match: {
+              ...search.query.match,
+              description: input.query,
+              legend: input.query,
+            },
+          };
         }
 
         if (input.status) {
-          ret = ret.filter(s => s.status == input.status);
+          search.query = {
+            ...search.query,
+            match: {
+              ...search.query.match,
+              status: input.status,
+            },
+          };
         }
       }
 
-      return ret;
+      const result = await elasticsearchClient
+        .search<Sign>(search)
+        .then(res => res.hits.hits.map(hit => parseHit(hit)));
+
+      return result;
     },
   },
   Mutation: {
     async addSign(_root, { input }: { input: SignInput }, context) {
       const { code, design, image, ...rest } = input;
 
-      if (signs.find(s => s.code == code))
+      if (
+        await elasticsearchClient.exists({
+          index: 'sign-library',
+          id: code,
+        })
+      )
         throw new Error(`Sign with code '${code}' already exists!`);
 
       const _created = new Date();
       const _createdBy = context.user._id;
 
-      const sign: Sign = {
-        _id: code,
+      const sign: Omit<Sign, '_id'> = {
         _created,
         _createdBy,
         _changed: _created,
@@ -148,55 +181,81 @@ export const resolvers: GraphQLResolverMap<Context> = {
         };
       }
 
-      signs.push(sign);
+      await elasticsearchClient.index<Omit<Sign, '_id'>>({
+        index: 'sign-library',
+        id: code,
+        document: sign,
+      });
 
-      return sign;
+      return { _id: code, ...sign };
     },
     async editSign(
       _root,
       { _id, input }: { _id: string; input: SignInput },
       context
     ) {
-      const sign = signs.find(s => s._id == _id);
+      if (
+        !(await elasticsearchClient.exists({
+          index: 'sign-library',
+          id: _id,
+        }))
+      )
+        throw new Error(`Sign with id '${_id}' does not exist!`);
 
-      if (!sign) throw new Error(`Sign with id '${_id}' does not exist!`);
+      const result = await elasticsearchClient
+        .get<Sign>({
+          index: 'sign-library',
+          id: _id,
+        })
+        .then(res => parseHit(res));
 
       const { design, image, ...rest } = input;
 
       const _changed = new Date();
       const _changedBy = context.user._id;
-      const _revisions = sign._revisions;
+      const _revisions = result._revisions;
 
-      _revisions.push({ ...rest });
+      _revisions.push({ ...rest, _changed, _changedBy });
 
       if (design) {
-        sign.image = {
-          ...sign.image,
+        result.image = {
+          ...result.image,
           design: await uploadDesignFile(design, { code: _id }),
         };
       }
 
       if (image) {
-        sign.image = {
-          ...sign.image,
+        result.image = {
+          ...result.image,
           ...(await uploadImageFiles(image, { code: _id })),
         };
       }
 
-      const s = { ...sign, ...rest, _changed, _changedBy, _revisions };
+      const { _id: id, ...sign } = {
+        ...result,
+        ...rest,
+        _changed,
+        _changedBy,
+        _revisions,
+      };
 
-      signs.splice(
-        signs.findIndex(s => s._id == _id),
-        1,
-        s
-      );
+      await elasticsearchClient.index<Omit<Sign, '_id'>>({
+        index: 'sign-library',
+        id: id,
+        document: sign,
+      });
 
-      return s;
+      return { _id: id, ...sign };
     },
   },
   Sign: {
     async __resolveReference({ _id }: Sign) {
-      return await signs.find(s => s._id == _id);
+      return await elasticsearchClient
+        .get<Sign>({
+          index: 'sign-library',
+          id: _id,
+        })
+        .then(hit => parseHit(hit));
     },
   },
   DateTime: DateTimeResolver,
