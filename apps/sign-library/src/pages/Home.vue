@@ -10,7 +10,7 @@ const signs = computed(() => store.data.signs);
 
 <template>
   <article>
-    <header class="prose flex flex-col md:flex-row justify-between">
+    <header class="prose flex flex-col sm:flex-row justify-between">
       <h1>Signs</h1>
       <router-link to="/add">
         <Button label="Add sign" size="small" />
@@ -19,7 +19,7 @@ const signs = computed(() => store.data.signs);
     <main class="mt-8">
       <ul class="list-none flex flex-col gap-4">
         <li v-for="sign in signs" :key="sign.code">
-          <article class="flex flex-col md:flex-row items-start gap-4">
+          <article class="flex flex-col sm:flex-row items-start gap-4">
             <figure>
               <Box
                 v-if="!sign.image"
