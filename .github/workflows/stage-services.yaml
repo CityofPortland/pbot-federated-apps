@@ -137,6 +137,10 @@ jobs:
                     secretKeyRef:
                       name: '{{ include "chart.fullname" . }}'
                       key: AZURE_CLIENT_SECRET
+                - name: AZURE_STORAGE_ACCOUNT
+                  value: pbotapps
+                - name: ELASTICSEARCH_HOST
+                  value: elasticsearch-master
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
