@@ -10,16 +10,17 @@ fragment fields on SignInterface {
   _createdBy
   code
   color
-  legend
-  status
+  height
   image {
     design
     full
     thumbnail
   }
-  height
-  type
+  legend
+  mutcdCode
   shape
+  status
+  type
   width
 }`;
 
@@ -143,7 +144,10 @@ export const useStore = defineStore('sign-library', {
             return res.data;
           })
           .then(data => data?.addSign);
+
+        this.data.signs.push({ ...res });
       } else {
+        const { code, ...input } = payload;
         // Edit sign
         res = await formData<{ editSign: Partial<Sign> }>(
           {
@@ -161,7 +165,7 @@ export const useStore = defineStore('sign-library', {
           `,
             variables: {
               id: code,
-              input: payload,
+              input,
             },
             headers: {
               Authorization: `Bearer ${token}`,
@@ -177,13 +181,15 @@ export const useStore = defineStore('sign-library', {
             return res.data;
           })
           .then(data => data?.editSign);
-      }
 
-      this.data.signs.splice(
-        this.data.signs.findIndex(s => s.code == code),
-        1,
-        { ...res }
-      );
+        this.data.signs.splice(
+          this.data.signs.findIndex(s => s.code == code),
+          1,
+          {
+            ...res,
+          }
+        );
+      }
 
       return res;
     },

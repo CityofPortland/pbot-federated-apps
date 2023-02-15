@@ -1,6 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { handleToken } from '@pbotapps/authorization';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { handleToken, RuleType } from '@pbotapps/authorization';
 import { User } from '@pbotapps/objects';
 import cors from 'cors';
 import DataLoader from 'dataloader';
@@ -42,14 +43,15 @@ export async function createServer({
 
   const app = express();
 
+  // The `listen` method launches a web server.
+  const httpServer = app.listen(process.env.PORT || 4000);
+
   // The ApolloServer constructor requires two parameters: your schema
   // definition and your set of resolvers.
   const server = new ApolloServer<Context>({
     schema,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
-
-  // The `listen` method launches a web server.
-  const httpServer = app.listen(process.env.PORT || 4000);
 
   await server.start();
 
@@ -63,9 +65,10 @@ export async function createServer({
     ...handlers,
     expressMiddleware(server, {
       context: async ({ req }) => {
-        const user = req.user as User | undefined;
+        const user = req['user'] as User | undefined;
+        const rules = req['rules'] as Array<RuleType<unknown>> | undefined;
 
-        return { application, client: null, user };
+        return { application, client: null, rules, user };
       },
     })
   );

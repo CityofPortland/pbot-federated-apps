@@ -88,7 +88,7 @@ export const typeDefs: DocumentNode = gql`
   }
 
   input SignInput {
-    code: String!
+    code: String
     color: [SignColor]
     description: String
     design: Upload
