@@ -1,6 +1,9 @@
-import { RequestHandler } from 'express';
+import { BaseType, User } from '@pbotapps/objects';
+import { Request, RequestHandler } from 'express';
 import { createRemoteJWKSet, JWTPayload, jwtVerify } from 'jose';
 import fetch from 'node-fetch';
+
+import { RuleRepository, UserRepository } from './repository.js';
 
 export const handleToken =
   ({ fail = true }): RequestHandler =>
@@ -47,15 +50,41 @@ export const handleToken =
     next();
   };
 
-export const handleUser = (): RequestHandler => async (req, _, next) => {
+function userFromRequest(req: Request) {
+  let user = req['user'];
+
+  if (user) return user;
+
   const token = req['token'] as JWTPayload;
 
-  if (token) {
-    // Presume this to be verified and replaced with decrypted payload
-    req['user'] = {
-      _id: token.sub,
-    };
-  }
+  if (!token) return undefined;
 
-  next();
-};
+  user = req['user'] = {
+    _id: token.upn,
+    email: token.upn,
+    oauthId: token.oid,
+  };
+
+  return user;
+}
+
+export const handleUser =
+  (repository: UserRepository): RequestHandler =>
+  async (req, _, next) => {
+    const user = userFromRequest(req);
+    if (user) {
+      req['user'] = await repository.getUser({ ...user });
+    }
+    next();
+  };
+
+export const handleRules =
+  (repository: RuleRepository, application: BaseType): RequestHandler =>
+  async (req, _, next) => {
+    // Presuming this to be set by handleUser?
+    const user = userFromRequest(req) as User;
+
+    if (user) req['rules'] = await repository.getRules({ user, application });
+
+    next();
+  };

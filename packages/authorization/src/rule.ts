@@ -1,9 +1,9 @@
 import { BaseUserChangeableType } from '@pbotapps/objects';
 
-export type RuleType<T> = BaseUserChangeableType & {
+export type RuleType<T = unknown> = BaseUserChangeableType & {
   inverted: boolean;
   subject: string;
   action: string;
-  conditions: string | Record<keyof T, any>;
+  conditions: Record<keyof T, string>;
   fields: Record<keyof T, boolean>;
 };
