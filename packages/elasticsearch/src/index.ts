@@ -1,4 +1,5 @@
 import { Client, ClientOptions } from '@elastic/elasticsearch';
+import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
 import DataLoader from 'dataloader';
 
 export function createClient({
@@ -7,14 +8,22 @@ export function createClient({
   url = process.env.ELASTICSEARCH_URL,
   username = process.env.ELASTICSEARCH_USERNAME,
 }) {
-  return new Client({
-    node: { url: new URL(url) },
-    auth: {
+  const options: ClientOptions = {
+    node: url,
+  };
+
+  if (password && username) {
+    options.auth = {
       username,
       password,
-    },
-    caFingerprint,
-  });
+    };
+  }
+
+  if (caFingerprint) {
+    options.caFingerprint = caFingerprint;
+  }
+
+  return new Client(options);
 }
 
 export function dataLoader<TValue>(index: string, options: ClientOptions = {}) {
@@ -31,4 +40,29 @@ export function dataLoader<TValue>(index: string, options: ClientOptions = {}) {
       )
     )
   );
+}
+
+export async function* scrollSearch<T>(client: Client, params: SearchRequest) {
+  let response = await client.search<T>(params);
+
+  while (true) {
+    const sourceHits = response.hits.hits;
+
+    if (sourceHits.length === 0) {
+      break;
+    }
+
+    for (const hit of sourceHits) {
+      yield hit;
+    }
+
+    if (!response._scroll_id) {
+      break;
+    }
+
+    response = await client.scroll({
+      scroll_id: response._scroll_id,
+      scroll: params.scroll,
+    });
+  }
 }
