@@ -27,7 +27,7 @@ fragment fields on SignInterface {
 export const useStore = defineStore('sign-library', {
   state: () => ({
     data: {
-      signs: new Array<Partial<Sign>>(),
+      signs: new Array<Sign>(),
     },
     errors: new Array<unknown>(),
   }),
@@ -109,11 +109,11 @@ export const useStore = defineStore('sign-library', {
       }
 
       const existing = this.sign(code);
-      let res: Partial<Sign> | undefined;
+      let res: Sign | undefined;
 
       if (!existing) {
         // Add sign
-        res = await formData<{ addSign: Partial<Sign> }>(
+        res = await formData<{ addSign: Sign }>(
           {
             operation: `
           mutation addSign($input: SignInput!) {
@@ -149,7 +149,7 @@ export const useStore = defineStore('sign-library', {
       } else {
         const { code, ...input } = payload;
         // Edit sign
-        res = await formData<{ editSign: Partial<Sign> }>(
+        res = await formData<{ editSign: Sign }>(
           {
             operation: `
           mutation editSign($id: ID!, $input: SignInput!) {
