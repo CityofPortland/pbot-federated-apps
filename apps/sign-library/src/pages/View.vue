@@ -16,10 +16,14 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
 
 <template>
   <article>
-    <header class="prose prose-lg flex">
+    <header class="prose prose-lg max-w-none flex">
       <h1 class="flex-1">{{ sign.code }}</h1>
-      <router-link :to="`/${sign.code}/edit`">
-        <Button label="Edit" size="small" />
+      <router-link
+        :to="`/${sign.code}/edit`"
+        custom
+        v-slot="{ href, navigate }"
+      >
+        <Anchor :url="href" @click="navigate" class="no-underline">Edit</Anchor>
       </router-link>
     </header>
     <main class="mt-8 flex flex-col md:flex-row">
@@ -96,7 +100,7 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
           </FieldList>
         </section>
       </section>
-      <aside class="w-full md:w-1/4 prose prose-sm">
+      <aside class="w-full md:w-1/4 prose md:prose-sm">
         <FieldList>
           <Field v-if="sign._created" name="Created" display="above">
             {{
@@ -120,10 +124,21 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
               )
             }}
           </Field>
-          <Field v-if="sign._revisions" name="Revisions" display="above">
-            <router-link :to="`/${sign.code}/revisions`">{{
-              `${sign._revisions.length} revisions`
-            }}</router-link>
+          <Field
+            v-if="sign._revisions"
+            name="Revisions"
+            display="above"
+            class="not-prose"
+          >
+            <router-link
+              :to="`/${sign.code}/revisions`"
+              custom
+              v-slot="{ href, navigate }"
+            >
+              <Anchor :url="href" @click="navigate">
+                {{ `${sign._revisions.length} revisions` }}
+              </Anchor>
+            </router-link>
           </Field>
         </FieldList>
       </aside>
