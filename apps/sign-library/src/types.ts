@@ -1,14 +1,17 @@
 import { BaseUserChangeableType } from '@pbotapps/objects';
 
 export const COLORS = [
+  'blue',
   'black',
   'brown',
   'green',
   'orange',
   'pink',
+  'purple',
   'red',
   'white',
   'yellow',
+  'yellow-green',
 ] as const;
 
 export type Color = (typeof COLORS)[number];
