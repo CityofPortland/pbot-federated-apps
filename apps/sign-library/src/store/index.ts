@@ -1,5 +1,9 @@
-import { formData, query, useLogin } from '@pbotapps/components';
-import { GraphQLOptions } from '@pbotapps/components/dist/types';
+import {
+  formData,
+  query,
+  useLogin,
+  GraphQLOptions,
+} from '@pbotapps/components';
 import { openDB, OpenDBCallbacks } from 'idb';
 import { defineStore } from 'pinia';
 import { Sign, SignInput } from '../types';
@@ -149,7 +153,7 @@ export const useStore = defineStore('sign-library', {
           })
           .then(data => data?.addSign);
 
-        this.data.signs.push({ ...res });
+        res && this.data.signs.push({ ...res });
       } else {
         const { code, ...input } = payload;
         // Edit sign
@@ -186,13 +190,14 @@ export const useStore = defineStore('sign-library', {
           })
           .then(data => data?.editSign);
 
-        this.data.signs.splice(
-          this.data.signs.findIndex(s => s.code == code),
-          1,
-          {
-            ...res,
-          }
-        );
+        res &&
+          this.data.signs.splice(
+            this.data.signs.findIndex(s => s.code == code),
+            1,
+            {
+              ...res,
+            }
+          );
       }
 
       return res;
