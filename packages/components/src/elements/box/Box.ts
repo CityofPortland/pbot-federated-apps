@@ -54,7 +54,12 @@ export const BoxProps = {
 export default defineComponent({
   props: BoxProps,
   render() {
-    const { classes } = useBox(this.border, this.color, this.variant);
+    const { classes } = useBox(
+      this.border,
+      this.color,
+      this.rounded,
+      this.variant
+    );
 
     return h(
       this.as,

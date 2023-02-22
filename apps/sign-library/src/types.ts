@@ -40,8 +40,8 @@ export type Type = (typeof TYPES)[number];
 export type Sign = BaseUserChangeableType & {
   _revisions: Array<Partial<Omit<Sign, '_revisions'>>>;
   code: string;
-  color: Array<Color>;
-  description?: string;
+  color: Array<Color | string>;
+  comment?: string;
   height: number;
   image?: {
     design?: string;
@@ -52,7 +52,7 @@ export type Sign = BaseUserChangeableType & {
   mutcdCode: string;
   shape: Shape;
   status: Status;
-  type: Type;
+  type: Array<Type>;
   width: number;
 };
 

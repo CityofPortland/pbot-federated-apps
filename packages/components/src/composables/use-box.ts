@@ -3,6 +3,7 @@ import { unref } from 'vue';
 export function useBox(
   border: boolean,
   color: string,
+  rounded: boolean,
   variant: string
 ): {
   borderClasses?: Array<string>;
@@ -86,6 +87,7 @@ export function useBox(
 
   const classes = [
     ...(border ? ['border', 'border-current'] : []),
+    ...(rounded ? ['rounded-md'] : []),
     ...(classMap.get(unref(color))?.get(unref(variant)) || []),
   ];
 

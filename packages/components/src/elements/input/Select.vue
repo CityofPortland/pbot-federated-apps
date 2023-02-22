@@ -5,6 +5,7 @@
     :class="classes"
     :required="required"
     :multiple="multiple"
+    class="px-2 py-1"
     @change="handleChange"
   >
     <option v-if="placeholder && !modelValue" value="">

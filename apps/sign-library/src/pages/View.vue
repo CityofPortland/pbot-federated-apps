@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { Anchor, Box, Button, FieldList, Field } from '@pbotapps/components';
+import { Anchor, FieldList, Field } from '@pbotapps/components';
 import { computed } from 'vue';
+
+import MissingImage from '../components/MissingImage.vue';
 import Status from '../components/Status.vue';
 import { useStore } from '../store';
 import { Sign } from '../types';
@@ -26,17 +28,10 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
         <Anchor :url="href" @click="navigate" class="no-underline">Edit</Anchor>
       </router-link>
     </header>
-    <main class="mt-8 flex flex-col md:flex-row">
+    <main class="mt-8 flex flex-col md:flex-row gap-4">
       <section class="prose w-full md:w-3/4">
         <figure>
-          <Box
-            v-if="!sign.image"
-            color="gray"
-            variant="light"
-            class="flex justify-center items-center h-64 w-64 p-4"
-          >
-            Sign image here
-          </Box>
+          <MissingImage v-if="!sign.image" class="w-64 h-64" />
           <img
             v-else
             class="flex justify-center items-center h-64"
@@ -44,11 +39,11 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
           />
         </figure>
         <section>
-          <FieldList>
+          <FieldList class="grid grid-cols-1 gap-1">
             <Field
               v-if="sign.image"
               name="Image"
-              display="above"
+              display="inline"
               class="not-prose"
             >
               <ul class="flex gap-1 list-none">
@@ -73,29 +68,29 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
                 </li>
               </ul>
             </Field>
-            <Field name="Status" display="above">
+            <Field name="Status" display="inline">
               <Status :status="sign.status" />
             </Field>
-            <Field name="Type" display="above">
+            <Field name="Type" display="inline">
               {{ sign.type || 'NULL' }}
             </Field>
-            <Field name="MUTCD code" display="above">
+            <Field name="MUTCD code" display="inline">
               {{ sign.mutcdCode || 'NULL' }}
             </Field>
-            <Field name="Shape" display="above">
+            <Field name="Shape" display="inline">
               {{ sign.shape || 'NULL' }}
             </Field>
-            <Field name="Color" display="above">
+            <Field name="Color" display="inline">
               {{ sign.color || 'NULL' }}
             </Field>
-            <Field name="Size" display="above">
+            <Field name="Size" display="inline">
               {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
             </Field>
-            <Field name="Legend" display="above">
+            <Field name="Legend" display="inline">
               {{ sign.legend || 'NULL' }}
             </Field>
-            <Field v-if="sign.description" name="Comments" display="above">
-              {{ sign.description || 'NULL' }}
+            <Field v-if="sign.comment" name="Comments" display="inline">
+              {{ sign.comment || 'NULL' }}
             </Field>
           </FieldList>
         </section>

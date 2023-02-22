@@ -76,11 +76,11 @@ const handleToggle = () => {
         </div>
         <div v-if="hasMenu" class="ml-auto md:hidden">
           <button
-            class="inline-flex items-center justify-center p-2 ml-auto rounded-md hover:opacity-50"
+            class="inline-flex items-center justify-center gap-2 p-2 ml-auto border border-current rounded-md hover:opacity-50"
             :class="buttonClasses"
             @click="handleToggle"
           >
-            <span class="sr-only">Open main menu</span>
+            <span>Menu</span>
             <svg
               class="h-6 w-6"
               :class="{ hidden: open, block: !open }"

@@ -25,7 +25,7 @@ const property = (key: string, object: Record<string, unknown>) => object[key];
           v-for="revision in sign?._revisions"
           :key="revision._changed?.toString()"
         >
-          <article class="prose w-full md:w-3/4">
+          <article>
             <FieldList>
               <Field
                 v-for="key in Object.keys(revision).filter(key =>
@@ -33,7 +33,7 @@ const property = (key: string, object: Record<string, unknown>) => object[key];
                 )"
                 :key="key"
                 :name="key"
-                display="above"
+                display="inline"
                 >{{ property(key, revision) }}</Field
               >
             </FieldList>

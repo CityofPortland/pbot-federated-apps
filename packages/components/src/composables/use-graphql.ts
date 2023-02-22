@@ -1,12 +1,12 @@
 import axios, { AxiosRequestHeaders } from 'axios';
 import sha256 from 'crypto-js/sha256';
 
-type GraphQLError = {
+export type GraphQLError = {
   message: string;
   locations: Array<{ line: number; column: number }>;
 };
 
-type GraphQLOptions = {
+export type GraphQLOptions = {
   operation: string;
   headers?: AxiosRequestHeaders;
   variables?: Record<string, unknown>;

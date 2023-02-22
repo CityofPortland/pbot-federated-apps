@@ -39,6 +39,34 @@ const sign = computed(() => {
   return d;
 });
 
+const colors = computed(() => {
+  type T = {
+    id: string;
+    label: string;
+    value: string;
+    checked: boolean;
+  };
+
+  let result: Array<T> = COLORS.map(c => ({
+    id: c,
+    label: c,
+    value: c,
+    checked: sign.value.color?.some(s => s == c) ? true : false,
+  }));
+
+  if (sign.value.color) {
+    result.push(
+      ...sign.value.color.reduce((a, c) => {
+        if (!result.find(x => x.id == c))
+          a.push({ id: c, label: c, value: c, checked: true });
+        return a;
+      }, new Array<T>())
+    );
+  }
+
+  return result;
+});
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const payload = {} as Record<keyof SignInput, any>;
 
@@ -64,7 +92,7 @@ const save = ({ redirect }: T) => {
 <template>
   <form
     ref="formRef"
-    class="flex flex-col gap-4"
+    class="flex flex-col gap-4 max-w-prose"
     @submit.prevent="save({ redirect: (sign: Sign) => `/${sign.code}` })"
   >
     <Entry id="code" label="Code" required v-slot="{ id, required }">
@@ -196,19 +224,22 @@ const save = ({ redirect }: T) => {
       </Select>
     </Entry>
     <Checkboxes
-      :options="
-        COLORS.map(c => ({
-          id: c,
-          label: c,
-          value: c,
-          checked: sign.color?.some(s => s == c) ? true : false,
-        }))
-      "
+      :options="colors"
       id="colors"
       label="Colors"
       v-model="sign.color"
       @changed="change('color', $event)"
     />
+    <div>
+      <Input
+        id="otherColor"
+        type="text"
+        placeholder="Other"
+        @changed="
+          change('color', sign.color ? [...sign.color, $event] : [$event])
+        "
+      />
+    </div>
     <Entry id="size" label="Size" required v-slot="{ required }">
       <Input
         id="width"
@@ -232,20 +263,24 @@ const save = ({ redirect }: T) => {
       <span class="ml-2">inches high</span>
     </Entry>
     <Entry id="legend" label="Legend" required v-slot="{ id, required }">
-      <Input
+      <Textarea
         :id="id"
         :name="id"
         :required="required"
+        rows="3"
+        class="break-all whitespace-pre-wrap w-full"
         v-model="sign.legend"
         @changed="change('legend', $event)"
       />
     </Entry>
-    <Entry id="description" label="Comment" v-slot="{ id }">
+    <Entry id="comment" label="Comment" v-slot="{ id }">
       <Textarea
         :id="id"
         :name="id"
-        v-model="sign.description"
-        @changed="change('description', $event)"
+        rows="3"
+        class="break-all whitespace-pre-wrap w-full"
+        v-model="sign.comment"
+        @changed="change('comment', $event)"
       />
     </Entry>
     <section class="flex gap-4">
