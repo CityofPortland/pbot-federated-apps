@@ -9,14 +9,9 @@ const props = defineProps({
   },
 });
 
-const status = computed(() => {
-  switch (props.status) {
-    case 'in_use':
-      return 'in use';
-    default:
-      return props.status;
-  }
-});
+const status = computed(() =>
+  props.status == 'in_use' ? 'in use' : props.status
+);
 </script>
 
 <template>
@@ -24,7 +19,7 @@ const status = computed(() => {
     as="span"
     color="gray"
     variant="light"
-    class="border border-current rounded px-1"
+    class="border border-current rounded px-1 text-sm"
   >
     {{ status || 'NULL' }}
   </Box>

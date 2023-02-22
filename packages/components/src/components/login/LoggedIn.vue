@@ -27,6 +27,7 @@
         color="white"
         class="md:origin-top-right md:absolute md:right-0 md:w-80 mt-1 rounded border border-current focus:outline-none"
       >
+        <slot :open="open"></slot>
         <DropdownItem>
           <RouterLink to="/logout">
             <Button label="Log out" color="gray" variant="light" size="small" />
@@ -60,6 +61,7 @@ export default defineComponent({
     DropdownList,
     Spinner,
   },
+  inheritAttrs: false,
   setup() {
     const user = ref(undefined);
     const { getToken } = useLogin();

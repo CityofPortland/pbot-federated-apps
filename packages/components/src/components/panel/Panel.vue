@@ -1,5 +1,5 @@
 <template>
-  <Box as="section" :color="color" :variant="variant" border rounded shadow>
+  <Box as="section" :color="color" :variant="variant" shadow>
     <Box
       as="header"
       :color="color"

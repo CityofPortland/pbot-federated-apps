@@ -3,6 +3,7 @@ import {
   SearchHit,
   SearchRequest,
 } from '@elastic/elasticsearch/lib/api/types.js';
+import { scrollSearch } from '@pbotapps/elasticsearch';
 import { Context } from '@pbotapps/graphql';
 import { DateTimeResolver } from 'graphql-scalars';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
@@ -86,6 +87,8 @@ export const resolvers: GraphQLResolverMap<Context> = {
     ): Promise<Array<Sign>> => {
       const search: SearchRequest = {
         index: 'sign-library',
+        scroll: '30s',
+        size: 1000,
         query: {
           match_all: {},
         },
@@ -125,9 +128,11 @@ export const resolvers: GraphQLResolverMap<Context> = {
         }
       }
 
-      const result = await elasticsearchClient
-        .search<Sign>(search)
-        .then(res => res.hits.hits.map(hit => parseHit(hit)));
+      const result = new Array<Sign>();
+
+      for await (const hit of scrollSearch<Sign>(elasticsearchClient, search)) {
+        result.push(parseHit(hit));
+      }
 
       return result;
     },

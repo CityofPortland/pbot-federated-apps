@@ -27,11 +27,13 @@ export enum SignStatus {
 }
 
 export enum SignType {
+  'bike',
   'construction',
   'guide',
   'parking',
+  'pedestrian',
   'regulatory',
-  'school/pedestrian/bike',
+  'school',
   'warning',
 }
 
@@ -46,7 +48,7 @@ export type Sign = BaseUserChangeableType & {
   mutcdCode?: string;
   shape: SignShape;
   status: SignStatus;
-  type: SignType;
+  type: Array<SignType>;
   width: number;
 };
 
@@ -89,8 +91,8 @@ export const typeDefs: DocumentNode = gql`
 
   input SignInput {
     code: String
-    color: [SignColor]
-    description: String
+    color: [String]
+    comment: String
     design: Upload
     height: Int
     image: Upload
@@ -98,7 +100,7 @@ export const typeDefs: DocumentNode = gql`
     mutcdCode: String
     shape: SignShape
     status: SignStatus
-    type: SignType
+    type: [SignType]
     width: Int
   }
 
@@ -112,17 +114,6 @@ export const typeDefs: DocumentNode = gql`
     thumbnail: String
     full: String
     design: String
-  }
-
-  enum SignColor {
-    black
-    brown
-    green
-    orange
-    pink
-    red
-    white
-    yellow
   }
 
   enum SignShape {
@@ -154,15 +145,15 @@ export const typeDefs: DocumentNode = gql`
     _createdBy: ID
     _changedBy: ID
     code: String
-    color: [SignColor]
-    description: String
+    color: [String]
+    comment: String
     height: Int
     image: SignImage
     legend: String
     mutcdCode: String
     shape: SignShape
     status: SignStatus
-    type: SignType
+    type: [SignType]
     width: Int
   }
 
@@ -172,15 +163,15 @@ export const typeDefs: DocumentNode = gql`
     _createdBy: ID
     _changedBy: ID
     code: String
-    color: [SignColor]
-    description: String
+    color: [String]
+    comment: String
     height: Int
     image: SignImage
     legend: String
     mutcdCode: String
     shape: SignShape
     status: SignStatus
-    type: SignType
+    type: [SignType]
     width: Int
   }
 
@@ -192,15 +183,15 @@ export const typeDefs: DocumentNode = gql`
     _changedBy: ID!
     _revisions: [SignRevision]!
     code: String!
-    color: [SignColor]
-    description: String
+    color: [String]
+    comment: String
     height: Int!
     image: SignImage
     legend: String!
     mutcdCode: String
     shape: SignShape
     status: SignStatus
-    type: SignType
+    type: [SignType]
     width: Int!
   }
 `;

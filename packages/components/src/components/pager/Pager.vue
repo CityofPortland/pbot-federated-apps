@@ -26,7 +26,7 @@
       <Select
         id="pager-select"
         name="pager-select"
-        class="mr-1 px-2 py-1 pr-6 text-sm"
+        class="mr-1 text-sm"
         style="background-position: right 0.125rem center"
         :modelValue="value.toString()"
         @update:modelValue="handleSelect"
