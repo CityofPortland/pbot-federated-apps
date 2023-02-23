@@ -29,30 +29,32 @@ createServer({
     handleRules(
       {
         getRules: async ({ user, application }) => {
-          let rules = await elasticsearchClient
-            .get<{ rules: Array<RuleType & { applicationId: string }> }>({
+          const rules = await elasticsearchClient
+            .get<{ rules: Array<string> }>({
               index: 'metabase_user',
               id: user._id,
             })
             .then(res => ({ _id: res._id, ...res._source }))
             .then(user => user.rules);
 
+          let results = [];
+
           if (rules) {
-            rules = await Promise.all(
+            results = await Promise.all(
               rules.map(r =>
                 elasticsearchClient
                   .get<RuleType & { applicationId: string }>({
                     index: 'metabase_rule',
-                    id: r._id,
+                    id: r,
                   })
                   .then(res => ({ _id: res._id, ...res._source }))
               )
             );
 
-            rules = rules.filter(r => r.applicationId == application._id);
+            results = results.filter(r => r.applicationId == application._id);
           }
 
-          return rules;
+          return results;
         },
       },
       { _id: 'sign' }
