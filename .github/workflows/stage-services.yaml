@@ -96,6 +96,21 @@ jobs:
                     hosts:
                       - pudl-test.portland.gov
               extraEnv:
+                - name: AZURE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_ID
+                - name: AZURE_TENANT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_TENANT_ID
+                - name: AZURE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_SECRET
                 - name: PUDL_POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:

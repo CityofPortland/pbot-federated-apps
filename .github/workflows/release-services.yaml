@@ -32,6 +32,21 @@ jobs:
                     hosts:
                       - pudl.portland.gov
               extraEnv:
+                - name: AZURE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_ID
+                - name: AZURE_TENANT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_TENANT_ID
+                - name: AZURE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_SECRET
                 - name: PUDL_POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -45,6 +60,16 @@ jobs:
                   value: hive_admin
     steps:
       - uses: actions/checkout@v3
+      - name: Create azure secrets
+        uses: ./packages/actions/file-writer
+        with:
+          input: |
+            chart/.secret/AZURE_TENANT_ID:
+              - ${{ secrets.AZURE_TENANT_ID }}
+            chart/.secret/AZURE_CLIENT_ID:
+              - ${{ secrets.AZURE_CLIENT_ID }}
+            chart/.secret/AZURE_CLIENT_SECRET:
+              - ${{ secrets.AZURE_CLIENT_SECRET }}
       - name: Create values file
         uses: ./packages/actions/merge-values
         with:
