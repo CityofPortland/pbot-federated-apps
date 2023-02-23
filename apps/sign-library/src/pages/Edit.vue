@@ -39,15 +39,15 @@ const sign = computed(() => {
   return d;
 });
 
-const colors = computed(() => {
-  type T = {
-    id: string;
-    label: string;
-    value: string;
-    checked: boolean;
-  };
+type Option = {
+  id: string;
+  label: string;
+  value: string;
+  checked: boolean;
+};
 
-  let result: Array<T> = COLORS.map(c => ({
+const colors = computed(() => {
+  let result: Array<Option> = COLORS.map(c => ({
     id: c,
     label: c,
     value: c,
@@ -60,7 +60,28 @@ const colors = computed(() => {
         if (!result.find(x => x.id == c))
           a.push({ id: c, label: c, value: c, checked: true });
         return a;
-      }, new Array<T>())
+      }, new Array<Option>())
+    );
+  }
+
+  return result;
+});
+
+const types = computed(() => {
+  let result: Array<Option> = TYPES.map(c => ({
+    id: c,
+    label: c,
+    value: c,
+    checked: sign.value.type?.some(s => s == c) ? true : false,
+  }));
+
+  if (sign.value.type) {
+    result.push(
+      ...sign.value.type.reduce((a, c) => {
+        if (!result.find(x => x.id == c))
+          a.push({ id: c, label: c, value: c, checked: true });
+        return a;
+      }, new Array<Option>())
     );
   }
 
@@ -165,27 +186,13 @@ const save = ({ redirect }: T) => {
         </option>
       </Select>
     </Entry>
-    <Entry id="type" label="Type" required v-slot="{ id, required }">
-      <Select
-        :id="id"
-        :name="id"
-        :required="required"
-        placeholder="Select one"
-        v-model="sign.type"
-        @changed="change('type', $event)"
-        class="px-2 py-1"
-      >
-        <option
-          v-for="type in TYPES"
-          :key="type"
-          :value="type"
-          :selected="type == sign.type"
-          class="capitalize"
-        >
-          {{ type }}
-        </option>
-      </Select>
-    </Entry>
+    <Checkboxes
+      :options="types"
+      id="types"
+      label="Types"
+      v-model="sign.type"
+      @changed="change('type', $event)"
+    />
     <Entry id="mutcdCode" label="MUTCD code">
       <template v-slot:label="{ id, label }">
         <label :id="`${id}-label`" class="font-semibold">
