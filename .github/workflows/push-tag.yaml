@@ -26,6 +26,12 @@ jobs:
           registry: ${{ matrix.registry }}
           repository: ${{ matrix.repository }}
           tag: ${{ github.sha }}
+      - name: Tag as SHA
+        shell: bash
+        run: |
+          docker tag \
+          ${{ format('{0}.azurecr.io', matrix.registry) }}/${{ matrix.repository }}:${{ github.sha }} \
+          ${{ github.sha }}
       - name: Push
         uses: ./packages/actions/push
         with:
