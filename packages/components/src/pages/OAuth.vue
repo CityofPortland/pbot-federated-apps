@@ -55,6 +55,8 @@ export default defineComponent({
 
         if (route.value) {
           router.push(route.value);
+        } else {
+          router.push({ path: '/' });
         }
       }
     });
