@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/gateway",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Meta application for managing applications and users of applications",
   "scripts": {
     "build": "tsc -b tsconfig.build.json",

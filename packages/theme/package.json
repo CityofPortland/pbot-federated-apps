@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/theme",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Theme utilities",
   "main": "dist/theme.js",
   "module": "dist/theme.mjs",

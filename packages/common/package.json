@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/common",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Common classes and utilities used throughout the monorepo",
   "main": "out/index",
   "typings": "out/index",
