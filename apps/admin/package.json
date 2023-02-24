@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@azure/msal-browser": "^2.33.0",
-    "@pbotapps/components": "workspace:1.0.0",
+    "@pbotapps/components": "workspace:^1.0.0",
     "axios": "^0.27.2",
     "pinia": "^2.0.30",
     "vue": "^3.2.47",
