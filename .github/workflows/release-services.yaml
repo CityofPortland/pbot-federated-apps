@@ -27,7 +27,9 @@ jobs:
                 enabled: true
                 hosts:
                   - host: pudl.portland.gov
-                    path: /graphql
+                    paths:
+                      - path: /graphql
+                        pathType: Prefix
                 tls:
                   - secretName: pudl-portland-gov-tls
                     hosts:
