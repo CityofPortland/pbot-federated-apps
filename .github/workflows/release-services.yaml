@@ -24,6 +24,7 @@ jobs:
             cluster-ns: pudl
             values: |
               ingress:
+                enabled: true
                 hosts:
                   - host: pudl.portland.gov
                     path: /graphql
