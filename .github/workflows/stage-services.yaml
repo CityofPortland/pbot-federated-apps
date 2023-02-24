@@ -20,11 +20,11 @@ jobs:
           - service: meta
             directory: services/meta
             registry: pbotapps
-            repository: federation/meta
+            repository: federation/service/meta
           - service: pudl
             directory: services/pudl
             registry: pbotapps
-            repository: federation/pudl
+            repository: federation/service/pudl
           - service: sign
             directory: services/sign
             registry: pbotapps
