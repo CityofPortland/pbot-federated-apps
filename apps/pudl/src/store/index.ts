@@ -24,16 +24,16 @@ interface Column {
 export const useStore = defineStore('pudl', {
   state: () => ({
     data: {
-      findZone: [] as Array<Zone>,
+      zones: [] as Array<Zone>,
     },
     errors: [] as Array<unknown>,
   }),
   getters: {
-    zones: state => state.data.findZone,
+    zones: state => state.data.zones,
     schemas: state => (zone: string) =>
-      state.data.findZone.find(z => z.name == zone)?.schemas,
+      state.data.zones.find(z => z.name == zone)?.schemas,
     tables: state => (zone: string, schema: string) =>
-      state.data.findZone
+      state.data.zones
         .find(z => z.name == zone)
         ?.schemas.find(s => s.name == schema)?.tables,
   },
@@ -43,17 +43,15 @@ export const useStore = defineStore('pudl', {
 
       const token = await getToken([`${clientId}/.default`]);
 
-      this.data.findZone = [] as Array<Zone>;
+      this.data.zones = [] as Array<Zone>;
 
       if (!token) return;
 
       try {
-        const res = await Promise.all(
-          ['raw', 'enriched'].map(async zone => {
-            const res = await query<{ findZone: Array<Zone> }>({
-              operation: `
-                query ($zone: String) {
-                  findZone(zone: $zone) {
+        const res = await query<{ zones: Array<Zone> }>({
+          operation: `
+                query getZones {
+                  zones {
                     name
                     schemas {
                       name
@@ -69,23 +67,14 @@ export const useStore = defineStore('pudl', {
                     }
                   }
                 }`,
-              variables: {
-                zone,
-              },
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-            if (res.data) {
-              return res.data.findZone;
-            } else {
-              return [];
-            }
-          })
-        ).then(data => data.flat());
-
-        this.data.findZone = res;
+        if (res.data) {
+          this.data.zones = res.data.zones;
+        }
       } catch (err) {
         this.errors.push(err);
       }

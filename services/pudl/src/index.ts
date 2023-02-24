@@ -1,20 +1,14 @@
-import { buildSubgraphSchema, printSubgraphSchema } from '@apollo/subgraph';
-import { GraphQLResolverMap } from '@apollo/subgraph/dist/schema-helper/resolverMap.js';
+import { buildSubgraphSchema } from '@apollo/subgraph';
+import { GraphQLSchemaModule } from '@apollo/subgraph/dist/schema-helper';
 import { createServer } from '@pbotapps/graphql';
-import cors from 'cors';
 import { config as loadenv } from 'dotenv';
-import { specifiedDirectives } from 'graphql';
+import { DateTimeResolver } from 'graphql-scalars';
 import gql from 'graphql-tag';
-import 'reflect-metadata';
-import {
-  buildSchema,
-  BuildSchemaOptions,
-  createResolversMap,
-} from 'type-graphql';
 
-import { SchemaResolver } from './schema/resolver.js';
-import { TableResolver } from './table/resolver.js';
-import { ZoneResolver } from './zone/resolver.js';
+import Zone from './zone/index.js';
+import Schema from './schema/index.js';
+import Table from './table/index.js';
+import Column from './column/index.js';
 
 if (process.env.NODE_ENV !== 'production') {
   const out = loadenv();
@@ -23,23 +17,32 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-const options: BuildSchemaOptions = {
-  resolvers: [SchemaResolver, TableResolver, ZoneResolver],
+const typeDefs = gql`
+  extend schema
+    @link(
+      url: "https://specs.apollo.dev/federation/v2.0"
+      import: ["@external", "@key"]
+    )
+
+  scalar DateTime
+`;
+
+const resolvers = {
+  DateTime: DateTimeResolver,
 };
 
-const schema = await buildSchema({
-  ...options,
-  directives: [...specifiedDirectives],
-  skipCheck: true,
-});
+const schema = [
+  { typeDefs, resolvers },
+  Zone,
+  Schema,
+  Table,
+  Column,
+] as GraphQLSchemaModule[];
 
 createServer({
   application: 'pudl',
-  handlers: [cors()],
+  handlers: [],
   requireToken: false,
-  schema: buildSubgraphSchema({
-    typeDefs: gql(printSubgraphSchema(schema)),
-    resolvers: createResolversMap(schema) as GraphQLResolverMap,
-  }),
+  schema: buildSubgraphSchema(schema),
   loaderCallback: () => ({}),
 });
