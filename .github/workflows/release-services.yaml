@@ -55,7 +55,7 @@ jobs:
                 - name: PUDL_POSTGRES_HOST
                   value: pudl-postgres
                 - name: PUDL_POSTGRES_PORT
-                  value: 5432
+                  value: "5432"
                 - name: PUDL_POSTGRES_USERNAME
                   value: hive_admin
     steps:
