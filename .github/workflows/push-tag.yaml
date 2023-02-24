@@ -6,8 +6,51 @@ on:
       - '*'
 
 jobs:
-  push-tag:
-    name: Tag image
+  create-apps:
+    name: Rebuild apps
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: pudl
+            directory: apps/pudl
+            registry: pbotapps
+            repository: federation/app/pudl
+            files: |
+              packages/components/.env.production.local:
+                - VITE_GRAPHQL_URL=https://pudl.portland.gov/graphql
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./packages/actions/file-writer
+        if: matrix.files
+        name: Create files
+        with:
+          input: |
+            packages/components/.env.local:
+              - VITE_AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}
+              - VITE_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
+      - uses: ./packages/actions/file-writer
+        if: matrix.files
+        name: Create files
+        with:
+          input: ${{ matrix.files }}
+      - name: Build
+        uses: ./packages/actions/build
+        with:
+          dockerfile: ./.docker/apps/Dockerfile
+          artifact-name: ${{ matrix.app }}-image
+          directory: ${{ matrix.directory }}
+      - name: Push
+        uses: ./packages/actions/push
+        with:
+          credentials: ${{ secrets. AZURE_CREDENTIALS }}
+          registry: ${{ matrix.registry }}
+          repository: ${{ matrix.repository }}
+          tag: ${{ github.ref_name }}
+
+  tag-services:
+    name: Tag service images
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -15,8 +58,6 @@ jobs:
         include:
           - registry: pbotapps
             repository: federation/service/pudl
-          - registry: pbotapps
-            repository: federation/app/pudl
     steps:
       - uses: actions/checkout@v3
       - name: Pull
