@@ -4,5 +4,5 @@ export type RuleInput<T> = {
   subject: string;
   conditions?: Record<keyof T, string>;
   fields?: Record<keyof T, boolean>;
-  applicationUuid: string;
+  applicationId: string;
 };

@@ -63,6 +63,8 @@ function userFromRequest(req: Request) {
     _id: token.upn,
     email: token.upn,
     oauthId: token.oid,
+    firstName: token['given_name'],
+    lastName: token['family_name'],
   };
 
   return user;

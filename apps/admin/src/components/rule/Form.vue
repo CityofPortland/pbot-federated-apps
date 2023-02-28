@@ -1,58 +1,61 @@
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { computed, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   Button,
   Entry,
   Input,
+  Select,
   Textarea,
+  Toggle,
   query,
-  useAuthStore,
+  useLogin,
 } from '@pbotapps/components';
 
+import { useApplicationStore } from '../../store/application';
 import { Application } from '../../models/application';
 import { Rule } from '../../models/rule';
 
-const { accessToken } = useAuthStore();
+const store = useApplicationStore();
+const { getToken } = useLogin();
 const router = useRouter();
 
 const props = defineProps({
-  rule: {
-    type: Object as () => Rule,
-    default: () => ({}),
-  },
   application: {
     type: Object as () => Application,
     default: () => ({}),
   },
+  rule: {
+    type: Object as () => Rule,
+    default: () => ({
+      inverted: false,
+    }),
+  },
 });
 
-const { application, rule } = toRefs(props);
+const { application } = toRefs(props);
+const rule = reactive(props.rule);
+
+const applications = computed(() => store.applications);
 
 const handleSubmit = async () => {
-  //send the application to GraphQL
-  //if success, send to application page?
-  //else show errors
+  const token = await getToken();
   try {
     const res = await query<{ addRule: Rule }>({
       operation: `
-          mutation addRule($data: NewRuleInput!) {
-            addRule(data:$data) {
-              uuid
-              name
-              description
+          mutation addRule($applicationId: ID! $input: RuleInput!) {
+            addRule(applicationId: $applicationId input:$input) {
+              _id
             }
           }`,
       variables: {
-        data: {
-          ...rule.value,
-          application: {
-            uuid: application.value.uuid,
-          },
+        applicationId: application.value._id,
+        input: {
+          ...rule,
         },
       },
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (res.errors) {
@@ -61,10 +64,10 @@ const handleSubmit = async () => {
 
     const r = res.data?.addRule;
 
-    if (r && r.uuid) {
+    if (r && r._id) {
       const to = {
         name: 'Application',
-        params: { uuid: application.value.uuid },
+        params: { id: application.value._id },
       };
       // route to new application
       router.push(to);
@@ -78,29 +81,54 @@ const handleSubmit = async () => {
 
 <template>
   <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
-    <Entry id="name" label="Name" required v-slot="{ id, required }">
-      <Input
-        :id="id"
-        :name="id"
-        :required="required"
-        class="w-full"
-        v-model="application.name"
-      />
-    </Entry>
     <Entry
-      id="description"
-      label="Description"
+      id="application"
+      label="Application"
       required
       v-slot="{ id, required }"
     >
+      <Select :id="id" :name="id" :required="required">
+        <option
+          v-for="a in applications"
+          :key="a._id"
+          :selected="a._id == application._id"
+        >
+          {{ a.name }}
+        </option>
+      </Select>
+    </Entry>
+    <Toggle
+      id="inverted"
+      label="Inverted"
+      v-model="rule.inverted"
+      true-value="cannot"
+      false-value="can"
+    />
+    <Entry id="action" label="Action" required v-slot="{ id, required }">
+      <Input :id="id" :required="required" v-model="rule.action" />
+    </Entry>
+    <Entry id="subject" label="Subject" required v-slot="{ id, required }">
+      <Input :id="id" :required="required" v-model="rule.subject" />
+    </Entry>
+    <Entry id="conditions" label="Conditions" v-slot="{ id, required }">
       <Textarea
         :id="id"
-        :name="id"
         :required="required"
-        class="w-full"
-        v-model="application.description"
+        :modelValue="rule.conditions"
+        @changed="rule.conditions = JSON.parse($event)"
       />
     </Entry>
-    <Button label="Save" />
+    <Entry id="fields" label="Fields" v-slot="{ id, required }">
+      <Textarea :id="id" :required="required" v-model="rule.fields" />
+    </Entry>
+    <section class="flex gap-2">
+      <Button label="Save" size="small" />
+      <Button
+        type="button"
+        label="Cancel"
+        size="small"
+        @click="$emit('cancel')"
+      />
+    </section>
   </form>
 </template>

@@ -15,7 +15,7 @@ defineProps({
     <header>
       <h2 class="text-2xl">
         <router-link
-          :to="{ name: 'Application', params: { uuid: app.uuid } }"
+          :to="{ name: 'Application', params: { id: app._id } }"
           custom
           v-slot="{ href, navigate }"
         >

@@ -14,6 +14,7 @@ export const typeDefs = gql(`
     subject: String!
     conditions: String
     fields: String
+    users: [User]
   }
 
   input RuleInput {
@@ -28,12 +29,20 @@ export const typeDefs = gql(`
     rules: [Rule]
   }
 
+  extend type User {
+    rules: [Rule]
+  }
+
   extend type Mutation {
-    addRule(application_id: ID!, input: RuleInput): Rule
+    addRule(applicationId: ID!, input: RuleInput): Rule
     updateRule(_id: ID!, input: RuleInput): Rule
     removeRule(_id: ID!): ID
     addRuleToUser(user_id: ID!, rule_id: ID!): ID
     removeRuleFromUser(user_id: ID!, rule_id: ID!): ID
+  }
+
+  extend type Query {
+    rule(id: ID!): Rule
   }
 `);
 
@@ -63,7 +72,7 @@ export type Rule<T = unknown> = BaseUserChangeableType & {
    */
   fields?: Record<keyof T, boolean>;
 
-  application_id: string;
+  applicationId?: string;
 };
 
 export default typeDefs;

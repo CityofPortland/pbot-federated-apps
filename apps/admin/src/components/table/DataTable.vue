@@ -15,9 +15,7 @@ const { data } = toRefs(props);
 const keys = computed(() =>
   data.value.reduce((acc, curr) => {
     for (const key in curr) {
-      if (Object.prototype.hasOwnProperty.call(curr, key)) {
-        acc.add(key);
-      }
+      acc.add(key);
     }
     return acc;
   }, new Set<string>())

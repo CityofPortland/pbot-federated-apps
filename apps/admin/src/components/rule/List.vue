@@ -11,7 +11,7 @@ defineProps({
 </script>
 
 <template>
-  <FieldList class="grid grid-rows-1 grid-flow-col gap-4">
+  <FieldList class="grid grid-cols-5 gap-4">
     <Field name="Inverted" display="hidden">
       {{ rule.inverted ? 'cannot' : 'can' }}
     </Field>
@@ -22,10 +22,10 @@ defineProps({
       {{ rule.subject }}
     </Field>
     <Field name="Conditions" display="hidden">
-      {{ rule.conditions }}
+      {{ JSON.stringify(rule.conditions) }}
     </Field>
     <Field name="Fields" display="hidden">
-      {{ rule.fields }}
+      {{ JSON.stringify(rule.fields) }}
     </Field>
   </FieldList>
 </template>

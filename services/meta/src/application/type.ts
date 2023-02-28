@@ -2,9 +2,15 @@ import { BaseUserChangeableType } from '@pbotapps/objects';
 import { DocumentNode } from 'graphql';
 import { gql } from 'graphql-tag';
 
+import { Rule } from '../rule/type.js';
+
 export const typeDefs = gql`
   type Application @key(fields: "_id") {
     _id: ID!
+    _changed: DateTime!
+    _changedBy: ID!
+    _created: DateTime!
+    _createdBy: ID!
     name: String!
     slug: String!
     description: String
@@ -37,6 +43,7 @@ export type Application = BaseUserChangeableType & {
   name: string;
   slug: string;
   description: string;
+  rules?: Array<Rule<unknown>>;
 };
 
 export default typeDefs;

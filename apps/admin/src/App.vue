@@ -27,9 +27,9 @@ const { accessToken } = useLogin();
         </router-link>
       </template>
       <template #menu>
-        <router-link to="/application" class="flex items-center"
-          >Application</router-link
-        >
+        <router-link to="/application" custom v-slot="{ href, navigate }">
+          <Anchor :url="href" @click="navigate">Applications</Anchor>
+        </router-link>
         <Nav class="mt-3 md:mt-0 md:ml-auto">
           <SignIn v-if="!accessToken" />
           <LoggedIn v-else />

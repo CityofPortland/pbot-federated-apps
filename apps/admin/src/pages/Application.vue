@@ -1,37 +1,49 @@
 <script setup lang="ts">
-import { ref, Ref, watchEffect } from 'vue';
-import { useRouter } from 'vue-router';
+import { onBeforeUpdate, ref, Ref } from 'vue';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 
-import { query, Box } from '@pbotapps/components';
+import { query, Box, useLogin } from '@pbotapps/components';
 import { Application } from '../models/application';
 import Full from '../components/application/Full.vue';
 
-let application: Ref<Application | undefined> = ref(undefined);
-const { currentRoute } = useRouter();
+const application: Ref<Application | undefined> = ref(undefined);
 
-watchEffect(async () => {
-  const res = await query<{ getApplication: Application }>({
+const { currentRoute } = useRouter();
+const { getToken } = useLogin();
+
+async function getApplication() {
+  const token = await getToken();
+  const res = await query<{ applications: Array<Application> }>({
     operation: `
       query Query {
-        getApplication(uuid:"${currentRoute.value.params.uuid}"){
-            uuid
+        applications(input: { _id:"${currentRoute.value.params.id}" }){
+            _id
             name
             description
             rules {
+              _id
               subject
               action
               conditions
               fields
               inverted
+              users {
+                _id
+              }
             }
         }
       }`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
-  if (!res.errors && res.data) {
-    application.value = res.data.getApplication;
+  if (res.data) {
+    application.value = res.data.applications[0];
   }
-});
+}
+
+getApplication();
 </script>
 
 <template>

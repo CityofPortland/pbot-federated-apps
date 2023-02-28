@@ -6,13 +6,13 @@ import {
   Input,
   Textarea,
   query,
-  useAuthStore,
+  useLogin,
 } from '@pbotapps/components';
 
 import { Application } from '../../models/application';
 import { useRouter } from 'vue-router';
 
-const { accessToken } = useAuthStore();
+const { clientId, getToken } = useLogin();
 const router = useRouter();
 
 const props = defineProps({
@@ -28,23 +28,25 @@ const handleSubmit = async () => {
   //send the application to GraphQL
   //if success, send to application page?
   //else show errors
+  const token = await getToken();
+
   try {
     const res = await query<{ addApplication: Application }>({
       operation: `
-          mutation AddApplication($data: NewApplicationInput!) {
-            addApplication(data:$data) {
-              uuid
+          mutation AddApplication($input: ApplicationInput!) {
+            addApplication(input:$input) {
+              _id
               name
               description
             }
           }`,
       variables: {
-        data: {
+        input: {
           ...application.value,
         },
       },
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (res.errors) {
@@ -53,8 +55,8 @@ const handleSubmit = async () => {
 
     const app = res.data?.addApplication;
 
-    if (app && app.uuid) {
-      const to = { name: 'Application', params: { uuid: app.uuid } };
+    if (app && app._id) {
+      const to = { name: 'Application', params: { id: app._id } };
       // route to new application
       router.push(to);
     }
@@ -66,13 +68,12 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
+  <form class="flex flex-col gap-4 items-start" @submit.prevent="handleSubmit">
     <Entry id="name" label="Name" required v-slot="{ id, required }">
       <Input
         :id="id"
         :name="id"
         :required="required"
-        class="w-full"
         v-model="application.name"
       />
     </Entry>
@@ -86,7 +87,6 @@ const handleSubmit = async () => {
         :id="id"
         :name="id"
         :required="required"
-        class="w-full"
         v-model="application.description"
       />
     </Entry>

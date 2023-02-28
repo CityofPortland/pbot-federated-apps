@@ -1,7 +1,7 @@
 export type Entity = {
-  uuid?: string;
-  created?: Date;
-  createdBy?: string;
-  changed?: Date;
-  changedBy?: string;
+  _id?: string;
+  _created?: Date;
+  _createdBy?: string;
+  _changed?: Date;
+  _changedBy?: string;
 };

@@ -1,43 +1,27 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { computed, onMounted } from 'vue';
 
-import { query, Box, Button } from '@pbotapps/components';
-import { Application } from '../models/application';
+import { Anchor, Box } from '@pbotapps/components';
 import Listing from '../components/application/List.vue';
+import { useApplicationStore } from '../store/application';
 
-const skip = ref(0);
-const take = ref(10);
+const store = useApplicationStore();
 
-let applications = ref(new Array<Application>());
+const applications = computed(() => store.applications);
 
-watchEffect(async () => {
-  const res = await query<{ getAllApplication: Array<Application> }>({
-    operation: `
-      query Query {
-        getAllApplication(skip:${skip.value} take:${take.value}){
-            uuid
-            name
-            description
-        }
-      }`,
-  });
-
-  if (!res.errors && res.data) {
-    applications.value = res.data.getAllApplication;
-  }
-});
+onMounted(() => store.getApplications());
 </script>
 
 <template>
   <Box as="article" class="grid grid-cols-1 gap-12 mb-12">
-    <header class="flex flex-col md:flex-row md:justify-between">
+    <header class="flex flex-col sm:flex-row sm:justify-between gap-4">
       <h1 class="text-4xl">Applications</h1>
-      <router-link to="/application/new">
-        <Button label="Add application" class="inline-flex" />
+      <router-link to="/application/new" custom v-slot="{ href, navigate }">
+        <Anchor :url="href" @click="navigate">Add application</Anchor>
       </router-link>
     </header>
     <ul class="grid grid-cols-1 gap-8">
-      <li v-for="application in applications" :key="application.uuid">
+      <li v-for="application in applications" :key="application._id">
         <Listing :app="application" />
       </li>
     </ul>

@@ -6,6 +6,7 @@ import Applications from '../pages/Applications.vue';
 import ApplicationForm from '../components/application/Form.vue';
 import DefaultLayout from '../layouts/Default.vue';
 import Home from '../pages/Home.vue';
+import Rule from '../pages/Rule.vue';
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/', component: Home },
@@ -19,12 +20,23 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         name: 'Application',
-        path: ':uuid',
+        path: ':id',
         component: Application,
       },
       {
         path: 'new',
         component: ApplicationForm,
+      },
+    ],
+  },
+  {
+    path: '/rule',
+    component: DefaultLayout,
+    children: [
+      {
+        name: 'Rule',
+        path: ':id',
+        component: Rule,
       },
     ],
   },

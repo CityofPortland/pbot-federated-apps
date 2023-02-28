@@ -3,7 +3,7 @@ import { Box } from '@pbotapps/components';
 </script>
 
 <template>
-  <Box>
+  <Box class="mb-8">
     <router-view />
   </Box>
 </template>
