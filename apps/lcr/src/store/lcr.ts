@@ -1,4 +1,4 @@
-import { MaximoUser } from './../types/pagedMaximoUsers';
+import { MaximoUser, PagedMaximoUsers } from './../types/pagedMaximoUsers';
 import { PagedCopActiveComputers } from './../types/pagedCopActiveComputers';
 // stores/counter.js
 import { defineStore } from 'pinia';
@@ -7,7 +7,7 @@ import { PagedMaximoUsers, MaximoUser } from '../types/pagedMaximoUsers';
 
 export const useLcrStore = defineStore('lcr', {
   state: () => ({
-    pagedMaximoUsers: [],
+    pagedMaximoUsers: null as PagedMaximoUsers | null,
     pagedPbotLcrSchedule: [],
     pagedCopActiveComputers: [],
     //startFlag: false,
@@ -31,46 +31,21 @@ export const useLcrStore = defineStore('lcr', {
   },
 
   actions: {
-    async fetchMaximoUsers(user: Partial<MaximoUser> | null) {
-      let url =
-        'https://localhost:7110/api/workstation/GetPaginatedMaximoUsers?';
+    async fetchMaximoUsers(search: MaximoUser, pageNumber: number) {
+      const url = new URL(
+        'https://localhost:7110/api/workstation/GetPaginatedMaximoUsers'
+      );
 
-      if (user?.username) {
-        url = url + '&UserName=' + user?.username;
+      for (const property in search) {
+        url.searchParams.append(`${property}`, `${search[property]}`);
       }
 
-      if (user?.personId) {
-        url = url + '&PersonId=' + user?.personId;
-      }
-
-      if (user?.firstName) {
-        url = url + '&FirstName=' + user?.firstName;
-      }
-
-      if (user?.lastName) {
-        url = url + '&LastName=' + user?.lastName;
-      }
-
-      if (user?.pbotCostCenter) {
-        url = url + '&PbotCostCenter=' + user?.pbotCostCenter;
-      }
-
-      if (user?.pbotOrgUnit) {
-        url = url + '&PbotOrgUnit' + user?.pbotOrgUnit;
-      }
+      url.searchParams.append(`pageNumber`, pageNumber.toString());
 
       try {
-        const res = await axios.get(url);
-        this.pagedMaximoUsers = res.data.data;
-        console.log(this.pagedMaximoUsers);
-        /*if (this.pagedMaximoUsers.data != null) {
-          //this.pagedCopActiveComputers.data = [];
-          for (let i = 0; i < this.pagedMaximoUsers.data.length; i++) {
-            this.fetchCopActiveComputers(
-              this.pagedMaximoUsers.data[i].displayName
-            );
-          }
-        }*/
+        console.log('fetchMaximoUsers from API', url.toString());
+        const res = await axios.get(url.toString());
+        this.pagedMaximoUsers = res.data;
       } catch (error) {
         console.log('Error while fetching Maximo users: ', error);
       }
@@ -97,7 +72,7 @@ export const useLcrStore = defineStore('lcr', {
     },
     async fetchCopActiveComputers(primaryUser: string | null) {
       let url =
-        'https://localhost:7110/api/workstation/GetPaginatedCopActiveComputers?pageNumber=7&pageSize=2000';
+        'https://localhost:7110/api/workstation/GetPaginatedCopActiveComputers?pageNumber=7&pageSize=20';
 
       if (primaryUser) {
         url = url + '&PrimaryUser=' + primaryUser;
