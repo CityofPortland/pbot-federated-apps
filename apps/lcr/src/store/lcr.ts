@@ -1,13 +1,13 @@
-import { MaximoUser, PagedMaximoUsers } from './../types/pagedMaximoUsers';
-import { PagedCopActiveComputers } from './../types/pagedCopActiveComputers';
+import { MaximoUser } from './../types/pagedMaximoUsers';
+import { LcrPaginatedData } from '../types/lcrPaginatedData';
+//import { PagedCopActiveComputers } from './../types/pagedCopActiveComputers';
 // stores/counter.js
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { PagedMaximoUsers, MaximoUser } from '../types/pagedMaximoUsers';
 
 export const useLcrStore = defineStore('lcr', {
   state: () => ({
-    pagedMaximoUsers: null as PagedMaximoUsers | null,
+    pagedMaximoUsers: null as LcrPaginatedData<MaximoUser> | null,
     pagedPbotLcrSchedule: [],
     pagedCopActiveComputers: [],
     //startFlag: false,
@@ -22,12 +22,12 @@ export const useLcrStore = defineStore('lcr', {
     /*getCopActiveComputers(state) {
       return state.pagedCopActiveComputers;
     },*/
-    getCopActiveComputers(state) {
+    /*getCopActiveComputers(state) {
       return (person: MaximoUser) =>
         state.pagedCopActiveComputers.filter(item => {
           return item.primaryUser === person.displayName;
         });
-    },
+    },*/
   },
 
   actions: {
@@ -37,7 +37,10 @@ export const useLcrStore = defineStore('lcr', {
       );
 
       for (const property in search) {
-        url.searchParams.append(`${property}`, `${search[property]}`);
+        url.searchParams.append(
+          `${property}`,
+          `${search[property as keyof MaximoUser]}`
+        );
       }
 
       url.searchParams.append(`pageNumber`, pageNumber.toString());
