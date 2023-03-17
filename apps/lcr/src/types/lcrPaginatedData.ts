@@ -7,7 +7,7 @@ export type LcrPaginatedData<T> = {
   totalRecords: number;
   nextPage: string;
   previousPage: string;
-  data: T;
+  data: T[];
   succeeded: boolean;
   errors?: string;
   message?: string;
