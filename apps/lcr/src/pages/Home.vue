@@ -1,50 +1,54 @@
 <script setup lang="ts">
-import axios from 'axios';
-import { ref } from 'vue';
-import { PagedMaximoUsers, MaximoUser } from '../types/pagedMaximoUsers';
-import { useLcrStore } from '../store/lcr';
-
-import { Button, Input } from '@pbotapps/components';
-
-import Pager from '../components/pager/Pager.vue';
-
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { MaximoUser } from "../types/pagedMaximoUsers";
+import { useLcrStore } from "../store/lcr";
+import Pager from "../components/pager/Pager.vue";
+import {
+  Anchor,
+  Button,
+  Checkboxes,
+  Entry,
+  File,
+  Input,
+  Select,
+  Textarea,
+} from "@pbotapps/components";
 const lcr = useLcrStore();
-
-let pageNumber = ref(1);
-
+const router = useRouter();
 const ourSearch: MaximoUser = {
-  pernr: '',
-  username: '',
-  personId: '',
-  displayName: '',
-  firstName: '',
-  lastName: '',
-  pbotCostCenter: '',
-  pbotOrgUnit: '',
-  emailAddress: '',
-  computerNames: '',
+  pernr: "",
+  username: "",
+  personId: "",
+  displayName: "",
+  firstName: "",
+  lastName: "",
+  pbotCostCenter: "",
+  pbotOrgUnit: "",
+  emailAddress: "",
+  computerNames: "",
 };
-
+const maxUserPager = ref();
 async function findUsers() {
-  lcr.fetchMaximoUsers(ourSearch, pageNumber.value);
+  if (maxUserPager.value) {
+    maxUserPager.value.goToFirstPage();
+  }
+  lcr.fetchMaximoUsers(ourSearch, 1); //, pageNumber.value);
 }
-
-function pagerChanged(newPage: number) {
-  pageNumber.value = newPage;
-  findUsers();
+function pagerChanged(pageNumber: number) {
+  lcr.fetchMaximoUsers(ourSearch, pageNumber);
 }
-
-findUsers(1);
+function loadUser(personid: string) {
+  router.push({ name: "UserPage", params: { personid: personid } });
+}
+findUsers();
 </script>
 
 <template>
   <div>
     <h2 class="text-3xl font-bold mb-2">Search Users</h2>
     <section>
-      <form
-        @submit.prevent="findUsers"
-        class="grid grid-cols-3 gap-4 max-w-2xl m-2"
-      >
+      <form @submit.prevent="findUsers" class="grid grid-cols-4 gap-4 max-w-2xl m-2">
         <div>
           <div class="relative">
             <input
@@ -97,13 +101,23 @@ findUsers(1);
             >
           </div>
         </div>
-
-        <!--<div>
-          <div>Search</div>
-          <div>
-            <Button label="Find" size="small" class=""> </Button>
+        <div>
+          <div class="relative">
+            <input
+              type="text"
+              id="device"
+              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+              v-model="ourSearch.computerNames"
+              v-on:keyup="findUsers"
+            />
+            <label
+              for="device"
+              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+              >Device</label
+            >
           </div>
-        </div>-->
+        </div>
       </form>
     </section>
 
@@ -111,9 +125,10 @@ findUsers(1);
       v-if="lcr.pagedMaximoUsers"
       @pager-changed="pagerChanged"
       :pagedData="lcr.pagedMaximoUsers"
+      ref="maxUserPager"
     ></Pager>
 
-    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+    <div class="mt-5 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
       <table
         className="min-w-full divide-y divide-gray-200"
         v-if="lcr.pagedMaximoUsers != null"
@@ -155,8 +170,9 @@ findUsers(1);
         <tbody
           class="bg-white divide-y divide-gray-200"
           v-for="person in lcr.pagedMaximoUsers.data"
+          :key="person.personId"
         >
-          <tr :key="person.personId" class="hover:bg-slate-100">
+          <tr class="hover:bg-slate-100">
             <td className="px-6 py-4 whitespace-nowrap">
               <div className="flex items-center">
                 <div className="ml-4">
@@ -191,17 +207,38 @@ findUsers(1);
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               {contact info}
             </td>
-            <td
-              className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-            >
-              <div
-                v-for="computer in person.computerNames.split(',')"
-                :key="computer"
-              >
-                <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                  {{ computer }}
-                </a>
+            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <div v-for="computer in person.computerNames.split(',')" :key="computer">
+                <router-link
+                  :to="`/computer/${computer}`"
+                  custom
+                  v-slot="{ href, navigate }"
+                >
+                  <Anchor :url="href" @click="navigate" class="no-underline">
+                    {{ computer }}
+                  </Anchor>
+                </router-link>
               </div>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <router-link :to="`/user/${person.personId}`" custom v-slot="{ navigate }">
+                <Button
+                  size="small"
+                  class="inline-flex mx-1 disabled:opacity-50"
+                  label="Edit"
+                  @click="navigate"
+                  @keypress.enter="navigate"
+                />
+              </router-link>
+              <router-link :to="`/user/${person.personId}`" custom v-slot="{ navigate }">
+                <Button
+                  size="small"
+                  color="red"
+                  class="inline-flex mx-1 disabled:opacity-50"
+                  label="Remove"
+                  @click="navigate"
+                />
+              </router-link>
             </td>
           </tr>
         </tbody>
