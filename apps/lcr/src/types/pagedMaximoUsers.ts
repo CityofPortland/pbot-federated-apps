@@ -14,6 +14,7 @@ export type PagedMaximoUsers = {
 };
 
 export type MaximoUser = {
+  pernr: string;
   username: string;
   personId: string;
   displayName: string;
@@ -22,4 +23,5 @@ export type MaximoUser = {
   pbotCostCenter: string;
   pbotOrgUnit: string;
   emailAddress: string;
+  computerNames: string;
 };
