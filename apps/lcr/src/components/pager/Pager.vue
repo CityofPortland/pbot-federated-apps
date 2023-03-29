@@ -1,26 +1,20 @@
 <script setup lang="ts">
 import { Button } from '@pbotapps/components';
-//import { PagedMaximoUsers } from '../../types/pagedMaximoUsers';
-import { LcrPaginatedData } from '../../types/lcrPaginatedData';
-import { ref, toRefs } from 'vue';
+import { PagedMaximoUsers } from '../../types/pagedMaximoUsers';
+import { ref } from 'vue';
 
 const props = defineProps({
   pagedData: {
-    type: Object as () => LcrPaginatedData<unknown>,
+    type: Object as () => PagedMaximoUsers,
     required: true,
   },
 });
 
-let pageNumber = ref(1);
-const { pagedData } = toRefs(props);
-
-// whenever you re-search we need to let this pager know
-// that the paging has been reset and we're going to the first page
-defineExpose({ goToFirstPage });
-
 const emit = defineEmits<{
   (eventName: 'pagerChanged', pageNumber: number): void;
 }>();
+
+let pageNumber = ref(1);
 
 function goToFirstPage() {
   //console.log('pager.goToFirstPage');
@@ -35,7 +29,7 @@ function goToLastPage() {
 }
 
 function goToPreviousPage() {
-  //console.log('pager.goToPreviousPage');
+  //console.log('pager.goToPreviousPage pageNumber=', pageNumber.value);
   if (pageNumber.value > 1) {
     pageNumber.value--;
     emit('pagerChanged', pageNumber.value);
@@ -43,7 +37,7 @@ function goToPreviousPage() {
 }
 
 function goToNextPage() {
-  //console.log('pager.goToNextPage');
+  //console.log('pager.goToNextPage pageNumber=', pageNumber.value);
   if (pageNumber.value < props.pagedData.totalPages) {
     pageNumber.value++;
     emit('pagerChanged', pageNumber.value);
