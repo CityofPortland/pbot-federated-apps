@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import ComputerPage from '../pages/ComputerPage.vue';
 
 import Home from '../pages/Home.vue';
 import UserPage from '../pages/UserPage.vue';
@@ -16,6 +17,15 @@ const routes: RouteRecordRaw[] = [
       const userid = route.params.personid.toString();
 
       return { userid };
+    },
+  },
+  {
+    name: 'ComputerPage',
+    path: '/computer/:computer',
+    component: ComputerPage,
+    props: route => {
+      const computerName = route.params.computer.toString();
+      return { computerName };
     },
   },
 ];

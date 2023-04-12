@@ -1,7 +1,6 @@
 import { MaximoUser } from './../types/pagedMaximoUsers';
+import { PagedCopActiveComputer } from './../types/pagedCopActiveComputers';
 import { LcrPaginatedData } from '../types/lcrPaginatedData';
-//import { PagedCopActiveComputers } from './../types/pagedCopActiveComputers';
-// stores/counter.js
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
@@ -10,7 +9,7 @@ export const useLcrStore = defineStore('lcr', {
     pagedMaximoUsers: null as LcrPaginatedData<MaximoUser> | null,
     pagedPbotLcrSchedule: [],
     pagedCopActiveComputers: [],
-    //startFlag: false,
+    activeComputer: null as PagedCopActiveComputer | null,
   }),
   getters: {
     getMaximoUsers(state) {
@@ -19,15 +18,6 @@ export const useLcrStore = defineStore('lcr', {
     getPbotLcrSchedule(state) {
       return state.pagedPbotLcrSchedule;
     },
-    /*getCopActiveComputers(state) {
-      return state.pagedCopActiveComputers;
-    },*/
-    /*getCopActiveComputers(state) {
-      return (person: MaximoUser) =>
-        state.pagedCopActiveComputers.filter(item => {
-          return item.primaryUser === person.displayName;
-        });
-    },*/
   },
 
   actions: {
@@ -51,6 +41,26 @@ export const useLcrStore = defineStore('lcr', {
         this.pagedMaximoUsers = res.data;
       } catch (error) {
         console.log('Error while fetching Maximo users: ', error);
+      }
+    },
+    async fetchCopActiveComputer(computerNameSearch: string) {
+      const url = new URL(
+        'https://localhost:7110/api/Workstation/GetPaginatedCopActiveComputers'
+      );
+
+      url.searchParams.append('ComputerName', computerNameSearch);
+      url.searchParams.append(`pageNumber`, '1');
+      url.searchParams.append(`totalRecords`, '1');
+
+      try {
+        console.log('fetchCopActiveComputer from API', url.toString());
+        const res = await axios.get(url.toString());
+        this.activeComputer = res.data.data[0];
+      } catch (error) {
+        console.log(
+          `Error in fetchCopActiveComputer: ${computerNameSearch} `,
+          error
+        );
       }
     },
     async fetchPbotLcrSchedule(primaryUser: string | null) {

@@ -7,26 +7,26 @@ export type PagedCopActiveComputers = {
   totalRecords: number;
   nextPage: string;
   previousPage: string;
-  data: CopActiveComputers[];
+  data: PagedCopActiveComputer[];
   succeeded: boolean;
   errors?: string;
   message?: string;
 };
 
-export type CopActiveComputers = {
+export type PagedCopActiveComputer = {
   computerName: string;
-  costCenter: string;
-  deploymentDate: string;
-  primaryUser: string;
-  lastLogonUser: string;
-  deviceLocation: string;
-  lastCommunication: string;
-  osName: string;
-  serialNumber: string;
-  manufacturer: string;
-  pcModel: string;
-  cpuType: string;
-  cpuNumber: string;
-  cpuSpeed: string;
-  totalPhysicalMemory: string;
+  costCenter?: string;
+  deploymentDate?: string;
+  primaryUser?: string;
+  lastLogonUser?: string;
+  deviceLocation?: string;
+  lastCommunication?: string;
+  osName?: string;
+  serialNumber?: string;
+  manufacturer?: string;
+  pcModel?: string;
+  cpuType?: string;
+  cpuNumber?: string;
+  cpuSpeed?: string;
+  totalPhysicalMemory?: string;
 };
