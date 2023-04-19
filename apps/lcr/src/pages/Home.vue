@@ -38,8 +38,10 @@ async function findUsers() {
 function pagerChanged(pageNumber: number) {
   lcr.fetchMaximoUsers(ourSearch, pageNumber);
 }
-function loadUser(personid: string) {
-  router.push({ name: "UserPage", params: { personid: personid } });
+function loadUser(personid: string, displayname: string) {
+  let params: string = personid + ";" + displayname;
+  console.log("Home send these parameters: ", params);
+  router.push({ name: "UserPage", params: { personid: params } });
 }
 findUsers();
 </script>
@@ -49,41 +51,6 @@ findUsers();
     <h2 class="text-3xl font-bold mb-2">Search Users</h2>
     <section>
       <form @submit.prevent="findUsers" class="grid grid-cols-4 gap-4 max-w-2xl m-2">
-        <div>
-          <div class="relative">
-            <input
-              type="text"
-              id="personId"
-              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              v-model="ourSearch.personId"
-              v-on:keyup="findUsers"
-            />
-            <label
-              for="personId"
-              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-              >Person ID</label
-            >
-          </div>
-        </div>
-        <div>
-          <div class="relative">
-            <input
-              type="text"
-              id="firstname"
-              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              v-model="ourSearch.firstName"
-              v-on:keyup="findUsers"
-            />
-            <label
-              for="firstname"
-              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-              >First Name</label
-            >
-          </div>
-        </div>
-
         <div>
           <div class="relative">
             <input
@@ -105,6 +72,23 @@ findUsers();
           <div class="relative">
             <input
               type="text"
+              id="firstname"
+              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+              v-model="ourSearch.firstName"
+              v-on:keyup="findUsers"
+            />
+            <label
+              for="firstname"
+              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+              >First Name</label
+            >
+          </div>
+        </div>
+        <div>
+          <div class="relative">
+            <input
+              type="text"
               id="device"
               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
@@ -115,6 +99,23 @@ findUsers();
               for="device"
               class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
               >Device</label
+            >
+          </div>
+        </div>
+        <div>
+          <div class="relative">
+            <input
+              type="text"
+              id="personId"
+              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+              v-model="ourSearch.personId"
+              v-on:keyup="findUsers"
+            />
+            <label
+              for="personId"
+              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+              >Person ID</label
             >
           </div>
         </div>
@@ -175,7 +176,10 @@ findUsers();
           <tr class="hover:bg-slate-100">
             <td className="px-6 py-4 whitespace-nowrap">
               <div className="flex items-center">
-                <div className="ml-4">
+                <div
+                  className="ml-4"
+                  v-on:click="loadUser(person.personId, person.displayName)"
+                >
                   <div className="text-sm font-medium text-gray-900">
                     {{ person.displayName }}
                   </div>
@@ -183,7 +187,7 @@ findUsers();
                     {{ person.emailAddress }}
                   </div>
                   <div className="text-sm text-gray-500">
-                    {{ person.username }}
+                    {{ person.userName }}
                   </div>
                 </div>
               </div>
@@ -219,26 +223,6 @@ findUsers();
                   </Anchor>
                 </router-link>
               </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <router-link :to="`/user/${person.personId}`" custom v-slot="{ navigate }">
-                <Button
-                  size="small"
-                  class="inline-flex mx-1 disabled:opacity-50"
-                  label="Edit"
-                  @click="navigate"
-                  @keypress.enter="navigate"
-                />
-              </router-link>
-              <router-link :to="`/user/${person.personId}`" custom v-slot="{ navigate }">
-                <Button
-                  size="small"
-                  color="red"
-                  class="inline-flex mx-1 disabled:opacity-50"
-                  label="Remove"
-                  @click="navigate"
-                />
-              </router-link>
             </td>
           </tr>
         </tbody>
