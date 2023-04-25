@@ -10,6 +10,7 @@ export const useLcrStore = defineStore('lcr', {
     pagedPbotLcrSchedule: [],
     pagedCopActiveComputers: [],
     activeComputer: null as PagedCopActiveComputer | null,
+    activeMaximoUser: null as MaximoUser | null,
   }),
   getters: {
     getMaximoUsers(state) {
@@ -45,22 +46,38 @@ export const useLcrStore = defineStore('lcr', {
     },
     async fetchCopActiveComputer(computerNameSearch: string) {
       const url = new URL(
-        'https://localhost:7110/api/Workstation/GetPaginatedCopActiveComputers'
+        'https://localhost:7110/api/Workstation/GetCopActiveComputer'
       );
 
-      url.searchParams.append('ComputerName', computerNameSearch);
-      url.searchParams.append(`pageNumber`, '1');
-      url.searchParams.append(`totalRecords`, '1');
+      url.searchParams.append('computerName', computerNameSearch);
+      //url.searchParams.append(`pageNumber`, '1');
+      //url.searchParams.append(`totalRecords`, '1');
 
       try {
         console.log('fetchCopActiveComputer from API', url.toString());
         const res = await axios.get(url.toString());
-        this.activeComputer = res.data.data[0];
+        this.activeComputer = res.data;
+        console.log(res.data);
       } catch (error) {
         console.log(
           `Error in fetchCopActiveComputer: ${computerNameSearch} `,
           error
         );
+      }
+    },
+    async fetchMaximoUser(maximoUserSearch: string) {
+      const url = new URL(
+        'https://localhost:7110/api/Workstation/GetMaximoUser'
+      );
+
+      url.searchParams.append('maximoUser', maximoUserSearch);
+
+      try {
+        console.log('fetchMaximoUser from API', url.toString());
+        const res = await axios.get(url.toString());
+        this.activeMaximoUser = res.data;
+      } catch (error) {
+        console.log(`Error in fetchMaximoUser: ${maximoUserSearch} `, error);
       }
     },
     async fetchPbotLcrSchedule(primaryUser: string | null) {

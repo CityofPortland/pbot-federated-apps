@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useLcrStore } from '../store/lcr';
+import CollapsablePanel from '../components/CollapsablePanel/CollapsablePanel.vue';
 
 const store = useLcrStore();
 
@@ -36,7 +37,7 @@ onMounted(async () => {
         <form class="justify-center w-full mx-auto">
           <div class="">
             <div class="space-x-0 lg:flex lg:space-x-4">
-              <div class="w-full lg:w-1/2">
+              <div class="w-full lg:w-1/4">
                 <label
                   for="deploymentDate"
                   class="block mb-3 text-sm font-semibold text-gray-500"
@@ -45,12 +46,12 @@ onMounted(async () => {
                 <input
                   name="deploymentDate"
                   type="datetime"
-                  :value="store.activeComputer.deploymentDate"
+                  :value="store.activeComputer.deploymentDate?.substring(0, 10)"
                   placeholder="Deployment Date"
                   class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 />
               </div>
-              <div class="w-full lg:w-1/2">
+              <div class="w-full lg:w-1/4">
                 <label
                   for="deviceLocation"
                   class="block mb-3 text-sm font-semibold text-gray-500"
@@ -64,127 +65,7 @@ onMounted(async () => {
                   class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 />
               </div>
-            </div>
-            <div class="mt-4 space-x-0 lg:flex lg:space-x-4">
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="serialNumber"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >Serial Number</label
-                >
-                <input
-                  name="serialNumber"
-                  type="text"
-                  :value="store.activeComputer.serialNumber"
-                  placeholder="Serial Number"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="pcModel"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >PC Model</label
-                >
-                <input
-                  name="pcModel"
-                  type="text"
-                  :value="store.activeComputer.pcModel"
-                  placeholder="PC Model"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-            </div>
-            <div class="mt-4 space-x-0 lg:flex lg:space-x-4">
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="manufacturer"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >Manufacturer</label
-                >
-                <input
-                  name="manufacturer"
-                  type="text"
-                  :value="store.activeComputer.manufacturer"
-                  placeholder="Manufacturer"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="cpuType"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >CPU Type</label
-                >
-                <input
-                  name="cpuType"
-                  type="text"
-                  :value="store.activeComputer.cpuType"
-                  placeholder="CPU Type"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-            </div>
-            <div class="mt-4 space-x-0 lg:flex lg:space-x-4">
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="cpuNumber"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >CPU Number</label
-                >
-                <input
-                  name="cpuNumber"
-                  type="text"
-                  :value="store.activeComputer.cpuNumber"
-                  placeholder="CPU Number"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="cpuSpeed"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >CPU Speed</label
-                >
-                <input
-                  name="cpuSpeed"
-                  type="text"
-                  :value="store.activeComputer.cpuSpeed"
-                  placeholder="CPU Speed"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="physicalMemory"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >Physical Memory</label
-                >
-                <input
-                  name="physicalMemory"
-                  type="text"
-                  :value="store.activeComputer.totalPhysicalMemory"
-                  placeholder="Total Physical Memory"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="osName"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >OS Name</label
-                >
-                <input
-                  name="osName"
-                  type="text"
-                  :value="store.activeComputer.osName"
-                  placeholder="OS Name"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-            </div>
-            <div class="mt-4 space-x-0 lg:flex lg:space-x-4">
-              <div class="w-full lg:w-1/2">
+              <div class="w-full lg:w-1/4">
                 <label
                   for="primaryUser"
                   class="block mb-3 text-sm font-semibold text-gray-500"
@@ -198,21 +79,7 @@ onMounted(async () => {
                   class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 />
               </div>
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="lastLogonUser"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >Last Logon User</label
-                >
-                <input
-                  name="lastLogonUser"
-                  type="datetime"
-                  placeholder="Last Logon User"
-                  :value="store.activeComputer.lastLogonUser"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              <div class="w-full lg:w-1/2">
+              <div class="w-full lg:w-1/4">
                 <label
                   for="lastCommunication"
                   class="block mb-3 text-sm font-semibold text-gray-500"
@@ -222,68 +89,199 @@ onMounted(async () => {
                   name="lastCommunication"
                   type="datetime"
                   placeholder="Last Communication"
-                  :value="store.activeComputer.lastCommunication"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-              <div class="w-full lg:w-1/2">
-                <label
-                  for="costCenter"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
-                  >Cost Center</label
-                >
-                <input
-                  name="costCenter"
-                  type="datetime"
-                  placeholder="Cost Center"
-                  :value="store.activeComputer.costCenter"
+                  :value="
+                    store.activeComputer.lastCommunication?.substring(0, 10)
+                  "
                   class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 />
               </div>
             </div>
-            <div class="relative pt-3 xl:pt-6">
-              <label
-                for="note"
-                class="block mb-3 text-sm font-semibold text-gray-500"
-              >
-                Notes (Optional)</label
-              >
-              <textarea
-                name="note"
-                class="flex items-center w-full px-4 py-3 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-600"
-                rows="4"
-                placeholder="Notes"
-              ></textarea>
-            </div>
-            <div class="mt-4">
-              <button
-                class="w-full px-6 py-2 text-blue-200 bg-blue-600 hover:bg-blue-900"
-              >
-                Save
-              </button>
+            <div class="py-4">
+              <CollapsablePanel class="w-128">
+                <template v-slot:showHideText>Show/Hide Details</template>
+                <template v-slot:content>
+                  <div class="py-4 space-x-0 lg:flex lg:space-x-4">
+                    <div class="w-full lg:w-1/4">
+                      <label
+                        for="manufacturer"
+                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        >Manufacturer</label
+                      >
+                      <input
+                        name="manufacturer"
+                        type="text"
+                        :value="store.activeComputer.manufacturer"
+                        placeholder="Manufacturer"
+                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                    </div>
+                    <div class="w-full lg:w-1/4">
+                      <label
+                        for="cpuType"
+                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        >CPU Type</label
+                      >
+                      <input
+                        name="cpuType"
+                        type="text"
+                        :value="store.activeComputer.cpuType"
+                        placeholder="CPU Type"
+                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                    </div>
+                    <div class="w-full lg:w-1/4">
+                      <label
+                        for="cpuNumber"
+                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        >CPU Number</label
+                      >
+                      <input
+                        name="cpuNumber"
+                        type="text"
+                        :value="store.activeComputer.cpuNumber"
+                        placeholder="CPU Number"
+                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                    </div>
+                    <div class="w-full lg:w-1/4">
+                      <label
+                        for="cpuSpeed"
+                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        >CPU Speed</label
+                      >
+                      <input
+                        name="cpuSpeed"
+                        type="text"
+                        :value="store.activeComputer.cpuSpeed"
+                        placeholder="CPU Speed"
+                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="py-4 space-y-0 lg:flex lg:space-x-4">
+                    <div class="w-full lg:w-1/4">
+                      <label
+                        for="physicalMemory"
+                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        >Physical Memory</label
+                      >
+                      <input
+                        name="physicalMemory"
+                        type="text"
+                        :value="store.activeComputer.totalPhysicalMemory"
+                        placeholder="Total Physical Memory"
+                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                    </div>
+                    <div class="w-full lg:w-1/4">
+                      <label
+                        for="osName"
+                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        >OS Name</label
+                      >
+                      <input
+                        name="osName"
+                        type="text"
+                        :value="store.activeComputer.osName"
+                        placeholder="OS Name"
+                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                    </div>
+                    <div class="w-full lg:w-1/4">
+                      <label
+                        for="lastLogonUser"
+                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        >Last Logon User</label
+                      >
+                      <input
+                        name="lastLogonUser"
+                        type="datetime"
+                        placeholder="Last Logon User"
+                        :value="store.activeComputer.lastLogonUser"
+                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                    </div>
+                  </div>
+                </template>
+              </CollapsablePanel>
             </div>
           </div>
         </form>
+        <div class="relative pt-3 xl:pt-6">
+          <label
+            for="note"
+            class="block mb-3 text-sm font-semibold text-gray-500"
+          >
+            Notes (Optional)</label
+          >
+          <textarea
+            name="note"
+            class="flex items-center w-full px-4 py-3 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-600"
+            rows="4"
+            placeholder="Notes"
+          ></textarea>
+        </div>
+        <div class="mt-4">
+          <button
+            class="w-full px-6 py-2 text-blue-200 bg-blue-600 hover:bg-blue-900"
+          >
+            Save changes in notes section
+          </button>
+        </div>
+        <div class="py-4">
+          <div
+            class="px-4 py-5 border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+          >
+            <h2 class="mb-4 font-bold md:text-xl text-heading">
+              Device History
+            </h2>
+            <div class="space-x-0 lg:flex lg:space-x-4">
+              <div class="w-full lg:w-1/4">
+                <label class="block mb-3 text-sm font-semibold text-gray-500"
+                  >Import Date</label
+                >
+              </div>
+              <div class="w-full lg:w-1/4">
+                <label class="block mb-3 text-sm font-semibold text-gray-500"
+                  >Last Logon User</label
+                >
+              </div>
+              <div class="w-full lg:w-1/4">
+                <label class="block mb-3 text-sm font-semibold text-gray-500"
+                  >Device Location</label
+                >
+              </div>
+              <div class="w-full lg:w-1/4">
+                <label class="block mb-3 text-sm font-semibold text-gray-500"
+                  >Last Communication</label
+                >
+              </div>
+            </div>
 
-        Device History:
-        <div class="grid grid-cols-5 gap-4">
-          <div>Import Date</div>
-          <div>Primary User</div>
-          <div>Last Logon User</div>
-          <div>Device Location</div>
-          <div>Last Communication</div>
-
-          <div>2023-04-10</div>
-          <div>Chean, Rithy</div>
-          <div>thy</div>
-          <div>Maintenance</div>
-          <div>2023-03-27</div>
-
-          <div>2023-03-15</div>
-          <div>Morales Jr, Leo</div>
-          <div>LMORALES</div>
-          <div>Signal Shop</div>
-          <div>2021-11-08</div>
+            <div v-if="store.activeComputer.copActiveComputersHistory">
+              <div
+                v-for="history in store.activeComputer
+                  .copActiveComputersHistory"
+                :key="history.importDate"
+              >
+                <div class="space-x-0 lg:flex lg:space-x-4">
+                  <div class="w-full lg:w-1/4 text-sm lg:text-sm">
+                    {{ history.importDate?.substring(0, 10) }}
+                  </div>
+                  <div class="w-full lg:w-1/4 text-sm lg:text-sm">
+                    {{ history.lastLogonUser }}
+                  </div>
+                  <div class="w-full lg:w-1/4 text-sm lg:text-sm">
+                    {{ history.deviceLocation }}
+                  </div>
+                  <div class="w-full lg:w-1/4 text-sm lg:text-sm">
+                    {{ history.lastCommunication?.substring(0, 10) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
