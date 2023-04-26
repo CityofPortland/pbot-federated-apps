@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useLcrStore } from '../store/lcr';
 import CollapsablePanel from '../components/CollapsablePanel/CollapsablePanel.vue';
 
@@ -14,15 +14,36 @@ onMounted(async () => {
     store.fetchCopActiveComputer(props.computerName);
   }
 });
+
+const formChanged = ref(false);
+const currentlySaving = ref(false);
+const changesRecentlySaved = ref(false);
+
+function setFormChanged() {
+  formChanged.value = true;
+  changesRecentlySaved.value = false;
+}
+
+async function saveNotes() {
+  currentlySaving.value = true;
+
+  let status = await store.updateNoteField(
+    store.activeComputer?.computerName || '',
+    store.activeComputer?.workstationNotes || ''
+  );
+
+  console.log('currently saving is false', status);
+  currentlySaving.value = false;
+  formChanged.value = false;
+  changesRecentlySaved.value = true;
+
+  setTimeout(function () {
+    changesRecentlySaved.value = false;
+  }, 4000);
+}
 </script>
 
 <template>
-  <div class="mt-20">
-    <h1 class="flex justify-center font-bold text-blue-600 text-md lg:text-3xl">
-      Computer {{ props.computerName }}
-    </h1>
-  </div>
-
   <div
     class="container p-12 mx-auto"
     v-if="
@@ -32,7 +53,9 @@ onMounted(async () => {
   >
     <div class="flex flex-col w-full px-0 mx-auto md:flex-row">
       <div class="flex flex-col md:w-full">
-        <h2 class="mb-4 font-bold md:text-xl text-heading">Information</h2>
+        <h2 class="mb-4 font-bold text-2xl text-heading">
+          {{ props.computerName }}
+        </h2>
 
         <form class="justify-center w-full mx-auto">
           <div class="">
@@ -40,10 +63,11 @@ onMounted(async () => {
               <div class="w-full lg:w-1/4">
                 <label
                   for="deploymentDate"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
+                  class="block mb-3 text-sm font-semibold text-gray-800"
                   >Deployment Date</label
                 >
                 <input
+                  disabled="true"
                   name="deploymentDate"
                   type="datetime"
                   :value="store.activeComputer.deploymentDate?.substring(0, 10)"
@@ -54,10 +78,11 @@ onMounted(async () => {
               <div class="w-full lg:w-1/4">
                 <label
                   for="deviceLocation"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
+                  class="block mb-3 text-sm font-semibold text-gray-800"
                   >Device Location</label
                 >
                 <input
+                  disabled="true"
                   name="deviceLocation"
                   type="text"
                   placeholder="Device Location"
@@ -68,10 +93,11 @@ onMounted(async () => {
               <div class="w-full lg:w-1/4">
                 <label
                   for="primaryUser"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
+                  class="block mb-3 text-sm font-semibold text-gray-800"
                   >Primary User</label
                 >
                 <input
+                  disabled="true"
                   name="primaryUser"
                   type="text"
                   :value="store.activeComputer.primaryUser"
@@ -82,10 +108,11 @@ onMounted(async () => {
               <div class="w-full lg:w-1/4">
                 <label
                   for="lastCommunication"
-                  class="block mb-3 text-sm font-semibold text-gray-500"
+                  class="block mb-3 text-sm font-semibold text-gray-800"
                   >Last Communication</label
                 >
                 <input
+                  disabled="true"
                   name="lastCommunication"
                   type="datetime"
                   placeholder="Last Communication"
@@ -104,10 +131,11 @@ onMounted(async () => {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="manufacturer"
-                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        class="block mb-3 text-sm font-semibold text-gray-800"
                         >Manufacturer</label
                       >
                       <input
+                        disabled="true"
                         name="manufacturer"
                         type="text"
                         :value="store.activeComputer.manufacturer"
@@ -118,10 +146,11 @@ onMounted(async () => {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuType"
-                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        class="block mb-3 text-sm font-semibold text-gray-800"
                         >CPU Type</label
                       >
                       <input
+                        disabled="true"
                         name="cpuType"
                         type="text"
                         :value="store.activeComputer.cpuType"
@@ -132,10 +161,11 @@ onMounted(async () => {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuNumber"
-                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        class="block mb-3 text-sm font-semibold text-gray-800"
                         >CPU Number</label
                       >
                       <input
+                        disabled="true"
                         name="cpuNumber"
                         type="text"
                         :value="store.activeComputer.cpuNumber"
@@ -146,10 +176,11 @@ onMounted(async () => {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuSpeed"
-                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        class="block mb-3 text-sm font-semibold text-gray-800"
                         >CPU Speed</label
                       >
                       <input
+                        disabled="true"
                         name="cpuSpeed"
                         type="text"
                         :value="store.activeComputer.cpuSpeed"
@@ -163,10 +194,11 @@ onMounted(async () => {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="physicalMemory"
-                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        class="block mb-3 text-sm font-semibold text-gray-800"
                         >Physical Memory</label
                       >
                       <input
+                        disabled="true"
                         name="physicalMemory"
                         type="text"
                         :value="store.activeComputer.totalPhysicalMemory"
@@ -177,10 +209,11 @@ onMounted(async () => {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="osName"
-                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        class="block mb-3 text-sm font-semibold text-gray-800"
                         >OS Name</label
                       >
                       <input
+                        disabled="true"
                         name="osName"
                         type="text"
                         :value="store.activeComputer.osName"
@@ -191,14 +224,30 @@ onMounted(async () => {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="lastLogonUser"
-                        class="block mb-3 text-sm font-semibold text-gray-500"
+                        class="block mb-3 text-sm font-semibold text-gray-800"
                         >Last Logon User</label
                       >
                       <input
+                        disabled="true"
                         name="lastLogonUser"
                         type="datetime"
                         placeholder="Last Logon User"
                         :value="store.activeComputer.lastLogonUser"
+                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      />
+                    </div>
+                    <div class="w-full lg:w-1/4">
+                      <label
+                        for="lastLogonUser"
+                        class="block mb-3 text-sm font-semibold text-gray-800"
+                        >Primary Username</label
+                      >
+                      <input
+                        disabled="true"
+                        name="lastLogonUser"
+                        type="datetime"
+                        placeholder="Last Logon User"
+                        :value="store.activeComputer.primaryUserName"
                         class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       />
                     </div>
@@ -209,25 +258,60 @@ onMounted(async () => {
           </div>
         </form>
         <div class="relative pt-3 xl:pt-6">
-          <label
-            for="note"
-            class="block mb-3 text-sm font-semibold text-gray-500"
-          >
-            Notes (Optional)</label
-          >
+          <div class="flex mb-2">
+            <div class="mt-1">
+              <label
+                for="note"
+                class="mr-2 text-sm font-semibold text-gray-800"
+              >
+                Notes</label
+              >
+            </div>
+
+            <button
+              class="flex px-2 py-2 text-sm text-blue-200 bg-blue-600 hover:bg-blue-900 disabled:bg-blue-400"
+              :disabled="currentlySaving || !formChanged"
+              v-on:click="saveNotes"
+            >
+              Save notes
+              <svg
+                v-if="currentlySaving"
+                class="w-4 h-4 mt-1 ml-2 mr-3 text-white animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            </button>
+
+            <div
+              class="mt-2 ml-2 text-sm font-semibold text-green-600 transition duration-200 ease-in-out"
+              v-if="changesRecentlySaved"
+            >
+              Changes Saved
+            </div>
+          </div>
           <textarea
             name="note"
             class="flex items-center w-full px-4 py-3 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-600"
             rows="4"
             placeholder="Notes"
+            v-model="store.activeComputer.workstationNotes"
+            v-on:keyup="setFormChanged"
           ></textarea>
-        </div>
-        <div class="mt-4">
-          <button
-            class="w-full px-6 py-2 text-blue-200 bg-blue-600 hover:bg-blue-900"
-          >
-            Save changes in notes section
-          </button>
         </div>
         <div class="py-4">
           <div
@@ -238,22 +322,22 @@ onMounted(async () => {
             </h2>
             <div class="space-x-0 lg:flex lg:space-x-4">
               <div class="w-full lg:w-1/4">
-                <label class="block mb-3 text-sm font-semibold text-gray-500"
+                <label class="block mb-3 text-sm font-semibold text-gray-800"
                   >Import Date</label
                 >
               </div>
               <div class="w-full lg:w-1/4">
-                <label class="block mb-3 text-sm font-semibold text-gray-500"
+                <label class="block mb-3 text-sm font-semibold text-gray-800"
                   >Last Logon User</label
                 >
               </div>
               <div class="w-full lg:w-1/4">
-                <label class="block mb-3 text-sm font-semibold text-gray-500"
+                <label class="block mb-3 text-sm font-semibold text-gray-800"
                   >Device Location</label
                 >
               </div>
               <div class="w-full lg:w-1/4">
-                <label class="block mb-3 text-sm font-semibold text-gray-500"
+                <label class="block mb-3 text-sm font-semibold text-gray-800"
                   >Last Communication</label
                 >
               </div>
