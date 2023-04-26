@@ -12,11 +12,11 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'UserPage',
-    path: '/user/:personid',
+    path: '/user/:username',
     component: UserPage,
     props: route => {
-      const personid = route.params.personid.toString();
-      return { personid };
+      const username = route.params.username.toString();
+      return { username };
     },
   },
   {

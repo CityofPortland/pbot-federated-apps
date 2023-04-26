@@ -1,5 +1,5 @@
 import { MaximoUser, PagedMaximoUsers } from './../types/pagedMaximoUsers';
-import { PagedCopActiveComputers } from './../types/pagedCopActiveComputers';
+import { CopActiveComputers, PagedCopActiveComputers } from './../types/pagedCopActiveComputers';
 // stores/counter.js
 import { defineStore } from 'pinia';
 import axios from 'axios';
@@ -21,8 +21,9 @@ export const useLcrStore = defineStore('lcr', {
     },
     /*getCopActiveComputers(state) {
       return state.pagedCopActiveComputers;
-    },*/
+    }, */
     getCopActiveComputers(state) {
+      console.log("person: ",person.displayName);
       return (person: MaximoUser) =>
         state.pagedCopActiveComputers.filter(item => {
           return item.primaryUser === person.displayName;
@@ -46,12 +47,15 @@ export const useLcrStore = defineStore('lcr', {
         console.log('fetchMaximoUsers from API', url.toString());
         const res = await axios.get(url.toString());
         this.pagedMaximoUsers = res.data;
+        console.log('Fetch results: ', this.pagedMaximoUsers.totalRecords.toString());
+        console.log('Fetch devices: ', this.pagedMaximoUsers.data[0].computerNames);
+        console.log('Fetch displayname: ', this.pagedMaximoUsers.data[0].displayName);
       } catch (error) {
         console.log('Error while fetching Maximo users: ', error);
       }
     },
     async fetchPbotLcrSchedule(primaryUser: string | null) {
-      let url =
+      let url = 
         'https://localhost:7110/api/workstation/GetPaginatedPbotLcrSchedule?pageNumber=1&pageSize=20';
 
       if (primaryUser) {
@@ -70,25 +74,23 @@ export const useLcrStore = defineStore('lcr', {
         );
       }
     },
-    async fetchCopActiveComputers(primaryUser: string | null) {
-      let url =
-        'https://localhost:7110/api/workstation/GetPaginatedCopActiveComputers?pageNumber=7&pageSize=20';
-
-      if (primaryUser) {
-        url = url + '&PrimaryUser=' + primaryUser;
+    async fetchCopActiveComputers(search: CopActiveComputers,  pageNumber: number) {
+      let url = new URL(
+        'https://localhost:7110/api/workstation/GetPaginatedCopActiveComputers'
+        );
+      for (const property in search) {
+        url.searchParams.append(`${property}`, `${search[property]}`);
       }
 
+      url.searchParams.append(`pageNumber`, pageNumber.toString());
+
       try {
-        const res = await axios.get(url);
-        this.pagedCopActiveComputers = res.data.data;
-        console.log(this.pagedCopActiveComputers);
+        console.log('fetchCopActiveComputers from API', url.toString());
+        const res = await axios.get(url.toString());
+        this.pagedCopActiveComputers = res.data;
+        console.log('CopActiveComputers Data: ',this.pagedCopActiveComputers.data[0]);
       } catch (error) {
-        console.log(
-          'Error while fetching Cop Active Computers for ',
-          primaryUser,
-          ': ',
-          error
-        );
+        console.log('Error while fetching Cop Active Computers for ', error);
       }
     },
   },

@@ -30,23 +30,39 @@ const ourSearch: MaximoUser = {
   computerNames: "",
 };
 
+const computerSearch: CopActiveComputers = {
+  computerName: "",
+  primaryUserName: "",
+  lastLogonUser: "",
+  costCenter: "",
+  deploymentDate: "",
+  primaryUser: "",
+  deviceLocation: "",
+  lastCommunication: "",
+  osName: "",
+  serialNumber: "",
+  manufacturer: "",
+  pcModel: "",
+  cpuType: "",
+  cpuNumber: "",
+  cpuSpeed: "",
+  totalPhysicalMemory: "",
+};
+
 const props = defineProps({
-  personid: { type: String, required: true },
+  username: { type: String, required: true },
 });
 
-let primaryUser = "";
-
-if (props.personid) {
-  let paramStr: string = props.personid;
-  let input_userId: string = paramStr.split(";")[0];
-  let input_displayName: string = paramStr.split(";")[1];
-
-  ourSearch.personId = input_userId;
-  console.log("Search PersonID = " + ourSearch.personId);
-  console.log("Search DisplayName = " + input_displayName);
+if (props.username) {
+  ourSearch.username = props.username;
+  console.log("Search MaximoUsers by Username = " + ourSearch.username);
   store.fetchMaximoUsers(ourSearch, 1);
 
-  store.fetchCopActiveComputers(input_displayName);
+  computerSearch.primaryUserName = props.username;
+  console.log(
+    "Search COPActiveComputers by Username = " + computerSearch.primaryUserName
+  );
+  store.fetchCopActiveComputers(computerSearch, 1);
 
   // const computers = store.fetchCopActiveComputers(primaryUser);
   // console.log("Devices = ", computers);
@@ -226,12 +242,16 @@ function getFormattedDate(input) {
       <div class="flex flex-col w-full ml-0 lg:ml-12 lg:w-2/5 mt-2">
         <div class="pt-12 md:pt-0 2xl:ps-4" v-if="store.pagedCopActiveComputers != null">
           <h2 class="text-xl font-bold">Computers</h2>
-          <div class="mt-8" v-for="device in store.pagedCopActiveComputers" :key="device">
+          <div
+            class="mt-8"
+            v-for="device in store.pagedCopActiveComputers.data"
+            :key="device"
+          >
             <div class="max-w-xs rounded shadow-md shadow-gray-300">
               <div class="p-4">
                 <div>
                   <h2 class="text-base font-bold text-gray-600">
-                    <router-link
+                    <RouterLink
                       :to="`/computer/${device.computerName}`"
                       custom
                       v-slot="{ href, navigate }"
@@ -239,7 +259,7 @@ function getFormattedDate(input) {
                       <Anchor :url="href" @click="navigate" class="no-underline">
                         {{ device.computerName }}
                       </Anchor>
-                    </router-link>
+                    </RouterLink>
                   </h2>
                   <p class="text-sm text-gray-400">
                     Deployment Date: {{ getFormattedDate(device.deploymentDate) }}

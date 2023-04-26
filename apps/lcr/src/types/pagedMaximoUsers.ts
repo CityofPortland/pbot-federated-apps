@@ -15,7 +15,7 @@ export type PagedMaximoUsers = {
 
 export type MaximoUser = {
   pernr: string;
-  username: string;
+  userName: string;
   personId: string;
   displayName: string;
   firstName: string;

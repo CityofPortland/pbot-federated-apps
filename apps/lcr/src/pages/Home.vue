@@ -38,10 +38,9 @@ async function findUsers() {
 function pagerChanged(pageNumber: number) {
   lcr.fetchMaximoUsers(ourSearch, pageNumber);
 }
-function loadUser(personid: string, displayname: string) {
-  let params: string = personid + ";" + displayname;
-  console.log("Home send these parameters: ", params);
-  router.push({ name: "UserPage", params: { personid: params } });
+function loadUser(username: string) {
+  console.log("Home send this username: ", username);
+  router.push({ name: "UserPage", params: { username: username } });
 }
 findUsers();
 </script>
@@ -176,10 +175,7 @@ findUsers();
           <tr class="hover:bg-slate-100">
             <td className="px-6 py-4 whitespace-nowrap">
               <div className="flex items-center">
-                <div
-                  className="ml-4"
-                  v-on:click="loadUser(person.personId, person.displayName)"
-                >
+                <div className="ml-4" v-on:click="loadUser(person.userName)">
                   <div className="text-sm font-medium text-gray-900">
                     {{ person.displayName }}
                   </div>

@@ -18,6 +18,7 @@ export type CopActiveComputers = {
   costCenter: string;
   deploymentDate: string;
   primaryUser: string;
+  primaryUserName: string;
   lastLogonUser: string;
   deviceLocation: string;
   lastCommunication: string;
