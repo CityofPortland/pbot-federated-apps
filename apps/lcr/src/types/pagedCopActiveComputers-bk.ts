@@ -18,7 +18,6 @@ export type PagedCopActiveComputer = {
   costCenter?: string;
   deploymentDate?: string;
   primaryUser?: string;
-  primaryUserName?: string;
   lastLogonUser?: string;
   deviceLocation?: string;
   lastCommunication?: string;
@@ -30,15 +29,5 @@ export type PagedCopActiveComputer = {
   cpuNumber?: string;
   cpuSpeed?: string;
   totalPhysicalMemory?: string;
-  workstationNotes?: string;
   copActiveComputersHistory?: CopActiveComputersHistory[];
-};
-
-export type CopActiveComputersHistory = {
-  computerName: string;
-  importDate: string;
-  primaryUser: string;
-  lastLogonUser: string;
-  deviceLocation: string;
-  lastCommunication: string;
 };
