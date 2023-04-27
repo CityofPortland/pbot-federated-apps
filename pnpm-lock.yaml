@@ -72,6 +72,7 @@ importers:
       '@pbotapps/components': workspace:^1.0.0
       '@vitejs/plugin-vue': ^2.3.4
       axios: ^1.3.2
+      moment: ^2.29.4
       pinia: ^2.0.30
       typescript: ^4.9.5
       vite: ^4.1.1
@@ -81,6 +82,7 @@ importers:
     dependencies:
       '@pbotapps/components': link:../../packages/components
       axios: 1.3.2
+      moment: 2.29.4
       pinia: 2.0.30_hmuptsblhheur2tugfgucj7gc4
       vue: 3.2.47
       vue-router: 4.1.6_vue@3.2.47
@@ -8157,7 +8159,6 @@ packages:
     resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
     requiresBuild: true
     dev: false
-    optional: true
 
   /ms/2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
