@@ -1,6 +1,6 @@
 import { MaximoUser, PagedMaximoUsers } from './../types/pagedMaximoUsers';
-import { CopActiveComputers, PagedCopActiveComputers } from './../types/pagedCopActiveComputers';
-// stores/counter.js
+import { CopActiveComputers, PagedCopActiveComputer } from './../types/pagedCopActiveComputers';
+import { LcrPaginatedData } from '../types/lcrPaginatedData';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { PagedMaximoUsers, MaximoUser } from '../types/pagedMaximoUsers';
@@ -10,7 +10,8 @@ export const useLcrStore = defineStore('lcr', {
     pagedMaximoUsers: null as PagedMaximoUsers | null,
     pagedPbotLcrSchedule: [],
     pagedCopActiveComputers: [],
-    //startFlag: false,
+    activeComputer: null as PagedCopActiveComputer | null,
+    activeMaximoUser: null as MaximoUser | null,
   }),
   getters: {
     getMaximoUsers(state) {
@@ -18,16 +19,6 @@ export const useLcrStore = defineStore('lcr', {
     },
     getPbotLcrSchedule(state) {
       return state.pagedPbotLcrSchedule;
-    },
-    /*getCopActiveComputers(state) {
-      return state.pagedCopActiveComputers;
-    }, */
-    getCopActiveComputers(state) {
-      console.log("person: ",person.displayName);
-      return (person: MaximoUser) =>
-        state.pagedCopActiveComputers.filter(item => {
-          return item.primaryUser === person.displayName;
-        });
     },
   },
 
@@ -44,7 +35,7 @@ export const useLcrStore = defineStore('lcr', {
       url.searchParams.append(`pageNumber`, pageNumber.toString());
 
       try {
-        console.log('fetchMaximoUsers from API', url.toString());
+        //console.log('fetchMaximoUsers from API', url.toString());
         const res = await axios.get(url.toString());
         this.pagedMaximoUsers = res.data;
         console.log('Fetch results: ', this.pagedMaximoUsers.totalRecords.toString());
@@ -52,6 +43,41 @@ export const useLcrStore = defineStore('lcr', {
         console.log('Fetch displayname: ', this.pagedMaximoUsers.data[0].displayName);
       } catch (error) {
         console.log('Error while fetching Maximo users: ', error);
+      }
+    },
+    async fetchCopActiveComputer(computerNameSearch: string) {
+      const url = new URL(
+        'https://localhost:7110/api/Workstation/GetCopActiveComputer'
+      );
+
+      url.searchParams.append('computerName', computerNameSearch);
+      //url.searchParams.append(`pageNumber`, '1');
+      //url.searchParams.append(`totalRecords`, '1');
+
+      try {
+        //console.log('fetchCopActiveComputer from API', url.toString());
+        const res = await axios.get(url.toString());
+        this.activeComputer = res.data;
+      } catch (error) {
+        console.log(
+          `Error in fetchCopActiveComputer: ${computerNameSearch} `,
+          error
+        );
+      }
+    },
+    async fetchMaximoUser(maximoUserSearch: string) {
+      const url = new URL(
+        'https://localhost:7110/api/Workstation/GetMaximoUser'
+      );
+
+      url.searchParams.append('maximoUser', maximoUserSearch);
+
+      try {
+        console.log('fetchMaximoUser from API', url.toString());
+        const res = await axios.get(url.toString());
+        this.activeMaximoUser = res.data;
+      } catch (error) {
+        console.log(`Error in fetchMaximoUser: ${maximoUserSearch} `, error);
       }
     },
     async fetchPbotLcrSchedule(primaryUser: string | null) {
@@ -92,6 +118,27 @@ export const useLcrStore = defineStore('lcr', {
       } catch (error) {
         console.log('Error while fetching Cop Active Computers for ', error);
       }
+    },
+    async updateNoteField(
+      computerName: string,
+      newNote: string
+    ): Promise<number> {
+      const url = new URL(
+        `https://localhost:7110/api/workstation/updateNote/${computerName}`
+      );
+
+      try {
+        const params = new URLSearchParams();
+        params.append('newNote', newNote);
+
+        await axios.post(url.toString(), params).then(response => {
+          console.log('done saving.', response.status);
+          return response.status;
+        });
+      } catch (error) {
+        console.log('Error while fetching Maximo users: ', error);
+      }
+      return 500;
     },
   },
 });
