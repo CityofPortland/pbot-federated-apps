@@ -1,5 +1,8 @@
 import { MaximoUser } from './../types/pagedMaximoUsers';
-import { PagedCopActiveComputer } from './../types/pagedCopActiveComputers';
+import {
+  PagedCopActiveComputer,
+  CopActiveComputer,
+} from './../types/pagedCopActiveComputers';
 import { LcrPaginatedData } from '../types/lcrPaginatedData';
 import { defineStore } from 'pinia';
 import axios from 'axios';
@@ -24,7 +27,7 @@ export const useLcrStore = defineStore('lcr', {
   actions: {
     async fetchMaximoUsers(search: MaximoUser, pageNumber: number) {
       const url = new URL(
-        'https://localhost:7110/api/workstation/GetPaginatedMaximoUsers'
+        import.meta.env.VITE_BASE_URL + '/GetPaginatedMaximoUsers'
       );
 
       for (const property in search) {
@@ -46,42 +49,36 @@ export const useLcrStore = defineStore('lcr', {
     },
     async fetchCopActiveComputer(computerNameSearch: string) {
       const url = new URL(
-        'https://localhost:7110/api/Workstation/GetCopActiveComputer'
+        import.meta.env.VITE_BASE_URL + '/GetCopActiveComputer'
       );
 
       url.searchParams.append('computerName', computerNameSearch);
-      //url.searchParams.append(`pageNumber`, '1');
-      //url.searchParams.append(`totalRecords`, '1');
 
       try {
         //console.log('fetchCopActiveComputer from API', url.toString());
         const res = await axios.get(url.toString());
         this.activeComputer = res.data;
       } catch (error) {
-        console.log(
-          `Error in fetchCopActiveComputer: ${computerNameSearch} `,
-          error
-        );
+        //console.log(`Error in fetchCopActiveComputer: ${computerNameSearch} `, error);
       }
     },
-    async fetchMaximoUser(maximoUserSearch: string) {
-      const url = new URL(
-        'https://localhost:7110/api/Workstation/GetMaximoUser'
-      );
+    async fetchMaximoUser(userName: string) {
+      const url = new URL(import.meta.env.VITE_BASE_URL + '/GetMaximoUser');
 
-      url.searchParams.append('maximoUser', maximoUserSearch);
+      url.searchParams.append('username', userName);
 
       try {
-        console.log('fetchMaximoUser from API', url.toString());
+        //console.log('fetchMaximoUser from API', url.toString());
         const res = await axios.get(url.toString());
         this.activeMaximoUser = res.data;
       } catch (error) {
-        console.log(`Error in fetchMaximoUser: ${maximoUserSearch} `, error);
+        console.log(`Error in fetchMaximoUser: ${userName} `, error);
       }
     },
     async fetchPbotLcrSchedule(primaryUser: string | null) {
       let url =
-        'https://localhost:7110/api/workstation/GetPaginatedPbotLcrSchedule?pageNumber=1&pageSize=20';
+        import.meta.env.VITE_BASE_URL +
+        '/GetPaginatedPbotLcrSchedule?pageNumber=1&pageSize=20';
 
       if (primaryUser) {
         url = url + '&PrimaryUser=' + primaryUser;
@@ -101,7 +98,8 @@ export const useLcrStore = defineStore('lcr', {
     },
     async fetchCopActiveComputers(primaryUser: string | null) {
       let url =
-        'https://localhost:7110/api/workstation/GetPaginatedCopActiveComputers?pageNumber=7&pageSize=20';
+        import.meta.env.VITE_BASE_URL +
+        '/GetPaginatedCopActiveComputers?pageNumber=7&pageSize=20';
 
       if (primaryUser) {
         url = url + '&PrimaryUser=' + primaryUser;
@@ -110,7 +108,6 @@ export const useLcrStore = defineStore('lcr', {
       try {
         const res = await axios.get(url);
         this.pagedCopActiveComputers = res.data.data;
-        console.log(this.pagedCopActiveComputers);
       } catch (error) {
         console.log(
           'Error while fetching Cop Active Computers for ',
@@ -120,12 +117,31 @@ export const useLcrStore = defineStore('lcr', {
         );
       }
     },
+    async fetchCopActiveComputersByUsername(
+      primaryUsername: string
+    ): Promise<CopActiveComputer[]> {
+      const url = new URL(
+        import.meta.env.VITE_BASE_URL +
+          `/GetCopActiveComputersByUsername/${primaryUsername}`
+      );
+
+      try {
+        //console.log('fetchCopActiveComputers from API', url.toString());
+        const res = await axios.get(url.toString());
+        return res.data;
+      } catch (error) {
+        console.log('Error while fetching Cop Active Computers for ', error);
+      }
+
+      const emptyArr: CopActiveComputer[] = [];
+      return emptyArr;
+    },
     async updateNoteField(
       computerName: string,
       newNote: string
     ): Promise<number> {
       const url = new URL(
-        `https://localhost:7110/api/workstation/updateNote/${computerName}`
+        import.meta.env.VITE_BASE_URL + `/updateNote/${computerName}`
       );
 
       try {
@@ -133,7 +149,7 @@ export const useLcrStore = defineStore('lcr', {
         params.append('newNote', newNote);
 
         await axios.post(url.toString(), params).then(response => {
-          console.log('done saving.', response.status);
+          //console.log('done saving.', response.status);
           return response.status;
         });
       } catch (error) {

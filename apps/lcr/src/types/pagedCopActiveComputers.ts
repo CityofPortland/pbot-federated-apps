@@ -42,3 +42,22 @@ export type CopActiveComputersHistory = {
   deviceLocation: string;
   lastCommunication: string;
 };
+
+export type CopActiveComputer = {
+  computerName: string;
+  costCenter: string;
+  deploymentDate: string;
+  primaryUser: string;
+  primaryUserName: string;
+  lastLogonUser: string;
+  deviceLocation: string;
+  lastCommunication: string;
+  osName: string;
+  serialNumber: string;
+  manufacturer: string;
+  pcModel: string;
+  cpuType: string;
+  cpuNumber: string;
+  cpuSpeed: string;
+  totalPhysicalMemory: string;
+};
