@@ -11,12 +11,11 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'UserPage',
-    path: '/user/:personid',
+    path: '/user/:username',
     component: UserPage,
     props: route => {
-      const userid = route.params.personid.toString();
-
-      return { userid };
+      const username = route.params.username.toString();
+      return { username };
     },
   },
   {
@@ -31,6 +30,6 @@ const routes: RouteRecordRaw[] = [
 ];
 
 export default createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory('/apps/lcrdev/'),
   routes,
 });
