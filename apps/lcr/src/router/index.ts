@@ -30,6 +30,6 @@ const routes: RouteRecordRaw[] = [
 ];
 
 export default createRouter({
-  history: createWebHistory('/apps/lcrdev/'),
+  history: createWebHistory(import.meta.env.VITE_BASE_PATH),
   routes,
 });
