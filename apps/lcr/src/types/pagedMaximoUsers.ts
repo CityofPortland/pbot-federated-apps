@@ -23,5 +23,6 @@ export type MaximoUser = {
   pbotCostCenter: string;
   pbotOrgUnit: string;
   emailAddress: string;
+  supervisorName?: string;
   computerNames: string;
 };

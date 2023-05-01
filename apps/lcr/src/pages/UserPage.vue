@@ -84,7 +84,7 @@ onMounted(async () => {
                     disabled
                     name="Supervisor"
                     type="text"
-                    placeholder="Supervisor"
+                    v-model="store.activeMaximoUser.supervisorName"
                     class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
