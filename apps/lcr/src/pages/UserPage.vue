@@ -1,44 +1,44 @@
 <script setup lang="ts">
-import { Anchor } from '@pbotapps/components';
-import { Ref, ref, onMounted } from 'vue';
-import { MaximoUser } from '../types/pagedMaximoUsers';
-import { CopActiveComputer } from '../types/pagedCopActiveComputers';
+import { Anchor } from "@pbotapps/components";
+import { Ref, ref, onMounted } from "vue";
+import { MaximoUser } from "../types/pagedMaximoUsers";
+import { CopActiveComputer } from "../types/pagedCopActiveComputers";
 
-import { useLcrStore } from '../store/lcr';
+import { useLcrStore } from "../store/lcr";
 
-import moment from 'moment';
+import moment from "moment";
 
 const store = useLcrStore();
 const ourSearch: MaximoUser = {
-  pernr: '',
-  userName: '',
-  personId: '',
-  displayName: '',
-  firstName: '',
-  lastName: '',
-  pbotCostCenter: '',
-  pbotOrgUnit: '',
-  emailAddress: '',
-  computerNames: '',
+  pernr: "",
+  userName: "",
+  personId: "",
+  displayName: "",
+  firstName: "",
+  lastName: "",
+  pbotCostCenter: "",
+  pbotOrgUnit: "",
+  emailAddress: "",
+  computerNames: "",
 };
 
 const computerSearch: CopActiveComputer = {
-  computerName: '',
-  primaryUserName: '',
-  lastLogonUser: '',
-  costCenter: '',
-  deploymentDate: '',
-  primaryUser: '',
-  deviceLocation: '',
-  lastCommunication: '',
-  osName: '',
-  serialNumber: '',
-  manufacturer: '',
-  pcModel: '',
-  cpuType: '',
-  cpuNumber: '',
-  cpuSpeed: '',
-  totalPhysicalMemory: '',
+  computerName: "",
+  primaryUserName: "",
+  lastLogonUser: "",
+  costCenter: "",
+  deploymentDate: "",
+  primaryUser: "",
+  deviceLocation: "",
+  lastCommunication: "",
+  osName: "",
+  serialNumber: "",
+  manufacturer: "",
+  pcModel: "",
+  cpuType: "",
+  cpuNumber: "",
+  cpuSpeed: "",
+  totalPhysicalMemory: "",
 };
 
 const usersComputers: Ref<CopActiveComputer[]> = ref([]);
@@ -73,8 +73,8 @@ onMounted(async () => {
           </h1>
           <form>
             <div class="">
-              <div class="mt-6 space-x-0 lg:flex lg:space-x-4">
-                <div class="w-full lg:w-1/2">
+              <div class="mt-6 space-x-0 lg:flex lg:space-x-6">
+                <div class="w-full lg:w-1/3">
                   <label
                     for="Supervisor"
                     class="block mb-3 text-sm font-semibold text-gray-500"
@@ -89,7 +89,7 @@ onMounted(async () => {
                   />
                 </div>
 
-                <div class="w-full lg:w-1/2">
+                <div class="w-full lg:w-1/3">
                   <label
                     for="Email"
                     class="block mb-3 text-sm font-semibold text-gray-500"
@@ -104,9 +104,7 @@ onMounted(async () => {
                     class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
-              </div>
-              <div class="mt-6 space-x-0 lg:flex lg:space-x-4">
-                <div class="w-full lg:w-1/2">
+                <div class="w-full lg:w-1/3">
                   <label
                     for="personId"
                     class="block mb-3 text-sm font-semibold text-gray-500"
@@ -121,7 +119,9 @@ onMounted(async () => {
                     class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
-                <div class="w-full lg:w-1/2">
+              </div>
+              <div class="mt-6 space-x-0 lg:flex lg:space-x-4">
+                <div class="w-full lg:w-1/3">
                   <label
                     for="Username"
                     class="block mb-3 text-sm font-semibold text-gray-500"
@@ -136,9 +136,7 @@ onMounted(async () => {
                     class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
-              </div>
-              <div class="mt-6 space-x-0 lg:flex lg:space-x-4">
-                <div class="w-full lg:w-1/2">
+                <div class="w-full lg:w-1/3">
                   <label
                     for="costCenter"
                     class="block mb-3 text-sm font-semibold text-gray-500"
@@ -153,7 +151,7 @@ onMounted(async () => {
                     class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
-                <div class="w-full lg:w-1/2">
+                <div class="w-full lg:w-1/3">
                   <label
                     for="orgUnit"
                     class="block mb-3 text-sm font-semibold text-gray-500"
@@ -169,47 +167,51 @@ onMounted(async () => {
                   />
                 </div>
               </div>
+              <div class="mt-6 space-x-0 lg:flex lg:space-x-4"></div>
             </div>
-          </form>
-        </div>
-        <div class="flex flex-col w-full ml-0 lg:ml-12 lg:w-2/5 mt-2">
-          <div class="pt-12 md:pt-0 2xl:ps-4" v-if="usersComputers">
-            <h2 class="text-xl font-bold">Computers</h2>
-            <div
-              class="mt-8"
-              v-for="device in usersComputers"
-              :key="device.computerName"
-            >
-              <div class="max-w-xs rounded shadow-md shadow-gray-300">
-                <div class="p-4">
-                  <div>
-                    <h2 class="text-base font-bold text-gray-600">
-                      <RouterLink
-                        :to="`/computer/${device.computerName}`"
-                        custom
-                        v-slot="{ href, navigate }"
-                      >
-                        <Anchor
-                          :url="href"
-                          @click="navigate"
-                          class="no-underline"
+            <h2 class="text-xl font-bold text-blue-600">Computers</h2>
+            <div class="flex flex-wrap">
+              <!-- <div class="mt-6 space-x-2" > -->
+
+              <div
+                class="w-full lg:w-1/3 lg:space-x-4 mb-4"
+                v-if="usersComputers"
+                v-for="device in usersComputers"
+                :key="device.computerName"
+              >
+                <div class="max-w-xs mt-6 ps-0 rounded shadow-md shadow-gray-200">
+                  <div class="p-4">
+                    <div>
+                      <h2 class="text-base font-bold text-gray-600">
+                        <RouterLink
+                          style="text-decoration: none; color: inherit"
+                          :to="`/computer/${device.computerName}`"
+                          custom
+                          v-slot="{ href, navigate }"
                         >
-                          {{ device.computerName }}
-                        </Anchor>
-                      </RouterLink>
-                    </h2>
-                    <p class="text-sm text-gray-400">
-                      Deployment Date:
-                      {{ moment(device.deploymentDate).format('YYYY/MM/DD') }}
-                    </p>
-                    <p class="text-sm text-gray-400">
-                      Last Logon User: {{ device.lastLogonUser }}
-                    </p>
+                          <Anchor :url="href" @click="navigate">
+                            {{ device.computerName }}
+                          </Anchor>
+                        </RouterLink>
+                      </h2>
+                      <p class="text-sm text-gray-400">
+                        Last Login Date:
+                        {{ moment(device.lastCommunication).format("YYYY/MM/DD") }}
+                      </p>
+                      <p class="text-sm text-gray-400">
+                        Last Logon User: {{ device.lastLogonUser }}
+                      </p>
+                      <p class="text-sm text-gray-400">
+                        Deployment Date:
+                        {{ moment(device.deploymentDate).format("YYYY/MM/DD") }}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
+              <!-- </div> -->
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
