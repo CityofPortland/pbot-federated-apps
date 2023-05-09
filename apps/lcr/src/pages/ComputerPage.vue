@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useLcrStore } from '../store/lcr';
+import { useRouter } from 'vue-router';
+import { IconUserCircle } from '@tabler/icons-vue';
 import CollapsablePanel from '../components/CollapsablePanel/CollapsablePanel.vue';
 
 const store = useLcrStore();
+const router = useRouter();
 
 const props = defineProps({
   computerName: { type: String, required: true },
@@ -22,6 +25,10 @@ const changesRecentlySaved = ref(false);
 function setFormChanged() {
   formChanged.value = true;
   changesRecentlySaved.value = false;
+}
+
+function loadUser(username: string) {
+  router.push({ name: 'UserPage', params: { username: username } });
 }
 
 async function saveNotes() {
@@ -53,9 +60,9 @@ async function saveNotes() {
   >
     <div class="flex flex-col w-full px-0 mx-auto md:flex-row">
       <div class="flex flex-col md:w-full">
-        <h2 class="mb-4 font-bold text-2xl text-heading">
+        <h1 class="mb-4 font-bold text-blue-600 text-3xl">
           {{ props.computerName }}
-        </h2>
+        </h1>
 
         <form class="justify-center w-full mx-auto">
           <div class="">
@@ -227,14 +234,24 @@ async function saveNotes() {
                         class="block mb-3 text-sm font-semibold text-gray-800"
                         >Last Logon User</label
                       >
-                      <input
-                        disabled="true"
-                        name="lastLogonUser"
-                        type="datetime"
-                        placeholder="Last Logon User"
-                        :value="store.activeComputer.lastLogonUser"
-                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      />
+                      <form class="flex flex-row">
+                        <span
+                          class="flex items-center rounded rounded-r-none border-0 font-bold text-grey-100 pr-1"
+                          ><IconUserCircle
+                            :size="30"
+                            v-on:click="
+                              loadUser(store.activeComputer.lastLogonUser)
+                            "
+                        /></span>
+                        <input
+                          disabled="true"
+                          name="lastLogonUser"
+                          type="text"
+                          placeholder="Last Logon User"
+                          :value="store.activeComputer.lastLogonUser"
+                          class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        />
+                      </form>
                     </div>
                     <div class="w-full lg:w-1/4">
                       <label
@@ -242,14 +259,24 @@ async function saveNotes() {
                         class="block mb-3 text-sm font-semibold text-gray-800"
                         >Primary Username</label
                       >
-                      <input
-                        disabled="true"
-                        name="lastLogonUser"
-                        type="datetime"
-                        placeholder="Last Logon User"
-                        :value="store.activeComputer.primaryUserName"
-                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      />
+                      <form class="flex flex-row">
+                        <span
+                          class="flex items-center rounded rounded-r-none border-0 font-bold text-grey-100 pr-1"
+                          ><IconUserCircle
+                            :size="30"
+                            v-on:click="
+                              loadUser(store.activeComputer.primaryUserName)
+                            "
+                        /></span>
+                        <input
+                          disabled="true"
+                          name="primaryUsername"
+                          type="text"
+                          placeholder="Primary Username"
+                          :value="store.activeComputer.primaryUserName"
+                          class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                        />
+                      </form>
                     </div>
                   </div>
                 </template>
@@ -328,12 +355,12 @@ async function saveNotes() {
               </div>
               <div class="w-full lg:w-1/4">
                 <label class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Last Logon User</label
+                  >Device Location</label
                 >
               </div>
               <div class="w-full lg:w-1/4">
                 <label class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Device Location</label
+                  >Last Logon User</label
                 >
               </div>
               <div class="w-full lg:w-1/4">
@@ -354,10 +381,10 @@ async function saveNotes() {
                     {{ history.importDate?.substring(0, 10) }}
                   </div>
                   <div class="w-full lg:w-1/4 text-sm lg:text-sm">
-                    {{ history.lastLogonUser }}
+                    {{ history.deviceLocation }}
                   </div>
                   <div class="w-full lg:w-1/4 text-sm lg:text-sm">
-                    {{ history.deviceLocation }}
+                    {{ history.lastLogonUser }}
                   </div>
                   <div class="w-full lg:w-1/4 text-sm lg:text-sm">
                     {{ history.lastCommunication?.substring(0, 10) }}
