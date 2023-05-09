@@ -33,3 +33,12 @@ export type PbotLcrSchedule = {
   lcrDate: string;
   quarterOrderDate: string;
 };
+
+export type PbotLcrScheduleSearchFilter = {
+  computerName?: string;
+  primaryUser?: string;
+  lastLogonUser?: string;
+  quarterOrderDate?: string;
+  fromLcrDate?: string;
+  toLcrDate?: string;
+};

@@ -9,10 +9,17 @@ const props = defineProps({
     type: Object as () => LcrPaginatedData<unknown>,
     required: true,
   },
+  pageNumber: {
+    type: Number,
+    required: true,
+  },
 });
 
-let pageNumber = ref(1);
-const { pagedData } = toRefs(props);
+//let pageNumber = ref(1);
+
+const { pagedData, pageNumber } = toRefs(props);
+
+let pageNumberLocal = ref(pageNumber.value);
 
 // whenever you re-search we need to let this pager know
 // that the paging has been reset and we're going to the first page
@@ -24,29 +31,30 @@ const emit = defineEmits<{
 
 function goToFirstPage() {
   //console.log('pager.goToFirstPage');
-  pageNumber.value = 1;
-  emit('pagerChanged', pageNumber.value);
+  pageNumberLocal.value = 1;
+  emit('pagerChanged', pageNumberLocal.value);
 }
 
 function goToLastPage() {
   //console.log('pager.goToLastPage');
-  pageNumber.value = props.pagedData.totalPages;
-  emit('pagerChanged', pageNumber.value);
+  pageNumberLocal.value = props.pagedData.totalPages;
+  emit('pagerChanged', pageNumberLocal.value);
 }
 
 function goToPreviousPage() {
   //console.log('pager.goToPreviousPage');
-  if (pageNumber.value > 1) {
-    pageNumber.value--;
-    emit('pagerChanged', pageNumber.value);
+  if (pageNumberLocal.value > 1) {
+    pageNumberLocal.value--;
+    emit('pagerChanged', pageNumberLocal.value);
   }
 }
 
 function goToNextPage() {
-  //console.log('pager.goToNextPage');
-  if (pageNumber.value < props.pagedData.totalPages) {
-    pageNumber.value++;
-    emit('pagerChanged', pageNumber.value);
+  console.log('pager.goToNextPage', pageNumberLocal.value);
+  if (pageNumberLocal.value < props.pagedData.totalPages) {
+    pageNumberLocal.value++;
+    console.log('pager.goToNextPage after inc:', pageNumberLocal.value);
+    emit('pagerChanged', pageNumberLocal.value);
   }
 }
 </script>
