@@ -4,6 +4,7 @@ importers:
 
   .:
     specifiers:
+      '@tabler/icons-vue': ^2.17.0
       '@tailwindcss/typography': ^0.5.9
       '@typescript-eslint/eslint-plugin': ^5.51.0
       '@typescript-eslint/parser': ^5.51.0
@@ -13,10 +14,14 @@ importers:
       eslint-config-typescript: ^3.0.0
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-vue: ^9.9.0
+      pinia-plugin-persistedstate: ^3.1.0
       prettier: ^2.8.4
       tailwindcss: ^3.2.6
       tslib: ^2.5.0
       typescript: ^4.9.5
+    dependencies:
+      '@tabler/icons-vue': 2.17.0
+      pinia-plugin-persistedstate: 3.1.0
     devDependencies:
       '@tailwindcss/typography': 0.5.9_tailwindcss@3.2.6
       '@typescript-eslint/eslint-plugin': 5.51.0_b635kmla6dsb4frxfihkw4m47e
@@ -3099,6 +3104,18 @@ packages:
     resolution: {integrity: sha512-/fXkh1lwZ+X9JQCw50mPjhBogzEHOBvVC5pLoDLZqodVYK0DGWILM2YLV4dcIUBNEK8/HMDpO/Rq81/rS3mNOw==}
     engines: {node: '>=12.10.0', npm: '>=6.0.0'}
     hasBin: true
+
+  /@tabler/icons-vue/2.17.0:
+    resolution: {integrity: sha512-b3wSJV9OCH9XOwfT9mSn3BQ2YWIMoX35R+xFK5HuRkqJ3psCQeUMTg35prXcZQCMztdxZNbz788V21bq0LFe9g==}
+    peerDependencies:
+      vue: '>=3.0.1'
+    dependencies:
+      '@tabler/icons': 2.17.0
+    dev: false
+
+  /@tabler/icons/2.17.0:
+    resolution: {integrity: sha512-UeJaylOGNRhQKyDlgZfrQ3UPSGlfVQuXcmCsTYeXioKKepibW6VZ3H36Lo1jvBTBkQD2e9m+k2NxwkztOTXwrA==}
+    dev: false
 
   /@tailwindcss/typography/0.5.9_tailwindcss@3.2.6:
     resolution: {integrity: sha512-t8Sg3DyynFysV9f4JDOVISGsjazNb48AeIYQwcL+Bsq5uf4RYL75C1giZ43KISjeDGBaTN3Kxh7Xj/vRSMJUUg==}
@@ -8724,6 +8741,12 @@ packages:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /pinia-plugin-persistedstate/3.1.0:
+    resolution: {integrity: sha512-8UN+vYMEPBdgNLwceY08mi5olI0wkYaEb8b6hD6xW7SnBRuPydWHlEhZvUWgNb/ibuf4PvufpvtS+dmhYjJQOw==}
+    peerDependencies:
+      pinia: ^2.0.0
+    dev: false
 
   /pinia/2.0.30_hmuptsblhheur2tugfgucj7gc4:
     resolution: {integrity: sha512-q6DUmxWwe/mQgg+55QQjykpKC+aGeGdaJV3niminl19V08dE+LRTvSEuqi6/NLSGCKHI49KGL6tMNEOssFiMyA==}
