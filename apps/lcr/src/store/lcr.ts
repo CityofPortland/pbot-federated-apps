@@ -41,7 +41,7 @@ export const useLcrStore = defineStore('lcr', {
   },
 
   actions: {
-    getMinutesSinceLastLoad() {
+    getPbotLcrScheduleMinutesSinceLastSearch() {
       return (
         (Date.now() -
           new Date(this.pbotLcrscheduleDateLastRefreshed).getTime()) /
@@ -52,7 +52,6 @@ export const useLcrStore = defineStore('lcr', {
 
     setPbotLcrScheduleSearch(search: PbotLcrScheduleSearchFilter) {
       this.pbotLcrScheduleSearch = search;
-      console.log('stuff');
     },
 
     async fetchLcrSchedule(
@@ -77,7 +76,9 @@ export const useLcrStore = defineStore('lcr', {
       url.searchParams.append('pageNumber', pageNumber.toString());
 
       try {
-        //console.log('fetchLcrSchedule from API', url.toString());
+        if (import.meta.env.VITE_API_DEBUG === '1') {
+          console.log('fetchLcrSchedule: ', url.toString());
+        }
         const res = await axios.get(url.toString());
         this.pbotLcrSchedulePaged = res.data;
       } catch (error) {
@@ -99,7 +100,9 @@ export const useLcrStore = defineStore('lcr', {
       url.searchParams.append(`pageNumber`, pageNumber.toString());
 
       try {
-        //console.log('fetchMaximoUsers from API', url.toString());
+        if (import.meta.env.VITE_API_DEBUG === '1') {
+          console.log('fetchMaximoUsers: ', url.toString());
+        }
         const res = await axios.get(url.toString());
         this.pagedMaximoUsers = res.data;
       } catch (error) {
@@ -114,11 +117,16 @@ export const useLcrStore = defineStore('lcr', {
       url.searchParams.append('computerName', computerNameSearch);
 
       try {
-        //console.log('fetchCopActiveComputer from API', url.toString());
+        if (import.meta.env.VITE_API_DEBUG === '1') {
+          console.log('fetchCopActiveComputer: ', url.toString());
+        }
         const res = await axios.get(url.toString());
         this.activeComputer = res.data;
       } catch (error) {
-        //console.log(`Error in fetchCopActiveComputer: ${computerNameSearch} `, error);
+        console.log(
+          `Error in fetchCopActiveComputer: ${computerNameSearch} `,
+          error
+        );
       }
     },
     async fetchMaximoUser(userName: string) {
@@ -127,48 +135,13 @@ export const useLcrStore = defineStore('lcr', {
       url.searchParams.append('username', userName);
 
       try {
-        //console.log('fetchMaximoUser from API', url.toString());
+        if (import.meta.env.VITE_API_DEBUG === '1') {
+          console.log('fetchMaximoUser: ', url.toString());
+        }
         const res = await axios.get(url.toString());
         this.activeMaximoUser = res.data;
       } catch (error) {
         console.log(`Error in fetchMaximoUser: ${userName} `, error);
-      }
-    },
-    async fetchPbotLcrSchedule(primaryUser: string | null) {
-      let url =
-        import.meta.env.VITE_BASE_URL +
-        '/GetPaginatedPbotLcrSchedule?pageNumber=1&pageSize=20';
-
-      if (primaryUser) {
-        url = url + '&PrimaryUser=' + primaryUser;
-      }
-
-      try {
-        const res = await axios.get(url);
-        this.pbotLcrSchedulePaged = res.data.data;
-      } catch (error) {
-        //console.log('Error while fetching Pbot Lcr Schedule for ', primaryUser, ': ', error );
-      }
-    },
-    async fetchCopActiveComputers(primaryUser: string | null) {
-      let url =
-        import.meta.env.VITE_BASE_URL +
-        '/GetPaginatedCopActiveComputers?pageNumber=7&pageSize=20';
-
-      if (primaryUser) {
-        url = url + '&PrimaryUser=' + primaryUser;
-      }
-
-      try {
-        const res = await axios.get(url);
-        this.pagedCopActiveComputers = res.data.data;
-      } catch (error) {
-        console.log(
-          'Error while fetching Cop Active Computers for ',
-          primaryUser,
-          ': ',
-          error
-        );
       }
     },
     async fetchCopActiveComputersByUsername(
@@ -180,7 +153,9 @@ export const useLcrStore = defineStore('lcr', {
       );
 
       try {
-        //console.log('fetchCopActiveComputers from API', url.toString());
+        if (import.meta.env.VITE_API_DEBUG === '1') {
+          console.log('fetchCopActiveComputersByUsername: ', url.toString());
+        }
         const res = await axios.get(url.toString());
         return res.data;
       } catch (error) {
@@ -202,10 +177,14 @@ export const useLcrStore = defineStore('lcr', {
         const params = new URLSearchParams();
         params.append('newNote', newNote);
 
-        await axios.post(url.toString(), params).then(response => {
-          //console.log('done saving.', response.status);
-          return response.status;
-        });
+        const response = await axios
+          .post(url.toString(), params)
+          .then(response => {
+            console.log('done saving.', response.status);
+            return response.status;
+          });
+
+        return response;
       } catch (error) {
         console.log('Error while fetching Maximo users: ', error);
       }

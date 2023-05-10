@@ -15,8 +15,6 @@ const props = defineProps({
   },
 });
 
-//let pageNumber = ref(1);
-
 const { pagedData, pageNumber } = toRefs(props);
 
 let pageNumberLocal = ref(pageNumber.value);
@@ -50,10 +48,10 @@ function goToPreviousPage() {
 }
 
 function goToNextPage() {
-  console.log('pager.goToNextPage', pageNumberLocal.value);
+  //console.log('pager.goToNextPage', pageNumberLocal.value);
   if (pageNumberLocal.value < props.pagedData.totalPages) {
     pageNumberLocal.value++;
-    console.log('pager.goToNextPage after inc:', pageNumberLocal.value);
+    //console.log('pager.goToNextPage after inc:', pageNumberLocal.value);
     emit('pagerChanged', pageNumberLocal.value);
   }
 }
