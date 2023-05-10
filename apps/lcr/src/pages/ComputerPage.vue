@@ -10,9 +10,7 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-  if (props.computerName != store.activeComputer?.computerName) {
-    store.fetchCopActiveComputer(props.computerName);
-  }
+  store.fetchCopActiveComputer(props.computerName);
 });
 
 const formChanged = ref(false);
@@ -32,14 +30,13 @@ async function saveNotes() {
     store.activeComputer?.workstationNotes || ''
   );
 
-  console.log('currently saving is false', status);
-  currentlySaving.value = false;
-  formChanged.value = false;
-  changesRecentlySaved.value = true;
-
-  setTimeout(function () {
-    changesRecentlySaved.value = false;
-  }, 4000);
+  if (status == 200) {
+    currentlySaving.value = false;
+    formChanged.value = false;
+    changesRecentlySaved.value = true;
+  } else {
+    console.log('Error while saving.', status);
+  }
 }
 </script>
 

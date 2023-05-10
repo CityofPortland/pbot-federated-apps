@@ -23,6 +23,7 @@ function pagerChanged(pageNumber: number) {
 }
 
 async function searchSchedule() {
+  lcr.pbotLcrSchedulePageNumber = 1;
   lcr.fetchLcrSchedule(ourSearch, lcr.pbotLcrSchedulePageNumber);
 }
 
@@ -31,7 +32,10 @@ const calMonth = ['01', '04', '07', '11'];
 
 onMounted(async () => {
   // when loaded and recent, refresh from cache instead of refreshing
-  if (!lcr.pbotLcrSchedulePaged || lcr.getMinutesSinceLastLoad() > 2) {
+  if (
+    !lcr.pbotLcrSchedulePaged ||
+    lcr.getPbotLcrScheduleMinutesSinceLastSearch() > 2
+  ) {
     lcr.fetchLcrSchedule(ourSearch, lcr.pbotLcrSchedulePageNumber);
   }
 });
@@ -91,7 +95,7 @@ onMounted(async () => {
                 <option
                   v-for="currMonth in calMonth"
                   :key="currMonth"
-                  :value="currYear + '-' + currMonth + '- 01'"
+                  :value="currYear + '-' + currMonth + '-01'"
                 >
                   {{ currYear }}-{{ currMonth }}-01
                 </option>

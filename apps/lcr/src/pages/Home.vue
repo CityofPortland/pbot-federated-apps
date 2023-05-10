@@ -20,12 +20,14 @@ const ourSearch: MaximoUser = {
   computerNames: '',
 };
 
+const pageNumber = ref(1);
+
 const maxUserPager = ref();
 async function findUsers() {
   if (maxUserPager.value) {
     maxUserPager.value.goToFirstPage();
   }
-  lcr.fetchMaximoUsers(ourSearch, 1); //, pageNumber.value);
+  lcr.fetchMaximoUsers(ourSearch, pageNumber.value); //, pageNumber.value);
 }
 function pagerChanged(pageNumber: number) {
   lcr.fetchMaximoUsers(ourSearch, pageNumber);
@@ -119,8 +121,19 @@ findUsers();
       v-if="lcr.pagedMaximoUsers"
       @pager-changed="pagerChanged"
       :pagedData="lcr.pagedMaximoUsers"
+      :page-number="pageNumber"
       ref="maxUserPager"
     ></Pager>
+
+    <!--
+      <Pager
+      v-if="lcr.pbotLcrSchedulePaged"
+      @pager-changed="pagerChanged"
+      :pagedData="lcr.pbotLcrSchedulePaged"
+      :pageNumber="lcr.pbotLcrSchedulePageNumber"
+      ref="lcrPager"
+    ></Pager>
+    -->
 
     <div
       class="mt-5 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
