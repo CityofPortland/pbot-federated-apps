@@ -1,44 +1,44 @@
 <script setup lang="ts">
-import { Anchor } from "@pbotapps/components";
-import { Ref, ref, onMounted } from "vue";
-import { MaximoUser } from "../types/pagedMaximoUsers";
-import { CopActiveComputer } from "../types/pagedCopActiveComputers";
+import { Anchor } from '@pbotapps/components';
+import { Ref, ref, onMounted } from 'vue';
+import { MaximoUser } from '../types/pagedMaximoUsers';
+import { CopActiveComputer } from '../types/pagedCopActiveComputers';
 
-import { useLcrStore } from "../store/lcr";
-import { useRouter } from "vue-router";
-import moment from "moment";
+import { useLcrStore } from '../store/lcr';
+import { useRouter } from 'vue-router';
+import moment from 'moment';
 
 const store = useLcrStore();
 const ourSearch: MaximoUser = {
-  pernr: "",
-  userName: "",
-  personId: "",
-  displayName: "",
-  firstName: "",
-  lastName: "",
-  pbotCostCenter: "",
-  pbotOrgUnit: "",
-  emailAddress: "",
-  computerNames: "",
+  pernr: '',
+  userName: '',
+  personId: '',
+  displayName: '',
+  firstName: '',
+  lastName: '',
+  pbotCostCenter: '',
+  pbotOrgUnit: '',
+  emailAddress: '',
+  computerNames: '',
 };
 
 const computerSearch: CopActiveComputer = {
-  computerName: "",
-  primaryUserName: "",
-  lastLogonUser: "",
-  costCenter: "",
-  deploymentDate: "",
-  primaryUser: "",
-  deviceLocation: "",
-  lastCommunication: "",
-  osName: "",
-  serialNumber: "",
-  manufacturer: "",
-  pcModel: "",
-  cpuType: "",
-  cpuNumber: "",
-  cpuSpeed: "",
-  totalPhysicalMemory: "",
+  computerName: '',
+  primaryUserName: '',
+  lastLogonUser: '',
+  costCenter: '',
+  deploymentDate: '',
+  primaryUser: '',
+  deviceLocation: '',
+  lastCommunication: '',
+  osName: '',
+  serialNumber: '',
+  manufacturer: '',
+  pcModel: '',
+  cpuType: '',
+  cpuNumber: '',
+  cpuSpeed: '',
+  totalPhysicalMemory: '',
 };
 
 const usersComputers: Ref<CopActiveComputer[]> = ref([]);
@@ -61,7 +61,7 @@ onMounted(async () => {
 });
 const router = useRouter();
 function loadComputer(computer: string) {
-  router.push({ name: "ComputerPage", params: { computer: computer } });
+  router.push({ name: 'ComputerPage', params: { computer: computer } });
 }
 </script>
 
@@ -235,12 +235,14 @@ function loadComputer(computer: string) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {{ moment(device.lastCommunication).format("YYYY-MM-DD") }}
+                        {{
+                          moment(device.lastCommunication).format('YYYY-MM-DD')
+                        }}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {{ moment(device.deploymentDate).format("YYYY-MM-DD") }}
+                        {{ moment(device.deploymentDate).format('YYYY-MM-DD') }}
                       </div>
                     </td>
                   </tr>
