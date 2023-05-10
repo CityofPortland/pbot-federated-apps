@@ -25,8 +25,10 @@ function setFormChanged() {
   changesRecentlySaved.value = false;
 }
 
-function loadUser(username: string) {
-  router.push({ name: 'UserPage', params: { username: username } });
+function loadUser(username: string | undefined) {
+  if (username) {
+    router.push({ name: 'UserPage', params: { username: username } });
+  }
 }
 
 async function saveNotes() {
@@ -237,7 +239,7 @@ async function saveNotes() {
                           ><IconUserCircle
                             :size="30"
                             v-on:click="
-                              loadUser(store.activeComputer.lastLogonUser)
+                              loadUser(store.activeComputer?.lastLogonUser)
                             "
                             v-if="store.activeComputer.lastLogonUser"
                         /></span>
@@ -263,7 +265,7 @@ async function saveNotes() {
                           ><IconUserCircle
                             :size="30"
                             v-on:click="
-                              loadUser(store.activeComputer.primaryUserName)
+                              loadUser(store.activeComputer?.primaryUserName)
                             "
                             v-if="store.activeComputer.primaryUserName"
                         /></span>
