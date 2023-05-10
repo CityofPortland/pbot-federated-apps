@@ -242,6 +242,7 @@ async function saveNotes() {
                             v-on:click="
                               loadUser(store.activeComputer.lastLogonUser)
                             "
+                            v-if="store.activeComputer.lastLogonUser"
                         /></span>
                         <input
                           disabled="true"
@@ -267,6 +268,7 @@ async function saveNotes() {
                             v-on:click="
                               loadUser(store.activeComputer.primaryUserName)
                             "
+                            v-if="store.activeComputer.primaryUserName"
                         /></span>
                         <input
                           disabled="true"
