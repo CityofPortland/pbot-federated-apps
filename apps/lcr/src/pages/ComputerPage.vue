@@ -341,59 +341,81 @@ async function saveNotes() {
             v-on:keyup="setFormChanged"
           ></textarea>
         </div>
-        <div class="py-4">
-          <div
-            class="px-4 py-5 border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+        <div
+          class="mt-5 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
+          v-if="store.activeComputer.copActiveComputersHistory"
+        >
+          <h2
+            class="text-xl font-bold text-blue-600 mb-5"
+            v-if="store.activeComputer.copActiveComputersHistory"
           >
-            <h2 class="mb-4 font-bold md:text-xl text-heading">
-              Device History
-            </h2>
-            <div class="space-x-0 lg:flex lg:space-x-4">
-              <div class="w-full lg:w-1/4">
-                <label class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Import Date</label
+            Device History
+          </h2>
+          <table
+            className="min-w-full divide-y divide-gray-200"
+            v-if="store.activeComputer.copActiveComputersHistory"
+          >
+            <thead className="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-              </div>
-              <div class="w-full lg:w-1/4">
-                <label class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Device Location</label
+                  Import Date
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-              </div>
-              <div class="w-full lg:w-1/4">
-                <label class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Last Logon User</label
+                  Device Location
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-              </div>
-              <div class="w-full lg:w-1/4">
-                <label class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Last Communication</label
+                  Last Logon User
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-              </div>
-            </div>
-
-            <div v-if="store.activeComputer.copActiveComputersHistory">
-              <div
-                v-for="history in store.activeComputer
-                  .copActiveComputersHistory"
-                :key="history.importDate"
-              >
-                <div class="space-x-0 lg:flex lg:space-x-4">
-                  <div class="w-full lg:w-1/4 text-sm lg:text-sm">
-                    {{ history.importDate?.substring(0, 10) }}
+                  Last Communication
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white divide-y divide-gray-200"
+              v-for="history in store.activeComputer.copActiveComputersHistory"
+              :key="history.importDate"
+            >
+              <tr class="hover:bg-slate-100">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <div className="ml-4">
+                      <div className="text-sm font-medium text-blue-400">
+                        {{ history.importDate?.substring(0, 10) }}
+                      </div>
+                    </div>
                   </div>
-                  <div class="w-full lg:w-1/4 text-sm lg:text-sm">
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
                     {{ history.deviceLocation }}
                   </div>
-                  <div class="w-full lg:w-1/4 text-sm lg:text-sm">
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
                     {{ history.lastLogonUser }}
                   </div>
-                  <div class="w-full lg:w-1/4 text-sm lg:text-sm">
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
                     {{ history.lastCommunication?.substring(0, 10) }}
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

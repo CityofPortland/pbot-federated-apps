@@ -5,12 +5,9 @@ import Pager from '../components/pager/Pager.vue';
 import moment from 'moment';
 
 import { PbotLcrScheduleSearchFilter } from '../types/pagedPbotLcrSchedule';
-import {
-  IconDeviceLaptop,
-  IconDeviceDesktop,
-  IconDeviceTablet,
-  IconExternalLink,
-} from '@tabler/icons-vue';
+import { IconExternalLink } from '@tabler/icons-vue';
+
+import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
 
 const lcr = useLcrStore();
 
@@ -176,29 +173,7 @@ onMounted(async () => {
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               <router-link :to="'/computer/' + schedule.computerName">
                 {{ schedule.computerName }}
-
-                <IconDeviceLaptop
-                  color="black"
-                  :size="18"
-                  class="inline"
-                  v-if="schedule.computerType === 'LT'"
-                />
-
-                <IconDeviceDesktop
-                  color="black"
-                  :size="18"
-                  class="inline"
-                  v-else-if="schedule.computerType === 'WS'"
-                />
-
-                <IconDeviceTablet
-                  color="black"
-                  :size="18"
-                  class="inline"
-                  v-else-if="schedule.computerType === 'TB'"
-                />
-
-                <b v-else>({{ schedule.computerType }})</b>
+                <computerTypeIcon :computer-type="schedule.computerType" />
               </router-link>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
@@ -207,12 +182,7 @@ onMounted(async () => {
                 font-semibold rounded-full bg-green-100 text-green-800"
               >
                 {{ schedule.primaryUser }}
-                <IconExternalLink
-                  color="black"
-                  :size="18"
-                  class="inline"
-                  v-if="schedule.computerType === 'LT'"
-                />
+                <IconExternalLink v-if="schedule.computerType === 'LT'" />
               </span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
