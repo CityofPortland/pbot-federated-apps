@@ -5,32 +5,20 @@ import { MaximoUser } from '../types/pagedMaximoUsers';
 import { useLcrStore } from '../store/lcr';
 import Pager from '../components/pager/Pager.vue';
 import { Anchor } from '@pbotapps/components';
+
 const lcr = useLcrStore();
 const router = useRouter();
-const ourSearch: MaximoUser = {
-  pernr: '',
-  userName: '',
-  personId: '',
-  displayName: '',
-  firstName: '',
-  lastName: '',
-  pbotCostCenter: '',
-  pbotOrgUnit: '',
-  emailAddress: '',
-  computerNames: '',
-};
-
-const pageNumber = ref(1);
-
 const maxUserPager = ref();
+
 async function findUsers() {
   if (maxUserPager.value) {
     maxUserPager.value.goToFirstPage();
   }
-  lcr.fetchMaximoUsers(ourSearch, pageNumber.value); //, pageNumber.value);
+  lcr.fetchMaximoUsers(lcr.homeMaximoUserSearch, lcr.homePageNumber); //, pageNumber.value);
 }
 function pagerChanged(pageNumber: number) {
-  lcr.fetchMaximoUsers(ourSearch, pageNumber);
+  lcr.homePageNumber = pageNumber;
+  lcr.fetchMaximoUsers(lcr.homeMaximoUserSearch, pageNumber);
 }
 function loadUser(username: string) {
   router.push({ name: 'UserPage', params: { username: username } });
@@ -53,7 +41,7 @@ findUsers();
               id="lastname"
               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              v-model="ourSearch.lastName"
+              v-model="lcr.homeMaximoUserSearch.lastName"
               v-on:keyup="findUsers"
             />
             <label
@@ -70,7 +58,7 @@ findUsers();
               id="firstname"
               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              v-model="ourSearch.firstName"
+              v-model="lcr.homeMaximoUserSearch.firstName"
               v-on:keyup="findUsers"
             />
             <label
@@ -87,7 +75,7 @@ findUsers();
               id="device"
               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              v-model="ourSearch.computerNames"
+              v-model="lcr.homeMaximoUserSearch.computerNames"
               v-on:keyup="findUsers"
             />
             <label
@@ -104,7 +92,7 @@ findUsers();
               id="personId"
               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              v-model="ourSearch.personId"
+              v-model="lcr.homeMaximoUserSearch.personId"
               v-on:keyup="findUsers"
             />
             <label
@@ -121,19 +109,9 @@ findUsers();
       v-if="lcr.pagedMaximoUsers"
       @pager-changed="pagerChanged"
       :pagedData="lcr.pagedMaximoUsers"
-      :page-number="pageNumber"
+      :page-number="lcr.homePageNumber"
       ref="maxUserPager"
     ></Pager>
-
-    <!--
-      <Pager
-      v-if="lcr.pbotLcrSchedulePaged"
-      @pager-changed="pagerChanged"
-      :pagedData="lcr.pbotLcrSchedulePaged"
-      :pageNumber="lcr.pbotLcrSchedulePageNumber"
-      ref="lcrPager"
-    ></Pager>
-    -->
 
     <div
       class="mt-5 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
@@ -219,19 +197,21 @@ findUsers();
             <td
               className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
             >
-              <div
-                v-for="computer in person.computerNames.split(',')"
-                :key="computer"
-              >
-                <router-link
-                  :to="`/computer/${computer}`"
-                  custom
-                  v-slot="{ href, navigate }"
+              <div v-if="person.computerNames">
+                <div
+                  v-for="computer in person.computerNames.split(',')"
+                  :key="computer"
                 >
-                  <Anchor :url="href" @click="navigate" class="no-underline">
-                    {{ computer }}
-                  </Anchor>
-                </router-link>
+                  <router-link
+                    :to="`/computer/${computer}`"
+                    custom
+                    v-slot="{ href, navigate }"
+                  >
+                    <Anchor :url="href" @click="navigate" class="no-underline">
+                      {{ computer }}
+                    </Anchor>
+                  </router-link>
+                </div>
               </div>
             </td>
           </tr>

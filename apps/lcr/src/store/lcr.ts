@@ -14,6 +14,19 @@ import axios from 'axios';
 export const useLcrStore = defineStore('lcr', {
   persist: true,
   state: () => ({
+    homeMaximoUserSearch: {
+      pernr: '',
+      userName: '',
+      personId: '',
+      displayName: '',
+      firstName: '',
+      lastName: '',
+      pbotCostCenter: '',
+      pbotOrgUnit: '',
+      emailAddress: '',
+      computerNames: '',
+    } as MaximoUser,
+    homePageNumber: 1 as number,
     pagedMaximoUsers: null as LcrPaginatedData<MaximoUser> | null,
     pbotLcrscheduleDateLastRefreshed: new Date() as Date,
     pbotLcrSchedulePaged: null as LcrPaginatedData<PbotLcrSchedule> | null,

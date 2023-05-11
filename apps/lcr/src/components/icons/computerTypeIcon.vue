@@ -1,16 +1,16 @@
 <script setup lang="ts">
+import {
+  IconDeviceLaptop,
+  IconDeviceDesktop,
+  IconDeviceTablet,
+} from '@tabler/icons-vue';
+
 const props = defineProps({
   computerType: {
     type: String,
     required: true,
   },
 });
-
-import {
-  IconDeviceLaptop,
-  IconDeviceDesktop,
-  IconDeviceTablet,
-} from '@tabler/icons-vue';
 </script>
 
 <template>

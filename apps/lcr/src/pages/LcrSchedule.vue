@@ -182,12 +182,7 @@ onMounted(async () => {
                 font-semibold rounded-full bg-green-100 text-green-800"
               >
                 {{ schedule.primaryUser }}
-                <IconExternalLink
-                  color="black"
-                  :size="18"
-                  class="inline"
-                  v-if="schedule.computerType === 'LT'"
-                />
+                <IconExternalLink v-if="schedule.computerType === 'LT'" />
               </span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
