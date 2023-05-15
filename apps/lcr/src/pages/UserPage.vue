@@ -2,7 +2,10 @@
 import { Anchor } from '@pbotapps/components';
 import { Ref, ref, onMounted } from 'vue';
 import { MaximoUser } from '../types/pagedMaximoUsers';
-import { CopActiveComputer } from '../types/pagedCopActiveComputers';
+import {
+  CopActiveComputer,
+  ActiveComputersSearchFilter,
+} from '../types/pagedCopActiveComputers';
 
 import { useLcrStore } from '../store/lcr';
 import { useRouter } from 'vue-router';
@@ -22,23 +25,8 @@ const ourSearch: MaximoUser = {
   computerNames: '',
 };
 
-const computerSearch: CopActiveComputer = {
-  computerName: '',
+const computerSearch: ActiveComputersSearchFilter = {
   primaryUserName: '',
-  lastLogonUser: '',
-  costCenter: '',
-  deploymentDate: '',
-  primaryUser: '',
-  deviceLocation: '',
-  lastCommunication: '',
-  osName: '',
-  serialNumber: '',
-  manufacturer: '',
-  pcModel: '',
-  cpuType: '',
-  cpuNumber: '',
-  cpuSpeed: '',
-  totalPhysicalMemory: '',
 };
 
 const usersComputers: Ref<CopActiveComputer[]> = ref([]);

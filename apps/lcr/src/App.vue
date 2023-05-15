@@ -25,6 +25,9 @@ const menuOpen = ref(false);
         <router-link to="/" class="ml-4">
           <span class="truncate text-xl">Users</span>
         </router-link>
+        <router-link to="/activecomputers" class="ml-4">
+          <span class="truncate text-xl">Computers</span>
+        </router-link>
         <router-link to="/schedule" class="ml-4">
           <span class="truncate text-xl">Schedule</span>
         </router-link>

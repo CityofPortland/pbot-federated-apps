@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import ComputerPage from '../pages/ComputerPage.vue';
 
+import ActiveComputers from '../pages/ActiveComputers.vue';
+import ComputerPage from '../pages/ComputerPage.vue';
 import Home from '../pages/Home.vue';
 import LcrSchedule from '../pages/LcrSchedule.vue';
 import UserPage from '../pages/UserPage.vue';
@@ -31,6 +32,10 @@ const routes: RouteRecordRaw[] = [
       const computerName = route.params.computer.toString();
       return { computerName };
     },
+  },
+  {
+    path: '/activecomputers',
+    component: ActiveComputers,
   },
 ];
 
