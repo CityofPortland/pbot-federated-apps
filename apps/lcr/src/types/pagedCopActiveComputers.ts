@@ -60,4 +60,15 @@ export type CopActiveComputer = {
   cpuNumber: string;
   cpuSpeed: string;
   totalPhysicalMemory: string;
+  workstationNotes?: string;
+  copActiveComputersHistory?: CopActiveComputersHistory[];
+};
+
+export type ActiveComputersSearchFilter = {
+  computerName?: string;
+  primaryUser?: string;
+  primaryUserName?: string;
+  lastLogonUser?: string;
+  fromDeploymentDate?: Date;
+  toDeploymentDate?: Date;
 };

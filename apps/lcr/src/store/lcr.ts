@@ -8,6 +8,12 @@ import {
   PbotLcrSchedule,
   PbotLcrScheduleSearchFilter,
 } from '../types/pagedPbotLcrSchedule';
+
+import {
+  ActiveComputersSearchFilter,
+  PagedCopActiveComputers,
+} from '../types/pagedCopActiveComputers';
+
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
@@ -38,7 +44,10 @@ export const useLcrStore = defineStore('lcr', {
     } as PbotLcrScheduleSearchFilter,
     pbotLcrSchedulePageNumber: 1 as number,
     pagedCopActiveComputers: [],
-    activeComputer: null as PagedCopActiveComputer | null,
+    activeComputersSearch: { computerName: '' } as ActiveComputersSearchFilter,
+    activeComputers: null as PagedCopActiveComputers | null,
+    activeComputersPageNumber: 1 as number,
+    activeComputer: null as CopActiveComputer | null,
     activeMaximoUser: null as MaximoUser | null,
   }),
   getters: {
@@ -54,6 +63,38 @@ export const useLcrStore = defineStore('lcr', {
   },
 
   actions: {
+    async fetchActiveComputers(
+      search: ActiveComputersSearchFilter,
+      pageNumber: number
+    ) {
+      // update last refreshed time //
+      this.pbotLcrscheduleDateLastRefreshed = new Date();
+
+      const url = new URL(
+        import.meta.env.VITE_BASE_URL + '/GetPaginatedCopActiveComputers'
+      );
+
+      for (const property in search) {
+        url.searchParams.append(
+          `${property}`,
+          `${search[property as keyof ActiveComputersSearchFilter]}`
+        );
+      }
+
+      url.searchParams.append('PageSize', '30');
+      url.searchParams.append('pageNumber', pageNumber.toString());
+
+      try {
+        if (import.meta.env.VITE_API_DEBUG === '1') {
+          console.log('fetchActiveComputers: ', url.toString());
+        }
+        const res = await axios.get(url.toString());
+        this.activeComputers = res.data;
+      } catch (error) {
+        console.log('Error while fetching Maximo users: ', error);
+      }
+    },
+
     getPbotLcrScheduleMinutesSinceLastSearch() {
       return (
         (Date.now() -
