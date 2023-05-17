@@ -1,32 +1,33 @@
 <script setup lang="ts">
-import { Anchor } from '@pbotapps/components';
-import { Ref, ref, onMounted } from 'vue';
-import { MaximoUser } from '../types/pagedMaximoUsers';
+import { Anchor } from "@pbotapps/components";
+import { Ref, ref, onMounted } from "vue";
+import { MaximoUser } from "../types/pagedMaximoUsers";
 import {
   CopActiveComputer,
   ActiveComputersSearchFilter,
-} from '../types/pagedCopActiveComputers';
+} from "../types/pagedCopActiveComputers";
 
-import { useLcrStore } from '../store/lcr';
-import { useRouter } from 'vue-router';
-import moment from 'moment';
+import { useLcrStore } from "../store/lcr";
+import { useRouter } from "vue-router";
+import moment from "moment";
+import computerTypeIcon from "../components/icons/computerTypeIcon.vue";
 
 const store = useLcrStore();
 const ourSearch: MaximoUser = {
-  pernr: '',
-  userName: '',
-  personId: '',
-  displayName: '',
-  firstName: '',
-  lastName: '',
-  pbotCostCenter: '',
-  pbotOrgUnit: '',
-  emailAddress: '',
-  computerNames: '',
+  pernr: "",
+  userName: "",
+  personId: "",
+  displayName: "",
+  firstName: "",
+  lastName: "",
+  pbotCostCenter: "",
+  pbotOrgUnit: "",
+  emailAddress: "",
+  computerNames: "",
 };
 
 const computerSearch: ActiveComputersSearchFilter = {
-  primaryUserName: '',
+  primaryUserName: "",
 };
 
 const usersComputers: Ref<CopActiveComputer[]> = ref([]);
@@ -43,13 +44,17 @@ onMounted(async () => {
     usersComputers.value = await store.fetchCopActiveComputersByUsername(
       computerSearch.primaryUserName
     );
-
-    //console.log('users computer', usersComputers.value);
   }
 });
+
 const router = useRouter();
+
 function loadComputer(computer: string) {
-  router.push({ name: 'ComputerPage', params: { computer: computer } });
+  router.push({ name: "ComputerPage", params: { computer: computer } });
+}
+
+function getComputerType(computerName: string) {
+  return computerName.substring(0, 2);
 }
 </script>
 
@@ -212,6 +217,9 @@ function loadComputer(computer: string) {
                         >
                           <div className="text-sm font-medium text-blue-400">
                             {{ device.computerName }}
+                            <computerTypeIcon
+                              :computer-type="`${device.computerName.substring(0, 2)}`"
+                            />
                           </div>
                         </div>
                       </div>
@@ -223,14 +231,12 @@ function loadComputer(computer: string) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {{
-                          moment(device.lastCommunication).format('YYYY-MM-DD')
-                        }}
+                        {{ moment(device.lastCommunication).format("YYYY-MM-DD") }}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {{ moment(device.deploymentDate).format('YYYY-MM-DD') }}
+                        {{ moment(device.deploymentDate).format("YYYY-MM-DD") }}
                       </div>
                     </td>
                   </tr>
