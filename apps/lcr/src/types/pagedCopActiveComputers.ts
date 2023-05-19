@@ -15,6 +15,7 @@ export type PagedCopActiveComputers = {
 
 export type PagedCopActiveComputer = {
   computerName: string;
+  computerType: string;
   costCenter?: string;
   deploymentDate?: string;
   primaryUser?: string;
@@ -45,6 +46,7 @@ export type CopActiveComputersHistory = {
 
 export type CopActiveComputer = {
   computerName: string;
+  computerType: string;
   costCenter: string;
   deploymentDate: string;
   primaryUser: string;
