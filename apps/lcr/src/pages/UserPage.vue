@@ -164,9 +164,55 @@ function getComputerType(computerName: string) {
                   />
                 </div>
               </div>
-              <div class="mt-6 space-x-0 lg:flex lg:space-x-4"></div>
+              <div class="mt-6 space-x-0 lg:flex lg:space-x-4">
+                <div class="w-full lg:w-1/3">
+                  <label
+                    for="pbotGroup"
+                    class="block mb-3 text-sm font-semibold text-gray-500"
+                    >Group</label
+                  >
+                  <input
+                    disabled
+                    name="pbotGroup"
+                    type="text"
+                    placeholder="Group"
+                    v-model="store.activeMaximoUser.PBOTGroup"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  />
+                </div>
+                <div class="w-full lg:w-1/3">
+                  <label
+                    for="pbotDivision"
+                    class="block mb-3 text-sm font-semibold text-gray-500"
+                    >Division
+                  </label>
+                  <input
+                    disabled
+                    name="pbotDivision"
+                    type="text"
+                    placeholder="Division"
+                    v-model="store.activeMaximoUser.PBOTDivision"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  />
+                </div>
+                <div class="w-full lg:w-1/3">
+                  <label
+                    for="section"
+                    class="block mb-3 text-sm font-semibold text-gray-500"
+                    >Section</label
+                  >
+                  <input
+                    disabled
+                    name="section"
+                    type="text"
+                    placeholder="Section"
+                    v-model="store.activeMaximoUser.section"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  />
+                </div>
+              </div>
             </div>
-            <h2 class="text-xl font-bold text-blue-600 mb-5">Computers</h2>
+            <h2 class="text-xl font-bold text-blue-600 mt-5 mb-5">Computers</h2>
 
             <div
               class="mt-5 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
@@ -217,9 +263,7 @@ function getComputerType(computerName: string) {
                         >
                           <div className="text-sm font-medium text-blue-400">
                             {{ device.computerName }}
-                            <computerTypeIcon
-                              :computer-type="`${device.computerName.substring(0, 2)}`"
-                            />
+                            <computerTypeIcon :computer-type="`${device.computerType}`" />
                           </div>
                         </div>
                       </div>

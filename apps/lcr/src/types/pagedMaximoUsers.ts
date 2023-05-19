@@ -25,4 +25,8 @@ export type MaximoUser = {
   emailAddress: string;
   supervisorName?: string;
   computerNames: string;
+  PBOTGroup: string;
+  PBOTDivision: string;
+  section: string;
+  orgUnitDescription: string;
 };
