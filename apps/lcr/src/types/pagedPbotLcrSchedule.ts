@@ -18,6 +18,7 @@ export type PbotLcrSchedule = {
   computerType: string;
   costCenter: string;
   primaryUser: string;
+  primaryUserName: string;
   lastLogonUser: string;
   deviceLocation: string;
   deploymentDate: string;
@@ -38,7 +39,19 @@ export type PbotLcrScheduleSearchFilter = {
   computerName?: string;
   primaryUser?: string;
   lastLogonUser?: string;
+  pbotDivision?: string;
   quarterOrderDate?: string;
   fromLcrDate?: string;
   toLcrDate?: string;
+};
+
+export type PbotLcrScheduleIndex = {
+  computerName?: string;
+  computerType?: string;
+  primaryUser?: string;
+  primaryUserName?: string;
+  deploymentDate?: Date;
+  lastCommunication?: Date;
+  quarterOrderDate?: Date;
+  pbotDivision?: string;
 };

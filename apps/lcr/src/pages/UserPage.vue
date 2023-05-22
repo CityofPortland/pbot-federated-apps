@@ -1,32 +1,33 @@
 <script setup lang="ts">
-import { Anchor } from '@pbotapps/components';
-import { Ref, ref, onMounted } from 'vue';
-import { MaximoUser } from '../types/pagedMaximoUsers';
+import { Anchor } from "@pbotapps/components";
+import { Ref, ref, onMounted } from "vue";
+import { MaximoUser } from "../types/pagedMaximoUsers";
 import {
   CopActiveComputer,
   ActiveComputersSearchFilter,
-} from '../types/pagedCopActiveComputers';
+} from "../types/pagedCopActiveComputers";
 
-import { useLcrStore } from '../store/lcr';
-import { useRouter } from 'vue-router';
-import moment from 'moment';
+import { useLcrStore } from "../store/lcr";
+import { useRouter } from "vue-router";
+import moment from "moment";
+import computerTypeIcon from "../components/icons/computerTypeIcon.vue";
 
 const store = useLcrStore();
 const ourSearch: MaximoUser = {
-  pernr: '',
-  userName: '',
-  personId: '',
-  displayName: '',
-  firstName: '',
-  lastName: '',
-  pbotCostCenter: '',
-  pbotOrgUnit: '',
-  emailAddress: '',
-  computerNames: '',
+  pernr: "",
+  userName: "",
+  personId: "",
+  displayName: "",
+  firstName: "",
+  lastName: "",
+  pbotCostCenter: "",
+  pbotOrgUnit: "",
+  emailAddress: "",
+  computerNames: "",
 };
 
 const computerSearch: ActiveComputersSearchFilter = {
-  primaryUserName: '',
+  primaryUserName: "",
 };
 
 const usersComputers: Ref<CopActiveComputer[]> = ref([]);
@@ -43,13 +44,17 @@ onMounted(async () => {
     usersComputers.value = await store.fetchCopActiveComputersByUsername(
       computerSearch.primaryUserName
     );
-
-    //console.log('users computer', usersComputers.value);
   }
 });
+
 const router = useRouter();
+
 function loadComputer(computer: string) {
-  router.push({ name: 'ComputerPage', params: { computer: computer } });
+  router.push({ name: "ComputerPage", params: { computer: computer } });
+}
+
+function getComputerType(computerName: string) {
+  return computerName.substring(0, 2);
 }
 </script>
 
@@ -159,9 +164,55 @@ function loadComputer(computer: string) {
                   />
                 </div>
               </div>
-              <div class="mt-6 space-x-0 lg:flex lg:space-x-4"></div>
+              <div class="mt-6 space-x-0 lg:flex lg:space-x-4">
+                <div class="w-full lg:w-1/3">
+                  <label
+                    for="pbotGroup"
+                    class="block mb-3 text-sm font-semibold text-gray-500"
+                    >Group</label
+                  >
+                  <input
+                    disabled
+                    name="pbotGroup"
+                    type="text"
+                    placeholder="Group"
+                    v-model="store.activeMaximoUser.PBOTGroup"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  />
+                </div>
+                <div class="w-full lg:w-1/3">
+                  <label
+                    for="pbotDivision"
+                    class="block mb-3 text-sm font-semibold text-gray-500"
+                    >Division
+                  </label>
+                  <input
+                    disabled
+                    name="pbotDivision"
+                    type="text"
+                    placeholder="Division"
+                    v-model="store.activeMaximoUser.PBOTDivision"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  />
+                </div>
+                <div class="w-full lg:w-1/3">
+                  <label
+                    for="section"
+                    class="block mb-3 text-sm font-semibold text-gray-500"
+                    >Section</label
+                  >
+                  <input
+                    disabled
+                    name="section"
+                    type="text"
+                    placeholder="Section"
+                    v-model="store.activeMaximoUser.section"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  />
+                </div>
+              </div>
             </div>
-            <h2 class="text-xl font-bold text-blue-600 mb-5">Computers</h2>
+            <h2 class="text-xl font-bold text-blue-600 mt-5 mb-5">Computers</h2>
 
             <div
               class="mt-5 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
@@ -212,6 +263,7 @@ function loadComputer(computer: string) {
                         >
                           <div className="text-sm font-medium text-blue-400">
                             {{ device.computerName }}
+                            <computerTypeIcon :computer-type="`${device.computerType}`" />
                           </div>
                         </div>
                       </div>
@@ -223,14 +275,12 @@ function loadComputer(computer: string) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {{
-                          moment(device.lastCommunication).format('YYYY-MM-DD')
-                        }}
+                        {{ moment(device.lastCommunication).format("YYYY-MM-DD") }}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {{ moment(device.deploymentDate).format('YYYY-MM-DD') }}
+                        {{ moment(device.deploymentDate).format("YYYY-MM-DD") }}
                       </div>
                     </td>
                   </tr>

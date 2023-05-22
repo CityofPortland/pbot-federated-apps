@@ -5,7 +5,7 @@ import Pager from '../components/pager/Pager.vue';
 import moment from 'moment';
 
 import { PbotLcrScheduleSearchFilter } from '../types/pagedPbotLcrSchedule';
-import { IconExternalLink } from '@tabler/icons-vue';
+import { IconUserCircle } from '@tabler/icons-vue';
 
 import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
 
@@ -35,6 +35,8 @@ onMounted(async () => {
   ) {
     lcr.fetchLcrSchedule(ourSearch, lcr.pbotLcrSchedulePageNumber);
   }
+
+  lcr.fetchPbotDivisions();
 });
 </script>
 
@@ -77,6 +79,28 @@ onMounted(async () => {
               for="primaryUser"
               class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
               >Primary User</label
+            >
+          </div>
+        </div>
+        <div>
+          <div class="relative">
+            <select
+              @change="searchSchedule"
+              v-model="ourSearch.pbotDivision"
+              class="px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 focus:ring-0 focus:border-blue-600 peer"
+            >
+              <option value=""></option>
+              <template v-for="division in lcr.pbotDivisions" :key="division">
+                <option :value="division">
+                  {{ division }}
+                </option>
+              </template>
+            </select>
+
+            <label
+              for="device"
+              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+              >PBOT Divisions</label
             >
           </div>
         </div>
@@ -142,7 +166,7 @@ onMounted(async () => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
             >
-              Device Location
+              Division
             </th>
             <th
               scope="col"
@@ -173,29 +197,42 @@ onMounted(async () => {
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               <router-link :to="'/computer/' + schedule.computerName">
                 {{ schedule.computerName }}
-                <computerTypeIcon :computer-type="schedule.computerType" />
+                <computerTypeIcon
+                  :computer-type="schedule.computerType"
+                  v-if="schedule.computerType"
+                />
               </router-link>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
               <span
+                v-if="schedule.primaryUserName"
                 className="px-2 inline-flex text-xs leading-5
                 font-semibold rounded-full bg-green-100 text-green-800"
               >
+                <RouterLink :to="`/user/${schedule.primaryUserName}`">
+                  {{ schedule.primaryUser }}
+                  <IconUserCircle class="ml-1 inline" />
+                </RouterLink>
+              </span>
+              <span
+                v-else
+                className="px-2 inline-flex text-xs leading-5
+                font-semibold rounded-full"
+              >
                 {{ schedule.primaryUser }}
-                <IconExternalLink v-if="schedule.computerType === 'LT'" />
               </span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {{ schedule.deviceLocation }}
+              {{ schedule.pbotDivision }}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {{ moment(schedule.deploymentDate).format('YYYY/MM/DD') }}
+              {{ moment(schedule.deploymentDate).format('YYYY-MM-DD') }}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {{ moment(schedule.lastCommunication).format('YYYY/MM/DD') }}
+              {{ moment(schedule.lastCommunication).format('YYYY-MM-DD') }}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {{ moment(schedule.quarterOrderDate).format('YYYY/MM/DD') }}
+              {{ moment(schedule.quarterOrderDate).format('YYYY-MM-DD') }}
             </td>
           </tr>
         </tbody>

@@ -5,7 +5,7 @@ import {
 } from './../types/pagedCopActiveComputers';
 import { LcrPaginatedData } from '../types/lcrPaginatedData';
 import {
-  PbotLcrSchedule,
+  PbotLcrScheduleIndex,
   PbotLcrScheduleSearchFilter,
 } from '../types/pagedPbotLcrSchedule';
 
@@ -31,11 +31,15 @@ export const useLcrStore = defineStore('lcr', {
       pbotOrgUnit: '',
       emailAddress: '',
       computerNames: '',
+      pbotGroup: '',
+      pbotDivision: '',
+      section: '',
+      orgUnitName: '',
     } as MaximoUser,
     homePageNumber: 1 as number,
     pagedMaximoUsers: null as LcrPaginatedData<MaximoUser> | null,
     pbotLcrscheduleDateLastRefreshed: new Date() as Date,
-    pbotLcrSchedulePaged: null as LcrPaginatedData<PbotLcrSchedule> | null,
+    pbotLcrSchedulePaged: null as LcrPaginatedData<PbotLcrScheduleIndex> | null,
     pbotLcrScheduleSearch: {
       computerName: '',
       primaryUser: '',
@@ -49,6 +53,7 @@ export const useLcrStore = defineStore('lcr', {
     activeComputersPageNumber: 1 as number,
     activeComputer: null as CopActiveComputer | null,
     activeMaximoUser: null as MaximoUser | null,
+    pbotDivisions: [] as string[],
   }),
   getters: {
     getMaximoUsers(state) {
@@ -63,6 +68,24 @@ export const useLcrStore = defineStore('lcr', {
   },
 
   actions: {
+    async fetchPbotDivisions() {
+      // update last refreshed time //
+      this.pbotLcrscheduleDateLastRefreshed = new Date();
+
+      const url = new URL(import.meta.env.VITE_BASE_URL + '/getPbotDivisions');
+
+      if (import.meta.env.VITE_API_DEBUG === '1') {
+        console.log('fetchPbotDivisions: ', url.toString());
+      }
+
+      try {
+        const res = await axios.get(url.toString());
+        this.pbotDivisions = res.data;
+      } catch (error) {
+        console.log('Error while fetching PBOT divisions: ', error);
+      }
+    },
+
     async fetchActiveComputers(
       search: ActiveComputersSearchFilter,
       pageNumber: number
@@ -129,10 +152,11 @@ export const useLcrStore = defineStore('lcr', {
       //url.searchParams.append('PageSize', '50');
       url.searchParams.append('pageNumber', pageNumber.toString());
 
+      if (import.meta.env.VITE_API_DEBUG === '1') {
+        console.log('fetchLcrSchedule: ', url.toString());
+      }
+
       try {
-        if (import.meta.env.VITE_API_DEBUG === '1') {
-          console.log('fetchLcrSchedule: ', url.toString());
-        }
         const res = await axios.get(url.toString());
         this.pbotLcrSchedulePaged = res.data;
       } catch (error) {
