@@ -179,7 +179,7 @@ findUsers();
       space-y-6
     ></Pager>
 
-    <div class="mt-5 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+    <div class="mt-5 shadow border-b border-gray-200 sm:rounded-lg">
       <table
         className="min-w-full divide-y divide-gray-200"
         v-if="lcr.pagedMaximoUsers != null"
@@ -188,31 +188,37 @@ findUsers();
           <tr>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
             >
               Name
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
             >
-              PBOT
+              Org Unit/Cost Center
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
             >
               Pernr
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
             >
               Supervisor
             </th>
             <th
               scope="col"
-              className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
+            >
+              Group/Division/Section
+            </th>
+            <th
+              scope="col"
+              className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-tight"
             >
               Devices
             </th>
@@ -241,13 +247,13 @@ findUsers();
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
               <div className="text-sm text-gray-900">
-                {{ person.pbotOrgUnit }}
+                {{ person.orgUnit }}
               </div>
               <div className="text-sm text-gray-500">
                 {{ person.orgUnitDescription }}
               </div>
               <div className="text-sm text-gray-500">
-                {{ person.pbotCostCenter }}
+                {{ person.costCenter }}
               </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
@@ -262,11 +268,13 @@ findUsers();
               <div className="text-sm font-semibold bg-green-100 text-green-800">
                 {{ person.supervisorName }}
               </div>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap">
               <div className="text-sm text-gray-500">
-                {{ person.pbotGroup }}
+                {{ person.pbotgroup }}
               </div>
               <div className="text-sm text-gray-500">
-                {{ person.pbotDivision }}
+                {{ person.pbotdivision }}
               </div>
               <div className="text-sm text-gray-500">
                 {{ person.section }}

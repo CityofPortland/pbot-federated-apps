@@ -20,8 +20,8 @@ const ourSearch: MaximoUser = {
   displayName: "",
   firstName: "",
   lastName: "",
-  pbotCostCenter: "",
-  pbotOrgUnit: "",
+  costCenter: "",
+  orgUnit: "",
   emailAddress: "",
   computerNames: "",
 };
@@ -56,6 +56,14 @@ function loadComputer(computer: string) {
 function getComputerType(computerName: string) {
   return computerName.substring(0, 2);
 }
+
+function checkOrgField(colName: string, colValue: string) {
+  if (
+    colValue != null &&
+    (colName == "pbotGroup" || colName == "pbotDivision" || colName == "section")
+  )
+    return true;
+}
 </script>
 
 <template>
@@ -63,11 +71,18 @@ function getComputerType(computerName: string) {
   <div v-if="store.activeMaximoUser">
     <div class="container p-12 mx-auto">
       <div class="flex flex-col w-full px-0 mx-auto md:flex-row">
-        <div class="flex flex-col md:w-full">
-          <h1 class="mb-4 font-bold text-blue-600 text-3xl">
-            {{ store.activeMaximoUser?.firstName }}
-            {{ store.activeMaximoUser?.lastName }}
-          </h1>
+        <div class="flex flex-col md:w-full item-start">
+          <div class="flex item-start">
+            <h1 class="mb-4 font-bold text-blue-600 text-3xl w-full lg:w-1/2">
+              {{ store.activeMaximoUser?.firstName }}
+              {{ store.activeMaximoUser?.lastName }}
+            </h1>
+            <h2 class="mb-4 font-bold text-blue-600 text-base w-full lg:w-1/2">
+              {{ store.activeMaximoUser.orgInfo.pbotGroup }}<br />
+              {{ store.activeMaximoUser.orgInfo.pbotDivision }}<br />
+              {{ store.activeMaximoUser.orgInfo.section }}
+            </h2>
+          </div>
           <form>
             <div class="">
               <div class="mt-6 space-x-0 lg:flex lg:space-x-6">
@@ -85,7 +100,6 @@ function getComputerType(computerName: string) {
                     class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
-
                 <div class="w-full lg:w-1/3">
                   <label
                     for="Email"
@@ -144,7 +158,7 @@ function getComputerType(computerName: string) {
                     name="costCenter"
                     type="text"
                     placeholder="Cost Center"
-                    v-model="store.activeMaximoUser.pbotCostCenter"
+                    v-model="store.activeMaximoUser.costCenter"
                     class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
@@ -159,54 +173,7 @@ function getComputerType(computerName: string) {
                     name="orgUnit"
                     type="text"
                     placeholder="Org Unit"
-                    v-model="store.activeMaximoUser.pbotOrgUnit"
-                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                  />
-                </div>
-              </div>
-              <div class="mt-6 space-x-0 lg:flex lg:space-x-4">
-                <div class="w-full lg:w-1/3">
-                  <label
-                    for="pbotGroup"
-                    class="block mb-3 text-sm font-semibold text-gray-500"
-                    >Group</label
-                  >
-                  <input
-                    disabled
-                    name="pbotGroup"
-                    type="text"
-                    placeholder="Group"
-                    v-model="store.activeMaximoUser.PBOTGroup"
-                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                  />
-                </div>
-                <div class="w-full lg:w-1/3">
-                  <label
-                    for="pbotDivision"
-                    class="block mb-3 text-sm font-semibold text-gray-500"
-                    >Division
-                  </label>
-                  <input
-                    disabled
-                    name="pbotDivision"
-                    type="text"
-                    placeholder="Division"
-                    v-model="store.activeMaximoUser.PBOTDivision"
-                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                  />
-                </div>
-                <div class="w-full lg:w-1/3">
-                  <label
-                    for="section"
-                    class="block mb-3 text-sm font-semibold text-gray-500"
-                    >Section</label
-                  >
-                  <input
-                    disabled
-                    name="section"
-                    type="text"
-                    placeholder="Section"
-                    v-model="store.activeMaximoUser.section"
+                    v-model="store.activeMaximoUser.orgUnit"
                     class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
@@ -263,7 +230,7 @@ function getComputerType(computerName: string) {
                         >
                           <div className="text-sm font-medium text-blue-400">
                             {{ device.computerName }}
-                            <computerTypeIcon :computer-type="`${device.computerType}`" />
+                            <computerTypeIcon :computer-type="device.computerType" />
                           </div>
                         </div>
                       </div>

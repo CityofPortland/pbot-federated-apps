@@ -1,5 +1,5 @@
 import { MaximoUser } from './../types/pagedMaximoUsers';
-import {
+import { 
   PagedCopActiveComputer,
   CopActiveComputer,
 } from './../types/pagedCopActiveComputers';
@@ -27,14 +27,14 @@ export const useLcrStore = defineStore('lcr', {
       displayName: '',
       firstName: '',
       lastName: '',
-      pbotCostCenter: '',
-      pbotOrgUnit: '',
+      costCenter: '',
+      orgUnit: '',
       emailAddress: '',
       computerNames: '',
       pbotGroup: '',
       pbotDivision: '',
       section: '',
-      orgUnitName: '',
+      orgUnitDescription: '',
     } as MaximoUser,
     homePageNumber: 1 as number,
     pagedMaximoUsers: null as LcrPaginatedData<MaximoUser> | null,
