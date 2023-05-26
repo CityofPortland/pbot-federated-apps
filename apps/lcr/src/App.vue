@@ -1,14 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
 
-import {
-  Anchor,
-  Footer,
-  Header,
-  Logo,
-  Nav,
-  NavItem,
-} from '@pbotapps/components';
+import { Anchor, Footer, Header, Logo, Nav, NavItem } from "@pbotapps/components";
 
 const menuOpen = ref(false);
 </script>
@@ -38,7 +31,7 @@ const menuOpen = ref(false);
         </Nav>-->
       </template>
     </Header>
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 mt-4">
+    <main class="flex-grow max-w-full mx-auto px-4 mt-4">
       <router-view />
     </main>
     <Footer color="gray" variant="light">

@@ -20,13 +20,25 @@ export type MaximoUser = {
   displayName: string;
   firstName: string;
   lastName: string;
-  pbotCostCenter: string;
-  pbotOrgUnit: string;
+  costCenter: string;
+  orgUnit: string;
   emailAddress: string;
   supervisorName?: string;
   computerNames: string;
-  PBOTGroup: string;
-  PBOTDivision: string;
-  section: string;
+  computerInfo: deployComputerInfo[];
+  orgInfo: OrgUnitInfo;
+};
+
+export type OrgUnitInfo = {
+  costCenter: string;
+  orgUnit: string;
   orgUnitDescription: string;
+  pbotGroup: string;
+  pbotDivision: string;
+  section: string;
+};
+
+export type deployComputerInfo = {
+  computerName: string;
+  deploymentDate: Date;
 };
