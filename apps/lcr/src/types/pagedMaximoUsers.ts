@@ -24,6 +24,10 @@ export type MaximoUser = {
   orgUnit: string;
   emailAddress: string;
   supervisorName?: string;
+  pbotGroup: string;
+  pbotDivision: string;
+  section: string;
+  orgUnitDescription: string;
   computerNames: string;
   computerInfo: deployComputerInfo[];
   orgInfo: OrgUnitInfo;
