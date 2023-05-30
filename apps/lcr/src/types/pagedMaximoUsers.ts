@@ -38,11 +38,11 @@ export type MaximoUserSearchFilter = {
   firstName?: string;
   lastName?: string;
   device?: string;
-  pbotGroup: string;
-  pbotDivision: string;
-  section: string;
-  orgUnit: string;
-  costCenter: string;
+  pbotGroup?: string;
+  pbotDivision?: string;
+  section?: string;
+  orgUnit?: string;
+  costCenter?: string;
 };
 
 export type OrgUnitInfo = {
