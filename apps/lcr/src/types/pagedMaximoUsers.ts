@@ -24,9 +24,25 @@ export type MaximoUser = {
   orgUnit: string;
   emailAddress: string;
   supervisorName?: string;
+  pbotGroup: string;
+  pbotDivision: string;
+  section: string;
+  orgUnitDescription: string;
   computerNames: string;
   computerInfo: deployComputerInfo[];
   orgInfo: OrgUnitInfo;
+};
+
+export type MaximoUserSearchFilter = {
+  userName?: string;
+  firstName?: string;
+  lastName?: string;
+  device?: string;
+  pbotGroup: string;
+  pbotDivision: string;
+  section: string;
+  orgUnit: string;
+  costCenter: string;
 };
 
 export type OrgUnitInfo = {

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { MaximoUser } from "../types/pagedMaximoUsers";
-import { useLcrStore } from "../store/lcr";
-import Pager from "../components/pager/Pager.vue";
-import { Anchor } from "@pbotapps/components";
+import { ref, onMounted } from 'vue';
+
+import { useLcrStore } from '../store/lcr';
+import Pager from '../components/pager/Pager.vue';
+import { Anchor } from '@pbotapps/components';
+
+import { IconMail } from '@tabler/icons-vue';
 
 const lcr = useLcrStore();
-const router = useRouter();
 const maxUserPager = ref();
 
 async function findUsers() {
@@ -20,17 +20,21 @@ function pagerChanged(pageNumber: number) {
   lcr.homePageNumber = pageNumber;
   lcr.fetchMaximoUsers(lcr.homeMaximoUserSearch, pageNumber);
 }
-function loadUser(username: string) {
-  router.push({ name: "UserPage", params: { username: username } });
-}
-findUsers();
+
+onMounted(async () => {
+  findUsers();
+  lcr.fetchPbotDivisions();
+});
 </script>
 
 <template>
   <div>
     <h2 class="text-3xl font-bold mb-2">Search Users</h2>
     <section>
-      <form @submit.prevent="findUsers" class="grid grid-cols-8 gap-4 max-w-8xl m-5">
+      <form
+        @submit.prevent="findUsers"
+        class="grid grid-cols-8 gap-4 max-w-8xl m-5"
+      >
         <div>
           <div class="relative">
             <input
@@ -86,23 +90,6 @@ findUsers();
           <div class="relative">
             <input
               type="text"
-              id="personId"
-              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              v-model="lcr.homeMaximoUserSearch.personId"
-              v-on:keyup="findUsers"
-            />
-            <label
-              for="personId"
-              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-              >Person ID</label
-            >
-          </div>
-        </div>
-        <div>
-          <div class="relative">
-            <input
-              type="text"
               id="pbotGroup"
               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
@@ -118,14 +105,20 @@ findUsers();
         </div>
         <div>
           <div class="relative">
-            <input
-              type="text"
+            <select
               id="pbotDivision"
-              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
+              @change="findUsers"
               v-model="lcr.homeMaximoUserSearch.pbotDivision"
-              v-on:keyup="findUsers"
-            />
+              class="px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 focus:ring-0 focus:border-blue-600 peer"
+            >
+              <option value=""></option>
+              <template v-for="division in lcr.pbotDivisions" :key="division">
+                <option :value="division">
+                  {{ division }}
+                </option>
+              </template>
+            </select>
+
             <label
               for="pbotDivision"
               class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
@@ -157,7 +150,7 @@ findUsers();
               id="pbotOrgUnit"
               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
-              v-model="lcr.homeMaximoUserSearch.pbotOrgUnit"
+              v-model="lcr.homeMaximoUserSearch.orgUnit"
               v-on:keyup="findUsers"
             />
             <label
@@ -179,7 +172,7 @@ findUsers();
       space-y-6
     ></Pager>
 
-    <div class="mt-5 shadow border-b border-gray-200 sm:rounded-lg">
+    <div class="mt-5 shadow border-b border-gray-200 sm:rounded-lg mb-3">
       <table
         className="min-w-full divide-y divide-gray-200"
         v-if="lcr.pagedMaximoUsers != null"
@@ -188,37 +181,37 @@ findUsers();
           <tr>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
             >
               Name
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
             >
-              Org Unit/Cost Center
+              Org Unit
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
             >
-              Pernr
+              Section
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
             >
               Supervisor
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-tight"
+              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
             >
-              Group/Division/Section
+              Group/Division
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-tight"
+              className="px-3 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-tight"
             >
               Devices
             </th>
@@ -230,59 +223,49 @@ findUsers();
           :key="person.personId"
         >
           <tr class="hover:bg-slate-100">
-            <td className="px-6 py-4 whitespace-nowrap">
-              <div className="flex items-center">
-                <div className="ml-4" v-on:click="loadUser(person.userName)">
-                  <div className="text-sm font-medium text-gray-900">
-                    {{ person.displayName }}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {{ person.emailAddress }}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {{ person.userName }}
-                  </div>
-                </div>
-              </div>
+            <td
+              className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+            >
+              <RouterLink :to="`/user/${person.userName}`">{{
+                person.displayName
+              }}</RouterLink>
+
+              <a :href="`mailto:${person.emailAddress}?subject=PBOT LCR`"
+                ><IconMail
+                  style="inline-block"
+                  color="black"
+                  :size="20"
+                  class="inline ml-2"
+                ></IconMail
+              ></a>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm">
+              {{ person.orgUnitDescription }}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm">
+              {{ person.section }}
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-900">
-                {{ person.orgUnit }}
-              </div>
-              <div className="text-sm text-gray-500">
-                {{ person.orgUnitDescription }}
-              </div>
-              <div className="text-sm text-gray-500">
-                {{ person.costCenter }}
-              </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-              <span
-                className="px-2 inline-flex text-xs leading-5
-                font-semibold rounded-full bg-green-100 text-green-800"
+              <div
+                className="text-sm font-semibold bg-green-100 text-green-800 inline-block"
               >
-                {{ person.personId }}
-              </span>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm font-semibold bg-green-100 text-green-800">
                 {{ person.supervisorName }}
               </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
-              <div className="text-sm text-gray-500">
-                {{ person.pbotgroup }}
-              </div>
-              <div className="text-sm text-gray-500">
-                {{ person.pbotdivision }}
-              </div>
-              <div className="text-sm text-gray-500">
-                {{ person.section }}
+              <div className="text-sm">{{ person.pbotGroup }}</div>
+              <div className="text-sm">
+                {{ person.pbotDivision }}
               </div>
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <td
+              className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
               <div v-if="person.computerNames">
-                <div v-for="computer in person.computerNames.split(',')" :key="computer">
+                <div
+                  v-for="computer in person.computerNames.split(',')"
+                  :key="computer"
+                >
                   <router-link
                     :to="`/computer/${computer}`"
                     custom
