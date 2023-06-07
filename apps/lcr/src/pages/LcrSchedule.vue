@@ -24,8 +24,8 @@ async function searchSchedule() {
   lcr.fetchLcrSchedule(ourSearch, lcr.pbotLcrSchedulePageNumber);
 }
 
-const calYear = ['2023', '2024', '2025'];
-const calMonth = ['01', '04', '07', '11'];
+const calYear = ['2022', '2023', '2024', '2025'];
+const calMonth = ['01', '04', '07', '10'];
 
 onMounted(async () => {
   // when loaded and recent, refresh from cache instead of refreshing
