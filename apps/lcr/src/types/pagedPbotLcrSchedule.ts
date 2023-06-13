@@ -40,6 +40,7 @@ export type PbotLcrScheduleSearchFilter = {
   primaryUser?: string;
   lastLogonUser?: string;
   pbotDivision?: string;
+  pbotGroup?: string;
   quarterOrderDate?: string;
   fromLcrDate?: string;
   toLcrDate?: string;
@@ -54,4 +55,5 @@ export type PbotLcrScheduleIndex = {
   lastCommunication?: Date;
   quarterOrderDate?: Date;
   pbotDivision?: string;
+  pbotGroup?: string;
 };
