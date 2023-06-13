@@ -123,28 +123,6 @@ onMounted(async () => {
           <div class="relative">
             <select
               @change="searchSchedule"
-              v-model="ourSearch.pbotDivision"
-              class="px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 focus:ring-0 focus:border-blue-600 peer"
-            >
-              <option value=""></option>
-              <template v-for="division in lcr.pbotDivisions" :key="division">
-                <option :value="division">
-                  {{ division }}
-                </option>
-              </template>
-            </select>
-
-            <label
-              for="device"
-              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-              >PBOT Divisions</label
-            >
-          </div>
-        </div>
-        <div>
-          <div class="relative">
-            <select
-              @change="searchSchedule"
               v-model="ourSearch.pbotGroup"
               class="px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 focus:ring-0 focus:border-blue-600 peer"
             >
@@ -160,6 +138,28 @@ onMounted(async () => {
               for="device"
               class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
               >PBOT Groups</label
+            >
+          </div>
+        </div>
+        <div>
+          <div class="relative">
+            <select
+              @change="searchSchedule"
+              v-model="ourSearch.pbotDivision"
+              class="px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 focus:ring-0 focus:border-blue-600 peer"
+            >
+              <option value=""></option>
+              <template v-for="division in lcr.pbotDivisions" :key="division">
+                <option :value="division">
+                  {{ division }}
+                </option>
+              </template>
+            </select>
+
+            <label
+              for="device"
+              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+              >PBOT Divisions</label
             >
           </div>
         </div>
@@ -249,13 +249,13 @@ onMounted(async () => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
             >
-              Division
+              Group
             </th>
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
             >
-              Group
+              Division
             </th>
             <th
               scope="col"
@@ -312,10 +312,10 @@ onMounted(async () => {
               </span>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {{ schedule.pbotDivision }}
+              {{ schedule.pbotGroup }}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-              {{ schedule.pbotGroup }}
+              {{ schedule.pbotDivision }}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               {{ moment(schedule.deploymentDate).format('YYYY-MM-DD') }}
