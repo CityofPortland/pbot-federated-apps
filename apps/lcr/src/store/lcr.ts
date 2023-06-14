@@ -12,6 +12,24 @@ import {
 
 import { defineStore } from 'pinia';
 import axios from 'axios';
+// import exportFromJSON from 'export-from-json';
+
+// export const excelParser = () => {
+//   function exportDataFromJSON(data, newFileName, fileExportType) {
+//     if (!data) return;
+//     try {
+//       const fileName = newFileName || 'exported-data';
+//       const exportType = exportFromJSON.types[fileExportType || "xls"];
+//       exportFromJSON({ data, fileName, exportType });
+//     } catch (e) {
+//       throw new Error('Parsing failed!');
+//     }
+//   }
+
+//   return {
+//     exportDataFromJSON,
+//   };
+// };
 
 export const useLcrStore = defineStore('lcr', {
   persist: true,
@@ -50,6 +68,7 @@ export const useLcrStore = defineStore('lcr', {
     activeComputer: null as CopActiveComputer | null,
     activeMaximoUser: null as MaximoUser | null,
     pbotDivisions: [] as string[],
+    pbotGroups: [] as string[],
   }),
   getters: {
     getMaximoUsers(state) {
@@ -79,6 +98,24 @@ export const useLcrStore = defineStore('lcr', {
         this.pbotDivisions = res.data;
       } catch (error) {
         console.log('Error while fetching PBOT divisions: ', error);
+      }
+    },
+
+    async fetchPbotGroups() {
+      // update last refreshed time //
+      this.pbotLcrscheduleDateLastRefreshed = new Date();
+
+      const url = new URL(import.meta.env.VITE_BASE_URL + '/getPbotGroups');
+
+      if (import.meta.env.VITE_API_DEBUG === '1') {
+        console.log('fetchPbotGroups: ', url.toString());
+      }
+
+      try {
+        const res = await axios.get(url.toString());
+        this.pbotGroups = res.data;
+      } catch (error) {
+        console.log('Error while fetching PBOT groups: ', error);
       }
     },
 

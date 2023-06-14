@@ -23,6 +23,24 @@ function pagerChanged(pageNumber: number) {
 async function searchSchedule() {
   lcr.pbotLcrSchedulePageNumber = 1;
   lcr.fetchLcrSchedule(ourSearch, lcr.pbotLcrSchedulePageNumber);
+
+  if (ourSearch.pbotGroup != null && ourSearch.quarterOrderDate != null) {
+    var a = document.getElementById('dynamicLink');
+    var date_transformed =
+      ourSearch.quarterOrderDate.slice(0, 4) +
+      '/' +
+      ourSearch.quarterOrderDate.slice(5, 7) +
+      '/' +
+      ourSearch.quarterOrderDate.slice(8);
+    var pbotGroup_transformed = encodeURI(ourSearch.pbotGroup);
+    var re = /&/gi;
+    pbotGroup_transformed = pbotGroup_transformed.replace(re, '%26');
+    a.href =
+      'https://pbotsqlreport.rose.portland.local/ReportServer/Pages/ReportViewer.aspx?%2fWorkstation+LCR%2fComps+Up+For+Refresh&rs:Command=Render&quarterOrderDate=' +
+      date_transformed +
+      '&pbotGroup=' +
+      pbotGroup_transformed;
+  }
 }
 
 const calYear = ['2022', '2023', '2024', '2025'];
@@ -38,6 +56,25 @@ onMounted(async () => {
   }
 
   lcr.fetchPbotDivisions();
+  lcr.fetchPbotGroups();
+
+  if (ourSearch.pbotGroup != null && ourSearch.quarterOrderDate != null) {
+    var a = document.getElementById('dynamicLink');
+    var date_transformed =
+      ourSearch.quarterOrderDate.slice(0, 4) +
+      '/' +
+      ourSearch.quarterOrderDate.slice(5, 7) +
+      '/' +
+      ourSearch.quarterOrderDate.slice(8);
+    var pbotGroup_transformed = encodeURI(ourSearch.pbotGroup);
+    var re = /&/gi;
+    pbotGroup_transformed = pbotGroup_transformed.replace(re, '%26');
+    a.href =
+      'https://pbotsqlreport.rose.portland.local/ReportServer/Pages/ReportViewer.aspx?%2fWorkstation+LCR%2fComps+Up+For+Refresh&rs:Command=Render&quarterOrderDate=' +
+      date_transformed +
+      '&pbotGroup=' +
+      pbotGroup_transformed;
+  }
 });
 </script>
 
@@ -47,7 +84,7 @@ onMounted(async () => {
     <section>
       <form
         @submit.prevent="searchSchedule"
-        class="grid grid-cols-4 gap-4 max-w-3xl m-2"
+        class="grid grid-cols-6 gap-6 max-w-6xl m-2"
       >
         <div>
           <div class="relative">
@@ -80,6 +117,28 @@ onMounted(async () => {
               for="primaryUser"
               class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
               >Primary User</label
+            >
+          </div>
+        </div>
+        <div>
+          <div class="relative">
+            <select
+              @change="searchSchedule"
+              v-model="ourSearch.pbotGroup"
+              class="px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 focus:ring-0 focus:border-blue-600 peer"
+            >
+              <option value=""></option>
+              <template v-for="group in lcr.pbotGroups" :key="group">
+                <option :value="group">
+                  {{ group }}
+                </option>
+              </template>
+            </select>
+
+            <label
+              for="device"
+              class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+              >PBOT Groups</label
             >
           </div>
         </div>
@@ -131,7 +190,31 @@ onMounted(async () => {
             >
           </div>
         </div>
+        <div>
+          <div class="relative">
+            <a
+              id="dynamicLink"
+              class="block px-2.5 pb-2.5 pt-4 w-full text-blue-100 no-underline bg-blue-500 rounded hover:bg-blue-600 hover:underline hover:text-blue-200"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Generate report</a
+            >
+            <!-- <button
+              id="dynamicLink"
+              class="flex px-2 py-2 text-sm text-blue-200 bg-blue-600 hover:bg-blue-900 disabled:bg-blue-400"
+              @click="exportData"
+            >
+              Export report
+            </button> -->
+          </div>
+        </div>
       </form>
+      <!-- <p>
+
+        <a id="dynamicLink" target="_blank" rel="noopener noreferrer"
+          >Generate report</a
+        >
+      </p> -->
     </section>
 
     <Pager
@@ -167,7 +250,14 @@ onMounted(async () => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
             >
+
               Status
+              </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
+            >
+              Group
             </th>
             <th
               scope="col"
@@ -236,6 +326,9 @@ onMounted(async () => {
                 :computerStatus="schedule.replacementStatus"
                 @update:computerStatus="schedule.replacementStatus = $event"
               ></ReplacementStatus>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              {{ schedule.pbotGroup }}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               {{ schedule.pbotDivision }}
