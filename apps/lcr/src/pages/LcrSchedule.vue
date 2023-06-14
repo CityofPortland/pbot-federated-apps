@@ -9,6 +9,7 @@ import { IconUserCircle } from '@tabler/icons-vue';
 
 import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
 import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
+import { Button } from '@pbotapps/components';
 
 const lcr = useLcrStore();
 
@@ -23,24 +24,6 @@ function pagerChanged(pageNumber: number) {
 async function searchSchedule() {
   lcr.pbotLcrSchedulePageNumber = 1;
   lcr.fetchLcrSchedule(ourSearch, lcr.pbotLcrSchedulePageNumber);
-
-  if (ourSearch.pbotGroup != null && ourSearch.quarterOrderDate != null) {
-    var a = document.getElementById('dynamicLink');
-    var date_transformed =
-      ourSearch.quarterOrderDate.slice(0, 4) +
-      '/' +
-      ourSearch.quarterOrderDate.slice(5, 7) +
-      '/' +
-      ourSearch.quarterOrderDate.slice(8);
-    var pbotGroup_transformed = encodeURI(ourSearch.pbotGroup);
-    var re = /&/gi;
-    pbotGroup_transformed = pbotGroup_transformed.replace(re, '%26');
-    a.href =
-      'https://pbotsqlreport.rose.portland.local/ReportServer/Pages/ReportViewer.aspx?%2fWorkstation+LCR%2fComps+Up+For+Refresh&rs:Command=Render&quarterOrderDate=' +
-      date_transformed +
-      '&pbotGroup=' +
-      pbotGroup_transformed;
-  }
 }
 
 const calYear = ['2022', '2023', '2024', '2025'];
@@ -57,25 +40,24 @@ onMounted(async () => {
 
   lcr.fetchPbotDivisions();
   lcr.fetchPbotGroups();
-
-  if (ourSearch.pbotGroup != null && ourSearch.quarterOrderDate != null) {
-    var a = document.getElementById('dynamicLink');
-    var date_transformed =
-      ourSearch.quarterOrderDate.slice(0, 4) +
-      '/' +
-      ourSearch.quarterOrderDate.slice(5, 7) +
-      '/' +
-      ourSearch.quarterOrderDate.slice(8);
-    var pbotGroup_transformed = encodeURI(ourSearch.pbotGroup);
-    var re = /&/gi;
-    pbotGroup_transformed = pbotGroup_transformed.replace(re, '%26');
-    a.href =
-      'https://pbotsqlreport.rose.portland.local/ReportServer/Pages/ReportViewer.aspx?%2fWorkstation+LCR%2fComps+Up+For+Refresh&rs:Command=Render&quarterOrderDate=' +
-      date_transformed +
-      '&pbotGroup=' +
-      pbotGroup_transformed;
-  }
 });
+
+function openReport() {
+  if (ourSearch.quarterOrderDate && ourSearch.pbotGroup) {
+    const reportParams = new URLSearchParams();
+    reportParams.set('quarterOrderDate', ourSearch.quarterOrderDate);
+    reportParams.set('pbotGroup', ourSearch.pbotGroup);
+
+    window.open(
+      import.meta.env.VITE_REPORT_SERVER_URL +
+        '/ReportServer/Pages/ReportViewer.aspx?%2FWorkstation+LCR%2FComps+Up+For+Refresh&rs%3ACommand=Render&' +
+        reportParams.toString(),
+      '_blank'
+    );
+
+    return false;
+  }
+}
 </script>
 
 <template>
@@ -192,29 +174,12 @@ onMounted(async () => {
         </div>
         <div>
           <div class="relative">
-            <a
-              id="dynamicLink"
-              class="block px-2.5 pb-2.5 pt-4 w-full text-blue-100 no-underline bg-blue-500 rounded hover:bg-blue-600 hover:underline hover:text-blue-200"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Generate report</a
+            <Button role="link" @click="openReport" class="mt-1"
+              >View Report</Button
             >
-            <!-- <button
-              id="dynamicLink"
-              class="flex px-2 py-2 text-sm text-blue-200 bg-blue-600 hover:bg-blue-900 disabled:bg-blue-400"
-              @click="exportData"
-            >
-              Export report
-            </button> -->
           </div>
         </div>
       </form>
-      <!-- <p>
-
-        <a id="dynamicLink" target="_blank" rel="noopener noreferrer"
-          >Generate report</a
-        >
-      </p> -->
     </section>
 
     <Pager
@@ -250,9 +215,8 @@ onMounted(async () => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
             >
-
               Status
-              </th>
+            </th>
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
