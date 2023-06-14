@@ -8,6 +8,7 @@ import { PbotLcrScheduleSearchFilter } from '../types/pagedPbotLcrSchedule';
 import { IconUserCircle } from '@tabler/icons-vue';
 
 import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
+import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
 
 const lcr = useLcrStore();
 
@@ -166,6 +167,12 @@ onMounted(async () => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
             >
+              Status
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"
+            >
               Division
             </th>
             <th
@@ -221,6 +228,14 @@ onMounted(async () => {
               >
                 {{ schedule.primaryUser }}
               </span>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+              <ReplacementStatus
+                v-if="schedule.computerName && schedule.replacementStatus"
+                :computerName="schedule.computerName"
+                :computerStatus="schedule.replacementStatus"
+                @update:computerStatus="schedule.replacementStatus = $event"
+              ></ReplacementStatus>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
               {{ schedule.pbotDivision }}
