@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { useLcrStore } from '../store/lcr';
 import Pager from '../components/pager/Pager.vue';
+import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
 
 const lcr = useLcrStore();
 
@@ -115,6 +116,12 @@ async function searchComputers() {
             scope="col"
             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
+            Status
+          </th>
+          <th
+            scope="col"
+            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
             Primary User
           </th>
           <th
@@ -143,6 +150,14 @@ async function searchComputers() {
                 {{ computer.computerName }}
               </router-link>
             </div>
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+            <ReplacementStatus
+              v-if="computer.computerName && computer.replacementStatus"
+              :computerName="computer.computerName"
+              :computerStatus="computer.replacementStatus"
+              @update:computerStatus="computer.replacementStatus = $event"
+            ></ReplacementStatus>
           </td>
           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
             {{ computer.primaryUser }}

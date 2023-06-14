@@ -1,6 +1,7 @@
 import { MaximoUser } from './../types/pagedMaximoUsers';
-import { 
-  PagedCopActiveComputer,
+import {
+  ActiveComputersSearchFilter,
+  PagedCopActiveComputers,
   CopActiveComputer,
 } from './../types/pagedCopActiveComputers';
 import { LcrPaginatedData } from '../types/lcrPaginatedData';
@@ -8,11 +9,6 @@ import {
   PbotLcrScheduleIndex,
   PbotLcrScheduleSearchFilter,
 } from '../types/pagedPbotLcrSchedule';
-
-import {
-  ActiveComputersSearchFilter,
-  PagedCopActiveComputers,
-} from '../types/pagedCopActiveComputers';
 
 import { defineStore } from 'pinia';
 import axios from 'axios';
@@ -280,6 +276,20 @@ export const useLcrStore = defineStore('lcr', {
       const emptyArr: CopActiveComputer[] = [];
       return emptyArr;
     },
+    getDomainValues(domainName: string): string[] {
+      if (domainName == 'wsReplacementStatus') {
+        return [
+          'Current',
+          'Due',
+          'In Progress',
+          'Ordered',
+          'Delivered',
+          'Break Fix',
+        ];
+      }
+
+      return [''];
+    },
     async updateNoteField(
       computerName: string,
       newNote: string
@@ -295,7 +305,30 @@ export const useLcrStore = defineStore('lcr', {
         const response = await axios
           .post(url.toString(), params)
           .then(response => {
-            console.log('done saving.', response.status);
+            return response.status;
+          });
+
+        return response;
+      } catch (error) {
+        console.log('Error while fetching Maximo users: ', error);
+      }
+      return 500;
+    },
+    async updateComputerStatus(
+      computerName: string,
+      newStatus: string
+    ): Promise<number> {
+      const url = new URL(
+        import.meta.env.VITE_BASE_URL + `/updateComputerStatus/${computerName}`
+      );
+
+      try {
+        const params = new URLSearchParams();
+        params.append('newStatus', newStatus);
+
+        const response = await axios
+          .post(url.toString(), params)
+          .then(response => {
             return response.status;
           });
 

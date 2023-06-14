@@ -5,6 +5,8 @@ import { useRouter } from 'vue-router';
 import { IconUserCircle } from '@tabler/icons-vue';
 import CollapsablePanel from '../components/CollapsablePanel/CollapsablePanel.vue';
 
+import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
+
 const store = useLcrStore();
 const router = useRouter();
 
@@ -40,9 +42,11 @@ async function saveNotes() {
   );
 
   if (status == 200) {
-    currentlySaving.value = false;
-    formChanged.value = false;
-    changesRecentlySaved.value = true;
+    setTimeout(async () => {
+      currentlySaving.value = false;
+      formChanged.value = false;
+      changesRecentlySaved.value = true;
+    }, 200);
   } else {
     console.log('Error while saving.', status);
   }
@@ -287,6 +291,25 @@ async function saveNotes() {
         </form>
         <div class="relative pt-3 xl:pt-6">
           <div class="flex mb-2">
+            <div class="mt-2">
+              <label
+                for="replacementStatus"
+                class="mr-2 text-sm font-semibold text-gray-800"
+              >
+                Status</label
+              >
+            </div>
+            <ReplacementStatus
+              :computerName="store.activeComputer.computerName"
+              :computerStatus="store.activeComputer.replacementStatus"
+              @update:computerStatus="
+                if (store.activeComputer) {
+                  store.activeComputer.replacementStatus = $event;
+                }
+              "
+            ></ReplacementStatus>
+          </div>
+          <div class="flex mb-2">
             <div class="mt-1">
               <label
                 for="note"
@@ -367,6 +390,12 @@ async function saveNotes() {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Device Location
                 </th>
                 <th
@@ -396,6 +425,11 @@ async function saveNotes() {
                         {{ history.importDate?.substring(0, 10) }}
                       </div>
                     </div>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
+                    {{ history.replacementStatus }}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
