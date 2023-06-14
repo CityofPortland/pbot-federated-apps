@@ -6,6 +6,6 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [vue()],
-    base: env.VITE_SITE_PATH,
+    base: env.VITE_SITE_PATH || '/apps/lcrdev/',
   });
 };

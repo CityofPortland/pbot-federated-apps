@@ -48,6 +48,7 @@ export type PbotLcrScheduleSearchFilter = {
 export type PbotLcrScheduleIndex = {
   computerName?: string;
   computerType?: string;
+  replacementStatus?: string;
   primaryUser?: string;
   primaryUserName?: string;
   deploymentDate?: Date;
