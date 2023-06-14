@@ -49,7 +49,8 @@ function openReport() {
     reportParams.set('pbotGroup', ourSearch.pbotGroup);
 
     window.open(
-      'https://pbotsqlreport.rose.portland.local/ReportServer/Pages/ReportViewer.aspx?%2FWorkstation+LCR%2FComps+Up+For+Refresh&rs%3ACommand=Render&' +
+      import.meta.env.VITE_REPORT_SERVER_URL +
+        '/ReportServer/Pages/ReportViewer.aspx?%2FWorkstation+LCR%2FComps+Up+For+Refresh&rs%3ACommand=Render&' +
         reportParams.toString(),
       '_blank'
     );
