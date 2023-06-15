@@ -4,8 +4,8 @@ import { useLcrStore } from '../store/lcr';
 import { useRouter } from 'vue-router';
 import { IconUserCircle } from '@tabler/icons-vue';
 import CollapsablePanel from '../components/CollapsablePanel/CollapsablePanel.vue';
-
 import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
+import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
 
 const store = useLcrStore();
 const router = useRouter();
@@ -63,11 +63,18 @@ async function saveNotes() {
   >
     <div class="flex flex-col w-full px-0 mx-auto md:flex-row">
       <div class="flex flex-col md:w-full">
-        <h1 class="mb-4 font-bold text-blue-600 text-3xl">
-          {{ props.computerName }}
-        </h1>
+        <div class="flex items-center space-x-2">
+          <h1 class="font-bold text-blue-600 text-3xl">
+            {{ props.computerName }}
+          </h1>
+          <computerTypeIcon
+            :computer-type="store.activeComputer.computerType"
+            v-if="store.activeComputer.computerType"
+            size="24"
+          />
+        </div>
 
-        <form class="justify-center w-full mx-auto">
+        <form class="justify-center w-full mx-auto mt-4">
           <div class="">
             <div class="space-x-0 lg:flex lg:space-x-4">
               <div class="w-full lg:w-1/4">
@@ -290,8 +297,8 @@ async function saveNotes() {
           </div>
         </form>
         <div class="relative pt-3 xl:pt-6">
-          <div class="flex mb-2">
-            <div class="mt-2">
+          <div class="flex items-center mb-2">
+            <div>
               <label
                 for="replacementStatus"
                 class="mr-2 text-sm font-semibold text-gray-800"
@@ -309,8 +316,8 @@ async function saveNotes() {
               "
             ></ReplacementStatus>
           </div>
-          <div class="flex mb-2">
-            <div class="mt-1">
+          <div class="flex items-center mb-2">
+            <div>
               <label
                 for="note"
                 class="mr-2 text-sm font-semibold text-gray-800"
