@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { useLcrStore } from '../store/lcr';
 import Pager from '../components/pager/Pager.vue';
 import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
+import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
 
 const lcr = useLcrStore();
 
@@ -148,6 +149,10 @@ async function searchComputers() {
             <div>
               <router-link :to="`/computer/${computer.computerName}`">
                 {{ computer.computerName }}
+                <computerTypeIcon
+                  :computer-type="computer.computerType"
+                  v-if="computer.computerType"
+                />
               </router-link>
             </div>
           </td>
