@@ -6,6 +6,8 @@ import Pager from '../components/pager/Pager.vue';
 import { Anchor } from '@pbotapps/components';
 
 import { IconMail } from '@tabler/icons-vue';
+import { Button } from '@pbotapps/components';
+import { MaximoUser } from '../types/pagedMaximoUsers';
 
 const lcr = useLcrStore();
 const maxUserPager = ref();
@@ -25,6 +27,25 @@ onMounted(async () => {
   findUsers();
   lcr.fetchPbotDivisions();
 });
+
+function clearSearch() {
+  lcr.homeMaximoUserSearch = {
+    pernr: '',
+    userName: '',
+    personId: '',
+    displayName: '',
+    firstName: '',
+    lastName: '',
+    costCenter: '',
+    orgUnit: '',
+    emailAddress: '',
+    computerNames: '',
+    pbotGroup: '',
+    pbotDivision: '',
+    section: '',
+    orgUnitDescription: '',
+  } as MaximoUser;
+}
 </script>
 
 <template>
@@ -163,6 +184,20 @@ onMounted(async () => {
               class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
               >Org Unit</label
             >
+          </div>
+        </div>
+        <div>
+          <div style="align-top align-text-top">
+            <Button
+              @click="clearSearch"
+              class="inline-flex mx-1 disabled:opacity-50 mt-1"
+              :disabled="
+                Object.values(lcr.homeMaximoUserSearch).every(
+                  x => x === null || x === ''
+                )
+              "
+              >Clear Search
+            </Button>
           </div>
         </div>
       </form>
