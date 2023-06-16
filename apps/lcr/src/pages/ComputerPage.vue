@@ -81,63 +81,65 @@ async function saveNotes() {
                 <label
                   for="deploymentDate"
                   class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Deployment Date</label
-                >
-                <input
-                  disabled="true"
-                  name="deploymentDate"
-                  type="datetime"
-                  :value="store.activeComputer.deploymentDate?.substring(0, 10)"
-                  placeholder="Deployment Date"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
+                  >Deployment Date
+
+                  <input
+                    disabled="true"
+                    name="deploymentDate"
+                    type="datetime"
+                    :value="
+                      store.activeComputer.deploymentDate?.substring(0, 10)
+                    "
+                    placeholder="Deployment Date"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                /></label>
               </div>
               <div class="w-full lg:w-1/4">
                 <label
                   for="deviceLocation"
                   class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Device Location</label
-                >
-                <input
-                  disabled="true"
-                  name="deviceLocation"
-                  type="text"
-                  placeholder="Device Location"
-                  :value="store.activeComputer.deviceLocation"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
+                  >Device Location
+
+                  <input
+                    disabled="true"
+                    name="deviceLocation"
+                    type="text"
+                    placeholder="Device Location"
+                    :value="store.activeComputer.deviceLocation"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                /></label>
               </div>
               <div class="w-full lg:w-1/4">
                 <label
                   for="primaryUser"
                   class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Primary User</label
-                >
-                <input
-                  disabled="true"
-                  name="primaryUser"
-                  type="text"
-                  :value="store.activeComputer.primaryUser"
-                  placeholder="Primary User"
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
+                  >Primary User
+
+                  <input
+                    disabled="true"
+                    name="primaryUser"
+                    type="text"
+                    :value="store.activeComputer.primaryUser"
+                    placeholder="Primary User"
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                /></label>
               </div>
               <div class="w-full lg:w-1/4">
                 <label
                   for="lastCommunication"
                   class="block mb-3 text-sm font-semibold text-gray-800"
-                  >Last Communication</label
-                >
-                <input
-                  disabled="true"
-                  name="lastCommunication"
-                  type="datetime"
-                  placeholder="Last Communication"
-                  :value="
-                    store.activeComputer.lastCommunication?.substring(0, 10)
-                  "
-                  class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                />
+                  >Last Communication
+
+                  <input
+                    disabled="true"
+                    name="lastCommunication"
+                    type="datetime"
+                    placeholder="Last Communication"
+                    :value="
+                      store.activeComputer.lastCommunication?.substring(0, 10)
+                    "
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                /></label>
               </div>
             </div>
             <div class="py-4">
@@ -149,61 +151,61 @@ async function saveNotes() {
                       <label
                         for="manufacturer"
                         class="block mb-3 text-sm font-semibold text-gray-800"
-                        >Manufacturer</label
-                      >
-                      <input
-                        disabled="true"
-                        name="manufacturer"
-                        type="text"
-                        :value="store.activeComputer.manufacturer"
-                        placeholder="Manufacturer"
-                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      />
+                        >Manufacturer
+
+                        <input
+                          disabled="true"
+                          name="manufacturer"
+                          type="text"
+                          :value="store.activeComputer.manufacturer"
+                          placeholder="Manufacturer"
+                          class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      /></label>
                     </div>
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuType"
                         class="block mb-3 text-sm font-semibold text-gray-800"
-                        >CPU Type</label
-                      >
-                      <input
-                        disabled="true"
-                        name="cpuType"
-                        type="text"
-                        :value="store.activeComputer.cpuType"
-                        placeholder="CPU Type"
-                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      />
+                        >CPU Type
+
+                        <input
+                          disabled="true"
+                          name="cpuType"
+                          type="text"
+                          :value="store.activeComputer.cpuType"
+                          placeholder="CPU Type"
+                          class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      /></label>
                     </div>
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuNumber"
                         class="block mb-3 text-sm font-semibold text-gray-800"
-                        >CPU Number</label
-                      >
-                      <input
-                        disabled="true"
-                        name="cpuNumber"
-                        type="text"
-                        :value="store.activeComputer.cpuNumber"
-                        placeholder="CPU Number"
-                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      />
+                        >CPU Number
+
+                        <input
+                          disabled="true"
+                          name="cpuNumber"
+                          type="text"
+                          :value="store.activeComputer.cpuNumber"
+                          placeholder="CPU Number"
+                          class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      /></label>
                     </div>
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuSpeed"
                         class="block mb-3 text-sm font-semibold text-gray-800"
-                        >CPU Speed</label
-                      >
-                      <input
-                        disabled="true"
-                        name="cpuSpeed"
-                        type="text"
-                        :value="store.activeComputer.cpuSpeed"
-                        placeholder="CPU Speed"
-                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      />
+                        >CPU Speed
+
+                        <input
+                          disabled="true"
+                          name="cpuSpeed"
+                          type="text"
+                          :value="store.activeComputer.cpuSpeed"
+                          placeholder="CPU Speed"
+                          class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      /></label>
                     </div>
                   </div>
 
@@ -212,83 +214,78 @@ async function saveNotes() {
                       <label
                         for="physicalMemory"
                         class="block mb-3 text-sm font-semibold text-gray-800"
-                        >Physical Memory</label
-                      >
-                      <input
-                        disabled="true"
-                        name="physicalMemory"
-                        type="text"
-                        :value="store.activeComputer.totalPhysicalMemory"
-                        placeholder="Total Physical Memory"
-                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      />
+                        >Physical Memory
+
+                        <input
+                          disabled="true"
+                          name="physicalMemory"
+                          type="text"
+                          :value="store.activeComputer.totalPhysicalMemory"
+                          placeholder="Total Physical Memory"
+                          class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      /></label>
                     </div>
                     <div class="w-full lg:w-1/4">
                       <label
                         for="osName"
                         class="block mb-3 text-sm font-semibold text-gray-800"
-                        >OS Name</label
-                      >
-                      <input
-                        disabled="true"
-                        name="osName"
-                        type="text"
-                        :value="store.activeComputer.osName"
-                        placeholder="OS Name"
-                        class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-                      />
+                        >OS Name
+
+                        <input
+                          disabled="true"
+                          name="osName"
+                          type="text"
+                          :value="store.activeComputer.osName"
+                          placeholder="OS Name"
+                          class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                      /></label>
                     </div>
+
                     <div class="w-full lg:w-1/4">
                       <label
-                        for="lastLogonUser"
-                        class="block mb-3 text-sm font-semibold text-gray-800"
-                        >Last Logon User</label
-                      >
-                      <form class="flex flex-row">
-                        <span
-                          class="flex items-center rounded rounded-r-none border-0 font-bold text-grey-100 pr-1"
-                          ><IconUserCircle
-                            :size="30"
-                            v-on:click="
-                              loadUser(store.activeComputer?.lastLogonUser)
-                            "
-                            v-if="store.activeComputer.lastLogonUser"
-                        /></span>
+                        class="relative block text-sm font-semibold text-gray-800"
+                        >Last Logon User
+
+                        <IconUserCircle
+                          :size="30"
+                          class="absolute top-1/2 transform left-3"
+                          v-on:click="
+                            loadUser(store.activeComputer?.lastLogonUser)
+                          "
+                          v-if="store.activeComputer.lastLogonUser"
+                        />
                         <input
                           disabled="true"
                           name="lastLogonUser"
                           type="text"
                           placeholder="Last Logon User"
                           :value="store.activeComputer.lastLogonUser"
-                          class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                          class="w-full mt-2 pl-12 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                         />
-                      </form>
+                      </label>
                     </div>
                     <div class="w-full lg:w-1/4">
                       <label
-                        for="lastLogonUser"
-                        class="block mb-3 text-sm font-semibold text-gray-800"
-                        >Primary Username</label
-                      >
-                      <form class="flex flex-row">
-                        <span
-                          class="flex items-center rounded rounded-r-none border-0 font-bold text-grey-100 pr-1"
-                          ><IconUserCircle
-                            :size="30"
-                            v-on:click="
-                              loadUser(store.activeComputer?.primaryUserName)
-                            "
-                            v-if="store.activeComputer.primaryUserName"
-                        /></span>
+                        class="relative block text-sm font-semibold text-gray-800"
+                        >Primary Username
+
+                        <IconUserCircle
+                          :size="30"
+                          class="absolute top-1/2 transform left-3"
+                          v-on:click="
+                            loadUser(store.activeComputer?.primaryUserName)
+                          "
+                          v-if="store.activeComputer.primaryUserName"
+                        />
                         <input
                           disabled="true"
-                          name="primaryUsername"
+                          name="lastLogonUser"
                           type="text"
-                          placeholder="Primary Username"
+                          placeholder="Last Logon User"
                           :value="store.activeComputer.primaryUserName"
-                          class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                          class="w-full mt-2 pl-12 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                         />
-                      </form>
+                      </label>
                     </div>
                   </div>
                 </template>
