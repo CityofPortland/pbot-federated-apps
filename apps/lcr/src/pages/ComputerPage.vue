@@ -61,8 +61,8 @@ async function saveNotes() {
       store.activeComputer.computerName == props.computerName
     "
   >
-    <div class="flex flex-col w-full px-0 mx-auto md:flex-row">
-      <div class="flex flex-col md:w-full">
+    <div class="flex flex-col max-w-7xl px-0 mx-auto flex-row">
+      <div class="flex flex-col w-full">
         <div class="flex items-center space-x-2">
           <h1 class="font-bold text-blue-600 text-3xl">
             {{ props.computerName }}
@@ -75,9 +75,9 @@ async function saveNotes() {
         </div>
 
         <form class="justify-center w-full mx-auto mt-4">
-          <div class="">
-            <div class="space-x-0 lg:flex lg:space-x-4">
-              <div class="w-full lg:w-1/4">
+          <div class="w-full">
+            <div class="py-4 flex space-x-4">
+              <div class="w-1/4">
                 <label
                   for="deploymentDate"
                   class="block text-sm font-semibold text-gray-800"
@@ -94,7 +94,7 @@ async function saveNotes() {
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
-              <div class="w-full lg:w-1/4">
+              <div class="w-1/4">
                 <label
                   for="deviceLocation"
                   class="block text-sm font-semibold text-gray-800"
@@ -109,7 +109,7 @@ async function saveNotes() {
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
-              <div class="w-full lg:w-1/4">
+              <div class="w-1/4">
                 <label
                   for="primaryUser"
                   class="block text-sm font-semibold text-gray-800"
@@ -124,7 +124,7 @@ async function saveNotes() {
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
-              <div class="w-full lg:w-1/4">
+              <div class="w-1/4">
                 <label
                   for="lastCommunication"
                   class="block text-sm font-semibold text-gray-800"
@@ -143,11 +143,11 @@ async function saveNotes() {
               </div>
             </div>
             <div class="py-4">
-              <CollapsablePanel class="w-128">
+              <CollapsablePanel class="w-full">
                 <template v-slot:showHideText>Show/Hide Details</template>
                 <template v-slot:content>
-                  <div class="py-4 space-x-0 lg:flex lg:space-x-4">
-                    <div class="w-full lg:w-1/4">
+                  <div class="py-4 flex space-x-4">
+                    <div class="w-1/4">
                       <label
                         for="manufacturer"
                         class="block text-sm font-semibold text-gray-800"
@@ -162,7 +162,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-                    <div class="w-full lg:w-1/4">
+                    <div class="w-1/4">
                       <label
                         for="cpuType"
                         class="block text-sm font-semibold text-gray-800"
@@ -177,7 +177,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-                    <div class="w-full lg:w-1/4">
+                    <div class="w-1/4">
                       <label
                         for="cpuNumber"
                         class="block text-sm font-semibold text-gray-800"
@@ -192,7 +192,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-                    <div class="w-full lg:w-1/4">
+                    <div class="w-1/4">
                       <label
                         for="cpuSpeed"
                         class="block text-sm font-semibold text-gray-800"
@@ -209,8 +209,8 @@ async function saveNotes() {
                     </div>
                   </div>
 
-                  <div class="py-4 space-y-0 lg:flex lg:space-x-4">
-                    <div class="w-full lg:w-1/4">
+                  <div class="py-4 flex space-x-4">
+                    <div class="w-1/4">
                       <label
                         for="physicalMemory"
                         class="block text-sm font-semibold text-gray-800"
@@ -225,7 +225,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-                    <div class="w-full lg:w-1/4">
+                    <div class="w-1/4">
                       <label
                         for="osName"
                         class="block text-sm font-semibold text-gray-800"
@@ -241,7 +241,7 @@ async function saveNotes() {
                       /></label>
                     </div>
 
-                    <div class="w-full lg:w-1/4">
+                    <div class="w-1/4">
                       <label
                         class="relative block text-sm font-semibold text-gray-800"
                         >Last Logon User
@@ -264,7 +264,7 @@ async function saveNotes() {
                         />
                       </label>
                     </div>
-                    <div class="w-full lg:w-1/4">
+                    <div class="w-1/4">
                       <label
                         class="relative block text-sm font-semibold text-gray-800"
                         >Primary Username
@@ -293,7 +293,7 @@ async function saveNotes() {
             </div>
           </div>
         </form>
-        <div class="relative pt-3 xl:pt-6">
+        <div class="relative pt-3 pt-6">
           <div class="flex items-center mb-2">
             <div>
               <label
