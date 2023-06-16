@@ -80,7 +80,7 @@ async function saveNotes() {
               <div class="w-full lg:w-1/4">
                 <label
                   for="deploymentDate"
-                  class="block mb-3 text-sm font-semibold text-gray-800"
+                  class="block text-sm font-semibold text-gray-800"
                   >Deployment Date
 
                   <input
@@ -91,13 +91,13 @@ async function saveNotes() {
                       store.activeComputer.deploymentDate?.substring(0, 10)
                     "
                     placeholder="Deployment Date"
-                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
               <div class="w-full lg:w-1/4">
                 <label
                   for="deviceLocation"
-                  class="block mb-3 text-sm font-semibold text-gray-800"
+                  class="block text-sm font-semibold text-gray-800"
                   >Device Location
 
                   <input
@@ -106,13 +106,13 @@ async function saveNotes() {
                     type="text"
                     placeholder="Device Location"
                     :value="store.activeComputer.deviceLocation"
-                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
               <div class="w-full lg:w-1/4">
                 <label
                   for="primaryUser"
-                  class="block mb-3 text-sm font-semibold text-gray-800"
+                  class="block text-sm font-semibold text-gray-800"
                   >Primary User
 
                   <input
@@ -121,13 +121,13 @@ async function saveNotes() {
                     type="text"
                     :value="store.activeComputer.primaryUser"
                     placeholder="Primary User"
-                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
               <div class="w-full lg:w-1/4">
                 <label
                   for="lastCommunication"
-                  class="block mb-3 text-sm font-semibold text-gray-800"
+                  class="block text-sm font-semibold text-gray-800"
                   >Last Communication
 
                   <input
@@ -138,7 +138,7 @@ async function saveNotes() {
                     :value="
                       store.activeComputer.lastCommunication?.substring(0, 10)
                     "
-                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                    class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
             </div>
@@ -150,7 +150,7 @@ async function saveNotes() {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="manufacturer"
-                        class="block mb-3 text-sm font-semibold text-gray-800"
+                        class="block text-sm font-semibold text-gray-800"
                         >Manufacturer
 
                         <input
@@ -165,7 +165,7 @@ async function saveNotes() {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuType"
-                        class="block mb-3 text-sm font-semibold text-gray-800"
+                        class="block text-sm font-semibold text-gray-800"
                         >CPU Type
 
                         <input
@@ -180,7 +180,7 @@ async function saveNotes() {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuNumber"
-                        class="block mb-3 text-sm font-semibold text-gray-800"
+                        class="block text-sm font-semibold text-gray-800"
                         >CPU Number
 
                         <input
@@ -195,7 +195,7 @@ async function saveNotes() {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="cpuSpeed"
-                        class="block mb-3 text-sm font-semibold text-gray-800"
+                        class="block text-sm font-semibold text-gray-800"
                         >CPU Speed
 
                         <input
@@ -213,7 +213,7 @@ async function saveNotes() {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="physicalMemory"
-                        class="block mb-3 text-sm font-semibold text-gray-800"
+                        class="block text-sm font-semibold text-gray-800"
                         >Physical Memory
 
                         <input
@@ -228,7 +228,7 @@ async function saveNotes() {
                     <div class="w-full lg:w-1/4">
                       <label
                         for="osName"
-                        class="block mb-3 text-sm font-semibold text-gray-800"
+                        class="block text-sm font-semibold text-gray-800"
                         >OS Name
 
                         <input
