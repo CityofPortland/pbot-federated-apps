@@ -285,6 +285,7 @@ export const useLcrStore = defineStore('lcr', {
           'Ordered',
           'Delivered',
           'Break Fix',
+          'Retired',
         ];
       }
 
