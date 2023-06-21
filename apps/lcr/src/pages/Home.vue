@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
-import { useLcrStore } from '../store/lcr';
-import Pager from '../components/pager/Pager.vue';
-import { Anchor } from '@pbotapps/components';
+import { useLcrStore } from "../store/lcr";
+import Pager from "../components/pager/Pager.vue";
+import { Anchor } from "@pbotapps/components";
 
-import { IconMail } from '@tabler/icons-vue';
-import { Button } from '@pbotapps/components';
-import { MaximoUser } from '../types/pagedMaximoUsers';
+import { IconMail } from "@tabler/icons-vue";
+import { Button } from "@pbotapps/components";
+import { MaximoUser } from "../types/pagedMaximoUsers";
 
 const lcr = useLcrStore();
 const maxUserPager = ref();
@@ -30,20 +30,20 @@ onMounted(async () => {
 
 function clearSearch() {
   lcr.homeMaximoUserSearch = {
-    pernr: '',
-    userName: '',
-    personId: '',
-    displayName: '',
-    firstName: '',
-    lastName: '',
-    costCenter: '',
-    orgUnit: '',
-    emailAddress: '',
-    computerNames: '',
-    pbotGroup: '',
-    pbotDivision: '',
-    section: '',
-    orgUnitDescription: '',
+    pernr: "",
+    userName: "",
+    personId: "",
+    displayName: "",
+    firstName: "",
+    lastName: "",
+    costCenter: "",
+    orgUnit: "",
+    emailAddress: "",
+    computerNames: "",
+    pbotGroup: "",
+    pbotDivision: "",
+    section: "",
+    orgUnitDescription: "",
   } as MaximoUser;
 }
 </script>
@@ -52,10 +52,7 @@ function clearSearch() {
   <div>
     <h2 class="text-3xl font-bold mb-2">Search Users</h2>
     <section>
-      <form
-        @submit.prevent="findUsers"
-        class="grid grid-cols-8 gap-4 max-w-8xl m-5"
-      >
+      <form @submit.prevent="findUsers" class="grid grid-cols-8 gap-4 max-w-8xl m-5">
         <div>
           <div class="relative">
             <input
@@ -173,14 +170,14 @@ function clearSearch() {
           <div class="relative">
             <input
               type="text"
-              id="pbotOrgUnit"
+              id="orgUnit"
               class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-500 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               v-model="lcr.homeMaximoUserSearch.orgUnit"
               v-on:keyup="findUsers"
             />
             <label
-              for="pbotOrgUnit"
+              for="orgUnit"
               class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
               >Org Unit</label
             >
@@ -193,7 +190,7 @@ function clearSearch() {
               class="inline-flex mx-1 disabled:opacity-50 mt-1"
               :disabled="
                 Object.values(lcr.homeMaximoUserSearch).every(
-                  x => x === null || x === ''
+                  (x) => x === null || x === ''
                 )
               "
               >Clear Search
@@ -263,9 +260,7 @@ function clearSearch() {
           :key="person.personId"
         >
           <tr class="hover:bg-slate-100">
-            <td
-              className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-            >
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
               <RouterLink :to="`/user/${person.userName}`">{{
                 person.displayName
               }}</RouterLink>
@@ -298,14 +293,9 @@ function clearSearch() {
                 {{ person.pbotDivision }}
               </div>
             </td>
-            <td
-              className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-            >
+            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <div v-if="person.computerNames">
-                <div
-                  v-for="computer in person.computerNames.split(',')"
-                  :key="computer"
-                >
+                <div v-for="computer in person.computerNames.split(',')" :key="computer">
                   <router-link
                     :to="`/computer/${computer}`"
                     custom
