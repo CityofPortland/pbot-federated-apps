@@ -24,19 +24,19 @@
   },
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
   "devDependencies": {
-    "@types/node": "^18.13.0",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
-    "@typescript-eslint/parser": "^5.51.0",
-    "eslint": "^8.33.0",
-    "eslint-config-prettier": "^8.6.0",
+    "@types/node": "^18.16.18",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-config-typescript": "^3.0.0",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.6.0",
-    "@pbotapps/authorization": "workspace:^1.0.0",
-    "@pbotapps/common": "workspace:^1.0.0",
-    "@pbotapps/objects": "workspace:^1.0.0",
-    "dataloader": "^2.2.1"
+    "@elastic/elasticsearch": "^8.8.1",
+    "@pbotapps/authorization": "workspace:^",
+    "@pbotapps/common": "workspace:^",
+    "@pbotapps/objects": "workspace:^",
+    "dataloader": "^2.2.2"
   }
 }

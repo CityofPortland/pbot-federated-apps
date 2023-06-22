@@ -28,25 +28,25 @@
     "@apollo/federation": "^0.36.2",
     "@apollo/subgraph": "^0.4.2",
     "apollo-graphql": "^0.9.7",
-    "apollo-server": "^3.11.1",
-    "apollo-server-express": "^3.11.1",
+    "apollo-server": "^3.12.0",
+    "apollo-server-express": "^3.12.0",
     "class-validator": "^0.13.2",
     "express": "^4.18.2",
     "express-jwt": "^6.1.2",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
-    "passport-azure-ad": "^4.3.4",
-    "pg": "^8.9.0",
+    "passport-azure-ad": "^4.3.5",
+    "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
-    "typeorm": "^0.3.12"
+    "typeorm": "^0.3.17"
   },
   "devDependencies": {
     "@types/express-jwt": "^6.0.4",
-    "@types/node": "^16.18.12",
+    "@types/node": "^16.18.36",
     "@types/passport-azure-ad": "^4.3.1",
-    "@types/validator": "^13.7.12",
-    "nodemon": "^2.0.20",
+    "@types/validator": "^13.7.17",
+    "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   }
