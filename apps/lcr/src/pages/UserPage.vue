@@ -44,10 +44,6 @@ function loadComputer(computer: string) {
   router.push({ name: 'ComputerPage', params: { computer: computer } });
 }
 
-function getComputerType(computerName: string) {
-  return computerName.substring(0, 2);
-}
-
 function checkOrgField(colName: string, colValue: string) {
   if (
     colValue != null &&
