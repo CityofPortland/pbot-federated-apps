@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { Anchor } from "@pbotapps/components";
-import { Ref, ref, onMounted } from "vue";
-import { MaximoUserSearchFilter } from "../types/pagedMaximoUsers";
+import { Anchor } from '@pbotapps/components';
+import { Ref, ref, onMounted } from 'vue';
+import { MaximoUserSearchFilter } from '../types/pagedMaximoUsers';
 import {
   CopActiveComputer,
   ActiveComputersSearchFilter,
-} from "../types/pagedCopActiveComputers";
+} from '../types/pagedCopActiveComputers';
 
-import { useLcrStore } from "../store/lcr";
-import { useRouter } from "vue-router";
-import moment from "moment";
-import computerTypeIcon from "../components/icons/computerTypeIcon.vue";
+import { useLcrStore } from '../store/lcr';
+import { useRouter } from 'vue-router';
+import moment from 'moment';
+import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
 
 const store = useLcrStore();
 const ourSearch: MaximoUserSearchFilter = {
-  userName: "",
+  userName: '',
 };
 
 const computerSearch: ActiveComputersSearchFilter = {
-  primaryUserName: "",
+  primaryUserName: '',
 };
 
 const usersComputers: Ref<CopActiveComputer[]> = ref([]);
@@ -41,13 +41,15 @@ onMounted(async () => {
 const router = useRouter();
 
 function loadComputer(computer: string) {
-  router.push({ name: "ComputerPage", params: { computer: computer } });
+  router.push({ name: 'ComputerPage', params: { computer: computer } });
 }
 
 function checkOrgField(colName: string, colValue: string) {
   if (
     colValue != null &&
-    (colName == "pbotGroup" || colName == "pbotDivision" || colName == "section")
+    (colName == 'pbotGroup' ||
+      colName == 'pbotDivision' ||
+      colName == 'section')
   )
     return true;
 }
@@ -217,7 +219,9 @@ function checkOrgField(colName: string, colValue: string) {
                         >
                           <div className="text-sm font-medium text-blue-400">
                             {{ device.computerName }}
-                            <computerTypeIcon :computer-type="device.computerType" />
+                            <computerTypeIcon
+                              :computer-type="device.computerType"
+                            />
                           </div>
                         </div>
                       </div>
@@ -229,12 +233,14 @@ function checkOrgField(colName: string, colValue: string) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {{ moment(device.lastCommunication).format("YYYY-MM-DD") }}
+                        {{
+                          moment(device.lastCommunication).format('YYYY-MM-DD')
+                        }}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {{ moment(device.deploymentDate).format("YYYY-MM-DD") }}
+                        {{ moment(device.deploymentDate).format('YYYY-MM-DD') }}
                       </div>
                     </td>
                   </tr>

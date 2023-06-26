@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted } from 'vue';
 
-import { useLcrStore } from "../store/lcr";
-import Pager from "../components/pager/Pager.vue";
-import { Anchor } from "@pbotapps/components";
+import { useLcrStore } from '../store/lcr';
+import Pager from '../components/pager/Pager.vue';
+import { Anchor } from '@pbotapps/components';
 
-import { IconMail } from "@tabler/icons-vue";
-import { Button } from "@pbotapps/components";
-import { MaximoUser } from "../types/pagedMaximoUsers";
+import { IconMail } from '@tabler/icons-vue';
+import { Button } from '@pbotapps/components';
+import { MaximoUser } from '../types/pagedMaximoUsers';
 
 const lcr = useLcrStore();
 const maxUserPager = ref();
@@ -30,20 +30,20 @@ onMounted(async () => {
 
 function clearSearch() {
   lcr.homeMaximoUserSearch = {
-    pernr: "",
-    userName: "",
-    personId: "",
-    displayName: "",
-    firstName: "",
-    lastName: "",
-    costCenter: "",
-    orgUnit: "",
-    emailAddress: "",
-    computerNames: "",
-    pbotGroup: "",
-    pbotDivision: "",
-    section: "",
-    orgUnitDescription: "",
+    pernr: '',
+    userName: '',
+    personId: '',
+    displayName: '',
+    firstName: '',
+    lastName: '',
+    costCenter: '',
+    orgUnit: '',
+    emailAddress: '',
+    computerNames: '',
+    pbotGroup: '',
+    pbotDivision: '',
+    section: '',
+    orgUnitDescription: '',
   } as MaximoUser;
 }
 </script>
@@ -52,7 +52,10 @@ function clearSearch() {
   <div>
     <h2 class="text-3xl font-bold mb-2">Search Users</h2>
     <section>
-      <form @submit.prevent="findUsers" class="grid grid-cols-8 gap-4 max-w-8xl m-5">
+      <form
+        @submit.prevent="findUsers"
+        class="grid grid-cols-8 gap-4 max-w-8xl m-5"
+      >
         <div>
           <div class="relative">
             <input
@@ -190,7 +193,7 @@ function clearSearch() {
               class="inline-flex mx-1 disabled:opacity-50 mt-1"
               :disabled="
                 Object.values(lcr.homeMaximoUserSearch).every(
-                  (x) => x === null || x === ''
+                  x => x === null || x === ''
                 )
               "
               >Clear Search
@@ -260,7 +263,9 @@ function clearSearch() {
           :key="person.personId"
         >
           <tr class="hover:bg-slate-100">
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            <td
+              className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+            >
               <RouterLink :to="`/user/${person.userName}`">{{
                 person.displayName
               }}</RouterLink>
@@ -293,9 +298,14 @@ function clearSearch() {
                 {{ person.pbotDivision }}
               </div>
             </td>
-            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <td
+              className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
               <div v-if="person.computerNames">
-                <div v-for="computer in person.computerNames.split(',')" :key="computer">
+                <div
+                  v-for="computer in person.computerNames.split(',')"
+                  :key="computer"
+                >
                   <router-link
                     :to="`/computer/${computer}`"
                     custom
