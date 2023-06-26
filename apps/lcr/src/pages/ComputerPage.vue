@@ -76,8 +76,8 @@ async function saveNotes() {
 
         <form class="justify-center w-full mx-auto mt-4">
           <div class="w-full">
-            <div class="py-4 flex space-x-4">
-              <div class="w-1/4">
+            <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
                 <label
                   for="deploymentDate"
                   class="block text-sm font-semibold text-gray-800"
@@ -94,7 +94,7 @@ async function saveNotes() {
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
-              <div class="w-1/4">
+              <div>
                 <label
                   for="deviceLocation"
                   class="block text-sm font-semibold text-gray-800"
@@ -109,7 +109,7 @@ async function saveNotes() {
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
-              <div class="w-1/4">
+              <div>
                 <label
                   for="primaryUser"
                   class="block text-sm font-semibold text-gray-800"
@@ -124,7 +124,7 @@ async function saveNotes() {
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
-              <div class="w-1/4">
+              <div>
                 <label
                   for="lastCommunication"
                   class="block text-sm font-semibold text-gray-800"
@@ -142,12 +142,13 @@ async function saveNotes() {
                 /></label>
               </div>
             </div>
+
             <div class="py-4">
               <CollapsablePanel class="w-full">
                 <template v-slot:showHideText>Show/Hide Details</template>
                 <template v-slot:content>
-                  <div class="py-4 flex space-x-4">
-                    <div class="w-1/4">
+                  <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+                    <div>
                       <label
                         for="manufacturer"
                         class="block text-sm font-semibold text-gray-800"
@@ -162,7 +163,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-                    <div class="w-1/4">
+                    <div>
                       <label
                         for="cpuType"
                         class="block text-sm font-semibold text-gray-800"
@@ -177,7 +178,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-                    <div class="w-1/4">
+                    <div>
                       <label
                         for="cpuNumber"
                         class="block text-sm font-semibold text-gray-800"
@@ -192,7 +193,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-                    <div class="w-1/4">
+                    <div>
                       <label
                         for="cpuSpeed"
                         class="block text-sm font-semibold text-gray-800"
@@ -209,8 +210,8 @@ async function saveNotes() {
                     </div>
                   </div>
 
-                  <div class="py-4 flex space-x-4">
-                    <div class="w-1/4">
+                  <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+                    <div>
                       <label
                         for="physicalMemory"
                         class="block text-sm font-semibold text-gray-800"
@@ -225,7 +226,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-                    <div class="w-1/4">
+                    <div>
                       <label
                         for="osName"
                         class="block text-sm font-semibold text-gray-800"
@@ -240,8 +241,7 @@ async function saveNotes() {
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
                     </div>
-
-                    <div class="w-1/4">
+                    <div>
                       <label
                         class="relative block text-sm font-semibold text-gray-800"
                         >Last Logon User
@@ -264,7 +264,7 @@ async function saveNotes() {
                         />
                       </label>
                     </div>
-                    <div class="w-1/4">
+                    <div>
                       <label
                         class="relative block text-sm font-semibold text-gray-800"
                         >Primary Username
