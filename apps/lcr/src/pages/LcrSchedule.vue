@@ -41,23 +41,6 @@ onMounted(async () => {
   lcr.fetchPbotDivisions();
   lcr.fetchPbotGroups();
 });
-
-function openReport() {
-  if (ourSearch.quarterOrderDate && ourSearch.pbotGroup) {
-    const reportParams = new URLSearchParams();
-    reportParams.set('quarterOrderDate', ourSearch.quarterOrderDate);
-    reportParams.set('pbotGroup', ourSearch.pbotGroup);
-
-    window.open(
-      import.meta.env.VITE_REPORT_SERVER_URL +
-        '/ReportServer/Pages/ReportViewer.aspx?%2FWorkstation+LCR%2FComps+Up+For+Refresh&rs%3ACommand=Render&' +
-        reportParams.toString(),
-      '_blank'
-    );
-
-    return false;
-  }
-}
 </script>
 
 <template>
@@ -66,7 +49,7 @@ function openReport() {
     <section>
       <form
         @submit.prevent="searchSchedule"
-        class="grid grid-cols-6 gap-6 max-w-6xl m-2"
+        class="grid grid-cols-5 gap-6 max-w-6xl m-2"
       >
         <div>
           <div class="relative">
@@ -169,13 +152,6 @@ function openReport() {
               for="device"
               class="absolute text-md font-medium text-gray-600 text-bold duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
               >Quarter Order Date</label
-            >
-          </div>
-        </div>
-        <div>
-          <div class="relative">
-            <Button role="link" @click="openReport" class="mt-1"
-              >View Report</Button
             >
           </div>
         </div>
