@@ -5,6 +5,7 @@ import Pager from '../components/pager/Pager.vue';
 import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
 import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
 import moment from 'moment';
+import { Button } from '@pbotapps/components';
 
 const lcr = useLcrStore();
 
@@ -32,6 +33,31 @@ async function searchComputers() {
 
 const calYear = ['2022', '2023', '2024', '2025'];
 const calMonth = ['01', '04', '07', '10'];
+
+function openReport() {
+  if (
+    lcr.activeComputersSearch.replacementQuarter &&
+    lcr.activeComputersSearch.pbotGroup
+  ) {
+    const reportParams = new URLSearchParams();
+    reportParams.set(
+      'quarterOrderDate',
+      lcr.activeComputersSearch.replacementQuarter
+    );
+    reportParams.set('pbotGroup', lcr.activeComputersSearch.pbotGroup);
+
+    window.open(
+      import.meta.env.VITE_REPORT_SERVER_URL +
+        '/ReportServer/Pages/ReportViewer.aspx?%2FWorkstation+LCR%2FComps+Up+For+Refresh&rs%3ACommand=Render&' +
+        reportParams.toString(),
+      '_blank'
+    );
+
+    return false;
+  } else {
+    alert('Please select Group & LCR Quarter to load report');
+  }
+}
 </script>
 
 <template>
@@ -40,7 +66,7 @@ const calMonth = ['01', '04', '07', '10'];
     <section>
       <form
         @submit.prevent="searchComputers"
-        class="grid grid-cols-5 gap-4 max-w-screen-2xl m-2"
+        class="grid grid-cols-6 gap-4 max-w-screen-2xl mb-2"
       >
         <div>
           <div class="relative">
@@ -141,6 +167,11 @@ const calMonth = ['01', '04', '07', '10'];
             >
           </div>
         </div>
+        <div>
+          <Button role="link" @click="openReport" class="mt-1"
+            >View Report</Button
+          >
+        </div>
       </form>
     </section>
   </div>
@@ -151,6 +182,7 @@ const calMonth = ['01', '04', '07', '10'];
     :pagedData="lcr.activeComputers"
     :page-number="lcr.activeComputersPageNumber"
     ref="activeComputerPager"
+    class="mb-2"
   ></Pager>
 
   <div>
