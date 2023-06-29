@@ -65,7 +65,6 @@ export const useLcrStore = defineStore('lcr', {
     activeComputersSearch: { computerName: '' } as ActiveComputersSearchFilter,
     activeComputers: null as PagedCopActiveComputers | null,
     activeComputersPageNumber: 1 as number,
-    activeComputer: null as CopActiveComputer | null,
     activeMaximoUser: null as MaximoUser | null,
     pbotDivisions: [] as string[],
     pbotGroups: [] as string[],
@@ -220,7 +219,9 @@ export const useLcrStore = defineStore('lcr', {
         console.log('Error while fetching Maximo users: ', error);
       }
     },
-    async fetchCopActiveComputer(computerNameSearch: string) {
+    async fetchCopActiveComputer(
+      computerNameSearch: string
+    ): Promise<CopActiveComputer | null> {
       const url = new URL(
         import.meta.env.VITE_BASE_URL + '/GetCopActiveComputer'
       );
@@ -232,13 +233,15 @@ export const useLcrStore = defineStore('lcr', {
           console.log('fetchCopActiveComputer: ', url.toString());
         }
         const res = await axios.get(url.toString());
-        this.activeComputer = res.data;
+        return res.data;
       } catch (error) {
         console.log(
           `Error in fetchCopActiveComputer: ${computerNameSearch} `,
           error
         );
       }
+
+      return null;
     },
     async fetchMaximoUser(userName: string) {
       const url = new URL(import.meta.env.VITE_BASE_URL + '/GetMaximoUser');
