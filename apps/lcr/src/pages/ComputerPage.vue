@@ -6,6 +6,7 @@ import { IconUserCircle } from '@tabler/icons-vue';
 import CollapsablePanel from '../components/CollapsablePanel/CollapsablePanel.vue';
 import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
 import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
+import { CopActiveComputer } from './../types/pagedCopActiveComputers';
 
 const store = useLcrStore();
 const router = useRouter();
@@ -15,9 +16,10 @@ const props = defineProps({
 });
 
 onMounted(async () => {
-  store.fetchCopActiveComputer(props.computerName);
+  activeComputer.value = await store.fetchCopActiveComputer(props.computerName);
 });
 
+const activeComputer = ref(null as CopActiveComputer | null);
 const formChanged = ref(false);
 const currentlySaving = ref(false);
 const changesRecentlySaved = ref(false);
@@ -37,8 +39,8 @@ async function saveNotes() {
   currentlySaving.value = true;
 
   let status = await store.updateNoteField(
-    store.activeComputer?.computerName || '',
-    store.activeComputer?.workstationNotes || ''
+    activeComputer.value?.computerName || '',
+    activeComputer.value?.workstationNotes || ''
   );
 
   if (status == 200) {
@@ -56,10 +58,7 @@ async function saveNotes() {
 <template>
   <div
     class="container p-12 mx-auto"
-    v-if="
-      store.activeComputer &&
-      store.activeComputer.computerName == props.computerName
-    "
+    v-if="activeComputer && activeComputer.computerName == props.computerName"
   >
     <div class="flex flex-col max-w-7xl px-0 mx-auto flex-row">
       <div class="flex flex-col w-full">
@@ -68,8 +67,8 @@ async function saveNotes() {
             {{ props.computerName }}
           </h1>
           <computerTypeIcon
-            :computer-type="store.activeComputer.computerType"
-            v-if="store.activeComputer.computerType"
+            :computer-type="activeComputer.computerType"
+            v-if="activeComputer.computerType"
             size="24"
           />
         </div>
@@ -87,9 +86,7 @@ async function saveNotes() {
                     disabled="true"
                     name="deploymentDate"
                     type="datetime"
-                    :value="
-                      store.activeComputer.deploymentDate?.substring(0, 10)
-                    "
+                    :value="activeComputer.deploymentDate?.substring(0, 10)"
                     placeholder="Deployment Date"
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
@@ -105,7 +102,7 @@ async function saveNotes() {
                     name="deviceLocation"
                     type="text"
                     placeholder="Device Location"
-                    :value="store.activeComputer.deviceLocation"
+                    :value="activeComputer.deviceLocation"
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
@@ -119,7 +116,7 @@ async function saveNotes() {
                     disabled="true"
                     name="primaryUser"
                     type="text"
-                    :value="store.activeComputer.primaryUser"
+                    :value="activeComputer.primaryUser"
                     placeholder="Primary User"
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
@@ -135,9 +132,7 @@ async function saveNotes() {
                     name="lastCommunication"
                     type="datetime"
                     placeholder="Last Communication"
-                    :value="
-                      store.activeComputer.lastCommunication?.substring(0, 10)
-                    "
+                    :value="activeComputer.lastCommunication?.substring(0, 10)"
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
@@ -158,7 +153,7 @@ async function saveNotes() {
                           disabled="true"
                           name="manufacturer"
                           type="text"
-                          :value="store.activeComputer.manufacturer"
+                          :value="activeComputer.manufacturer"
                           placeholder="Manufacturer"
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
@@ -173,7 +168,7 @@ async function saveNotes() {
                           disabled="true"
                           name="cpuType"
                           type="text"
-                          :value="store.activeComputer.cpuType"
+                          :value="activeComputer.cpuType"
                           placeholder="CPU Type"
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
@@ -188,7 +183,7 @@ async function saveNotes() {
                           disabled="true"
                           name="cpuNumber"
                           type="text"
-                          :value="store.activeComputer.cpuNumber"
+                          :value="activeComputer.cpuNumber"
                           placeholder="CPU Number"
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
@@ -203,7 +198,7 @@ async function saveNotes() {
                           disabled="true"
                           name="cpuSpeed"
                           type="text"
-                          :value="store.activeComputer.cpuSpeed"
+                          :value="activeComputer.cpuSpeed"
                           placeholder="CPU Speed"
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
@@ -221,7 +216,7 @@ async function saveNotes() {
                           disabled="true"
                           name="physicalMemory"
                           type="text"
-                          :value="store.activeComputer.totalPhysicalMemory"
+                          :value="activeComputer.totalPhysicalMemory"
                           placeholder="Total Physical Memory"
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
@@ -236,7 +231,7 @@ async function saveNotes() {
                           disabled="true"
                           name="osName"
                           type="text"
-                          :value="store.activeComputer.osName"
+                          :value="activeComputer.osName"
                           placeholder="OS Name"
                           class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                       /></label>
@@ -249,17 +244,15 @@ async function saveNotes() {
                         <IconUserCircle
                           :size="30"
                           class="absolute top-1/2 transform left-3"
-                          v-on:click="
-                            loadUser(store.activeComputer?.lastLogonUser)
-                          "
-                          v-if="store.activeComputer.lastLogonUser"
+                          v-on:click="loadUser(activeComputer?.lastLogonUser)"
+                          v-if="activeComputer.lastLogonUser"
                         />
                         <input
                           disabled="true"
                           name="lastLogonUser"
                           type="text"
                           placeholder="Last Logon User"
-                          :value="store.activeComputer.lastLogonUser"
+                          :value="activeComputer.lastLogonUser"
                           class="w-full mt-2 pl-12 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                         />
                       </label>
@@ -272,17 +265,15 @@ async function saveNotes() {
                         <IconUserCircle
                           :size="30"
                           class="absolute top-1/2 transform left-3"
-                          v-on:click="
-                            loadUser(store.activeComputer?.primaryUserName)
-                          "
-                          v-if="store.activeComputer.primaryUserName"
+                          v-on:click="loadUser(activeComputer?.primaryUserName)"
+                          v-if="activeComputer.primaryUserName"
                         />
                         <input
                           disabled="true"
                           name="lastLogonUser"
                           type="text"
                           placeholder="Last Logon User"
-                          :value="store.activeComputer.primaryUserName"
+                          :value="activeComputer.primaryUserName"
                           class="w-full mt-2 pl-12 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                         />
                       </label>
@@ -304,11 +295,11 @@ async function saveNotes() {
               >
             </div>
             <ReplacementStatus
-              :computerName="store.activeComputer.computerName"
-              :computerStatus="store.activeComputer.replacementStatus"
+              :computerName="activeComputer.computerName"
+              :computerStatus="activeComputer.replacementStatus"
               @update:computerStatus="
-                if (store.activeComputer) {
-                  store.activeComputer.replacementStatus = $event;
+                if (activeComputer) {
+                  activeComputer.replacementStatus = $event;
                 }
               "
             ></ReplacementStatus>
@@ -364,23 +355,23 @@ async function saveNotes() {
             class="flex items-center w-full px-4 py-3 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-600"
             rows="4"
             placeholder="Notes"
-            v-model="store.activeComputer.workstationNotes"
+            v-model="activeComputer.workstationNotes"
             v-on:keyup="setFormChanged"
           ></textarea>
         </div>
         <div
           class="mt-5 shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
-          v-if="store.activeComputer.copActiveComputersHistory"
+          v-if="activeComputer.copActiveComputersHistory"
         >
           <h2
             class="text-xl font-bold text-blue-600 mb-5"
-            v-if="store.activeComputer.copActiveComputersHistory"
+            v-if="activeComputer.copActiveComputersHistory"
           >
             Device History
           </h2>
           <table
             className="min-w-full divide-y divide-gray-200"
-            v-if="store.activeComputer.copActiveComputersHistory"
+            v-if="activeComputer.copActiveComputersHistory"
           >
             <thead className="bg-gray-50">
               <tr>
@@ -418,7 +409,7 @@ async function saveNotes() {
             </thead>
             <tbody
               class="bg-white divide-y divide-gray-200"
-              v-for="history in store.activeComputer.copActiveComputersHistory"
+              v-for="history in activeComputer.copActiveComputersHistory"
               :key="history.importDate"
             >
               <tr class="hover:bg-slate-100">
