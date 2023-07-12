@@ -2,30 +2,57 @@
 import { Anchor } from '@pbotapps/components';
 import { useRoute } from 'vue-router';
 import { RouterLink } from 'vue-router';
+import Rules from './Rules.vue';
+import { useRuleStore } from '../store/rules';
 
 defineProps({ zone: { type: Object, required: true } });
 
-const { path } = useRoute();
+const { params, path } = useRoute();
+const rules = useRuleStore();
 </script>
 
 <template>
   <article class="flex flex-col space-y-4">
-    <h1 class="text-3xl capitalize">{{ zone.name }}</h1>
-    <h2 class="text-2xl">Schemas</h2>
-    <ul>
-      <li v-for="(schema, index) in zone.schemas" :key="index">
-        <div>
-          <router-link
-            :to="`${path}/${schema.name}`"
-            custom
-            v-slot="{ href, navigate }"
+    <h1 class="text-4xl font-bold mb-4">{{ zone.name }}</h1>
+    <main>
+      <h2 class="text-2xl font-semibold mb-2">schemas</h2>
+      <section>
+        <header class="grid grid-cols-2 gap-2 mb-2">
+          <span class="font-semibold">name</span>
+          <span class="font-semibold">table count</span>
+        </header>
+        <ul>
+          <li
+            v-for="(schema, index) in zone.schemas"
+            :key="index"
+            class="grid grid-cols-2 items-start gap-2 hover:bg-gray-100"
           >
-            <Anchor :url="href" @click="navigate">
-              {{ schema.name }}
-            </Anchor>
-          </router-link>
-        </div>
-      </li>
-    </ul>
+            <span>
+              <router-link
+                :to="`${path}/${schema.name}`"
+                custom
+                v-slot="{ href, navigate }"
+              >
+                <Anchor :url="href" @click="navigate">
+                  {{ schema.name }}
+                </Anchor>
+              </router-link>
+            </span>
+            <span>{{ schema.tables.length }}</span>
+          </li>
+        </ul>
+      </section>
+    </main>
+    <section>
+      <Rules
+        :rules="
+          rules.rules({
+            zone: params.zone as string,
+            schema: params.schema as string,
+            table: params.table as string,
+          })
+        "
+      />
+    </section>
   </article>
 </template>
