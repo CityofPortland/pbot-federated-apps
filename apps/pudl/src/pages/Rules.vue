@@ -38,7 +38,6 @@ const newRule = ref({ ...props.defaultRule });
 
 const editRule = (index: number, rule: Rule) => {
   console.debug(`Editing rule '${JSON.stringify(rule)}'`);
-  showForm[index] = false;
   emit('changed', index, rule);
 };
 </script>
@@ -61,7 +60,10 @@ const editRule = (index: number, rule: Rule) => {
     <RuleForm
       :rule="newRule"
       class="mb-4"
-      @changed="addRule"
+      @changed="
+        addRule($event);
+        showForm['new'] = false;
+      "
       @cancel="showForm['new'] = false"
     />
   </aside>
@@ -115,7 +117,10 @@ const editRule = (index: number, rule: Rule) => {
         >
           <RuleForm
             :rule="{ ...rule }"
-            @changed="editRule(idx, $event)"
+            @changed="
+              editRule(idx, $event);
+              showForm[idx] = false;
+            "
             @cancel="showForm[idx] = false"
           />
         </div>
