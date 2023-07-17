@@ -1,4 +1,7 @@
-import { MaximoUser } from './../types/pagedMaximoUsers';
+import {
+  MaximoUser,
+  MaximoUserSearchFilter,
+} from './../types/pagedMaximoUsers';
 import {
   ActiveComputersSearchFilter,
   PagedCopActiveComputers,
@@ -35,21 +38,19 @@ export const useLcrStore = defineStore('lcr', {
   persist: true,
   state: () => ({
     homeMaximoUserSearch: {
-      pernr: '',
       userName: '',
-      personId: '',
-      displayName: '',
       firstName: '',
       lastName: '',
-      costCenter: '',
-      orgUnit: '',
-      emailAddress: '',
-      computerNames: '',
+      device: '',
       pbotGroup: '',
       pbotDivision: '',
       section: '',
-      orgUnitDescription: '',
-    } as MaximoUser,
+      orgUnit: '',
+      costCenter: '',
+      computerNames: '',
+      orderBy: '',
+      orderDirection: '',
+    } as MaximoUserSearchFilter,
     homePageNumber: 1 as number,
     pagedMaximoUsers: null as LcrPaginatedData<MaximoUser> | null,
     pbotLcrscheduleDateLastRefreshed: new Date() as Date,
@@ -195,7 +196,7 @@ export const useLcrStore = defineStore('lcr', {
         console.log('Error while fetching Maximo users: ', error);
       }
     },
-    async fetchMaximoUsers(search: MaximoUser, pageNumber: number) {
+    async fetchMaximoUsers(search: MaximoUserSearchFilter, pageNumber: number) {
       const url = new URL(
         import.meta.env.VITE_BASE_URL + '/GetPaginatedMaximoUsers'
       );
@@ -203,7 +204,7 @@ export const useLcrStore = defineStore('lcr', {
       for (const property in search) {
         url.searchParams.append(
           `${property}`,
-          `${search[property as keyof MaximoUser]}`
+          `${search[property as keyof MaximoUserSearchFilter]}`
         );
       }
 

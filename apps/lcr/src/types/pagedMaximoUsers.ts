@@ -43,6 +43,9 @@ export type MaximoUserSearchFilter = {
   section?: string;
   orgUnit?: string;
   costCenter?: string;
+  computerNames?: string;
+  orderBy?: string;
+  orderDirection?: string;
 };
 
 export type OrgUnitInfo = {

@@ -7,7 +7,8 @@ import { Anchor } from '@pbotapps/components';
 
 import { IconMail } from '@tabler/icons-vue';
 import { Button } from '@pbotapps/components';
-import { MaximoUser } from '../types/pagedMaximoUsers';
+import { MaximoUserSearchFilter } from '../types/pagedMaximoUsers';
+import SortIndicator from '../components/SortIndicator/SortIndicator.vue';
 
 const lcr = useLcrStore();
 const maxUserPager = ref();
@@ -30,21 +31,40 @@ onMounted(async () => {
 
 function clearSearch() {
   lcr.homeMaximoUserSearch = {
-    pernr: '',
     userName: '',
-    personId: '',
-    displayName: '',
     firstName: '',
     lastName: '',
-    costCenter: '',
-    orgUnit: '',
-    emailAddress: '',
-    computerNames: '',
+    device: '',
     pbotGroup: '',
     pbotDivision: '',
     section: '',
-    orgUnitDescription: '',
-  } as MaximoUser;
+    orgUnit: '',
+    costCenter: '',
+    computerNames: '',
+    orderBy: '',
+    orderDirection: '',
+  } as MaximoUserSearchFilter;
+}
+
+const sortBy = ref('');
+const sortDirection = ref('');
+
+function handleSort(newSort: string) {
+  if (sortBy.value != newSort) {
+    sortBy.value = newSort;
+    sortDirection.value = 'ASC';
+  } else if (sortDirection.value == 'ASC') {
+    sortDirection.value = 'DESC';
+  } else {
+    sortDirection.value = 'ASC';
+  }
+
+  lcr.homeMaximoUserSearch.orderBy = sortBy.value;
+  lcr.homeMaximoUserSearch.orderDirection = sortDirection.value;
+  pagerChanged(1);
+
+  console.log('sort by:', sortBy.value);
+  console.log('new direction:', sortDirection.value);
 }
 </script>
 
@@ -214,44 +234,79 @@ function clearSearch() {
 
     <div class="mt-5 shadow border-b border-gray-200 sm:rounded-lg mb-3">
       <table
-        className="min-w-full divide-y divide-gray-200"
+        className="divide-y divide-gray-200"
         v-if="lcr.pagedMaximoUsers != null"
       >
         <thead className="bg-gray-50">
           <tr>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
+              className="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase"
+              @click="handleSort('Name')"
             >
               Name
+
+              <SortIndicator
+                name="Name"
+                :sortByName="sortBy"
+                :sortDirection="sortDirection"
+              ></SortIndicator>
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
+              className="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase"
+              @click="handleSort('OrgUnit')"
             >
               Org Unit
+
+              <SortIndicator
+                name="OrgUnit"
+                :sortByName="sortBy"
+                :sortDirection="sortDirection"
+              ></SortIndicator>
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
+              className="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase"
+              @click="handleSort('Section')"
             >
               Section
+
+              <SortIndicator
+                name="Section"
+                :sortByName="sortBy"
+                :sortDirection="sortDirection"
+              ></SortIndicator>
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
+              className="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase"
+              @click="handleSort('Supervisor')"
             >
               Supervisor
+
+              <SortIndicator
+                name="Supervisor"
+                :sortByName="sortBy"
+                :sortDirection="sortDirection"
+              ></SortIndicator>
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-tight"
+              className="px-3 py-3 text-center text-xs font-medium text-gray-700 uppercase"
+              @click="handleSort('GroupDivision')"
             >
               Group/Division
+
+              <SortIndicator
+                name="GroupDivision"
+                :sortByName="sortBy"
+                :sortDirection="sortDirection"
+              ></SortIndicator>
             </th>
             <th
               scope="col"
-              className="px-3 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-tight"
+              className="w-28 px-3 py-3 text-right text-xs font-medium text-gray-700 uppercase"
             >
               Devices
             </th>
