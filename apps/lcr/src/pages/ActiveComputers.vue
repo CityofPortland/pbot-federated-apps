@@ -48,7 +48,8 @@ function openReport() {
 
     window.open(
       import.meta.env.VITE_REPORT_SERVER_URL +
-        '/ReportServer/Pages/ReportViewer.aspx?%2FWorkstation+LCR%2FComps+Up+For+Refresh&rs%3ACommand=Render&' +
+        import.meta.env.VITE_COMP_REFRESH_REPORT_PATH +
+        import.meta.env.VITE_REPORT_RENDER_COMMAND +
         reportParams.toString(),
       '_blank'
     );
