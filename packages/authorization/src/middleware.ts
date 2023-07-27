@@ -1,7 +1,7 @@
 import { BaseType, User } from '@pbotapps/objects';
+import axios from 'axios';
 import { Request, RequestHandler } from 'express';
 import { createRemoteJWKSet, JWTPayload, jwtVerify } from 'jose';
-import fetch from 'node-fetch';
 
 import { RuleRepository, UserRepository } from './repository.js';
 
@@ -18,13 +18,11 @@ export const handleToken =
       });
       return;
     } else if (token) {
-      const jwksURI = fetch(
-        `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}/v2.0/.well-known/openid-configuration`,
-        {
-          method: 'GET',
-        }
-      )
-        .then(res => res.json())
+      const jwksURI = axios
+        .get(
+          `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}/v2.0/.well-known/openid-configuration`
+        )
+        .then(res => res.data)
         .then((json: { jwks_uri: string }) => json.jwks_uri);
 
       try {
