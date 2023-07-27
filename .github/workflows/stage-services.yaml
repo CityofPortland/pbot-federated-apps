@@ -54,8 +54,8 @@ jobs:
           - service: meta
             directory: services/meta
             repository: federation/service/meta
-            cluster-name: pudl-kube-web-2
-            cluster-rg: pudl-kube-rg
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
             cluster-ns: test
             values: |
               ingress:
@@ -80,8 +80,8 @@ jobs:
           - service: pudl
             directory: services/pudl
             repository: federation/service/pudl
-            cluster-name: pudl-kube-data-1
-            cluster-rg: pudl-kube-rg
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
             cluster-ns: pudl-test
             values: |
               ingress:
@@ -125,8 +125,8 @@ jobs:
           - service: sign
             directory: services/sign
             repository: federation/service/sign
-            cluster-name: pudl-kube-web-2
-            cluster-rg: pudl-kube-rg
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
             cluster-ns: test
             values: |
               ingress:
