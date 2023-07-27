@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineEmits, useSlots } from 'vue';
+import { computed, useSlots } from 'vue';
 
 import Box, { BoxColor, BoxColorVariant } from '../../elements/box/Box';
 
