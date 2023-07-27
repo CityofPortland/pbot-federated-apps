@@ -31,7 +31,6 @@
     "@casl/ability": "^5.4.4",
     "@elastic/elasticsearch": "^8.8.1",
     "@pbotapps/authorization": "workspace:^",
-    "@pbotapps/common": "workspace:^",
     "@pbotapps/elasticsearch": "workspace:^",
     "@pbotapps/graphql": "workspace:^",
     "@pbotapps/objects": "workspace:^",

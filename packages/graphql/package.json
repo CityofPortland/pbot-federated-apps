@@ -40,7 +40,6 @@
     "@apollo/server": "^4.7.4",
     "@apollo/subgraph": "^2.4.8",
     "@pbotapps/authorization": "workspace:^",
-    "@pbotapps/common": "workspace:^",
     "@pbotapps/objects": "workspace:^",
     "axios": "^1.4.0",
     "cors": "^2.8.5",

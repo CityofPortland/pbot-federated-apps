@@ -35,7 +35,6 @@
     "@graphql-tools/schema": "^9.0.19",
     "@graphql-tools/utils": "^9.2.1",
     "@pbotapps/authorization": "workspace:^",
-    "@pbotapps/common": "workspace:^",
     "@pbotapps/elasticsearch": "workspace:^",
     "@pbotapps/graphql": "workspace:^",
     "@pbotapps/misc": "workspace:^",
