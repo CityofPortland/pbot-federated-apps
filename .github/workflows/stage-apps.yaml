@@ -93,7 +93,7 @@ jobs:
             repository: federation/app/sign-library
             cluster-name: pbotapps-kube-1
             cluster-rg: pbotapps-kube-rg
-            cluster-ns: test
+            cluster-ns: pbotapps-test
             values: |
               ingress:
                 enabled: true
