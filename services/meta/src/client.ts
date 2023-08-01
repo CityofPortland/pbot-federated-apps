@@ -1,12 +1,25 @@
-import type { Client } from '@elastic/elasticsearch';
+import { Client } from '@elastic/elasticsearch';
 import type { IndicesCreateRequest } from '@elastic/elasticsearch/lib/api/types';
-import { createClient } from '@pbotapps/elasticsearch';
 import dotenv from 'dotenv';
+import { readFileSync } from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 if (process.env.NODE_ENV == 'development') dotenv.config();
 
-export const elasticsearchClient: Client = createClient({
-  url: process.env.ELASTICSEARCH_HOST,
+export const elasticsearchClient = new Client({
+  node: process.env.ELASTICSEARCH_HOST,
+  auth: {
+    username: 'elastic',
+    password: process.env.ELASTICSEARCH_PASSWORD,
+  },
+  tls: {
+    ca: readFileSync(resolve(__dirname, 'elastic.crt')),
+    rejectUnauthorized: false,
+  },
 });
 
 const ensureIndex = ({ index }: IndicesCreateRequest) =>
