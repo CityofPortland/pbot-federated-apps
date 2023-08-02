@@ -77,7 +77,7 @@ jobs:
                   secret:
                     secretName: pbotapps-es-http-ca-internal
               volumeMounts:
-                - mountPath: /home/node/services/sign/dist/elastic.crt
+                - mountPath: /home/node/services/meta/dist/elastic.crt
                   name: elastic-cert
                   subPath: tls.crt
             password: META_DATASOURCE_PASSWORD
