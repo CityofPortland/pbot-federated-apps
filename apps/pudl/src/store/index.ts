@@ -19,6 +19,7 @@ interface Table {
 interface Column {
   name: string;
   type: string;
+  index: number;
 }
 
 export const useStore = defineStore('pudl', {

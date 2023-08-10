@@ -1,19 +1,27 @@
 <script setup lang="ts">
-import { Box } from '@pbotapps/components';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import Rules from './rules.vue';
+import { useStore } from '../store';
 import { useRuleStore } from '../store/rules';
 
-const props = defineProps({ table: { type: Object, required: true } });
-
 const { params } = useRoute();
-const rules = useRuleStore();
+const ruleStore = useRuleStore();
+const store = useStore();
 
-const columns = [...props.table.columns].sort((a, b) => a.index - b.index);
+const table = computed(() => store.tables(params.zone as string, params.schema as string)?.find(t => t.name == params.table))
+
+const columns = computed(() => [...table.value?.columns!].sort((a, b) => a.index - b.index));
+
+const rules = computed(() => ruleStore.rules({
+  zone: params.zone as string,
+  schema: params.schema as string,
+  table: params.table as string
+}));
 </script>
 
 <template>
-  <article class="flex flex-col space-y-4">
+  <article v-if="table" class="flex flex-col space-y-4">
     <h1 class="text-4xl font-bold mb-4 break-all">{{ table.name }}</h1>
     <main>
       <h2 class="text-2xl font-semibold mb-2">fields</h2>
@@ -42,14 +50,9 @@ const columns = [...props.table.columns].sort((a, b) => a.index - b.index);
     </main>
     <section>
       <Rules
-        :rules="
-          rules.rules({
-            zone: params.zone as string,
-            schema: params.schema as string,
-            table: params.table as string,
-          })
-        "
+        :rules="rules"
         :default-rule="{
+          id: '',
           inverted: false,
           action: 'read',
           subject: 'table',

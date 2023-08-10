@@ -1,18 +1,27 @@
 <script setup lang="ts">
 import { Anchor } from '@pbotapps/components';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { RouterLink } from 'vue-router';
+
 import Rules from './rules.vue';
+import { useStore } from '../store';
 import { useRuleStore } from '../store/rules';
 
-defineProps({ zone: { type: Object, required: true } });
-
 const { params, path } = useRoute();
-const rules = useRuleStore();
+const ruleStore = useRuleStore();
+const store = useStore();
+
+const zone = computed(() => store.zones.find(z => z.name == params.zone));
+
+const rules = computed(() => ruleStore.rules({
+            zone: params.zone as string,
+            schema: params.schema as string,
+            table: params.table as string,
+          }));
 </script>
 
 <template>
-  <article class="flex flex-col space-y-4">
+  <article v-if="zone" class="flex flex-col space-y-4">
     <h1 class="text-4xl font-bold mb-4">{{ zone.name }}</h1>
     <main>
       <h2 class="text-2xl font-semibold mb-2">schemas</h2>
@@ -46,11 +55,7 @@ const rules = useRuleStore();
     <section>
       <Rules
         :rules="
-          rules.rules({
-            zone: params.zone as string,
-            schema: params.schema as string,
-            table: params.table as string,
-          })
+          rules
         "
       />
     </section>

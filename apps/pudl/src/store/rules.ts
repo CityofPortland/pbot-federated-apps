@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { v4 as uuid } from 'uuid';
-import { computed, ref } from 'vue';
+import { computed, reactive } from 'vue';
 
 export type Rule = {
   id: string;
@@ -168,7 +168,7 @@ const rules: Array<Rule> = [
 ];
 
 export const useRuleStore = defineStore('rules', () => {
-  const data = ref(rules);
+  const data = reactive(rules);
 
   return {
     data,
@@ -183,7 +183,7 @@ export const useRuleStore = defineStore('rules', () => {
           schema: string;
           table: string;
         }) => {
-          return data.value.filter(rule => {
+          return data.filter(rule => {
             if (rule.subject == 'zone') {
               // does the condition match?
               return rule.conditions ? rule.conditions.name == zone : true;
@@ -209,8 +209,15 @@ export const useRuleStore = defineStore('rules', () => {
           });
         }
     ),
-    addRule(rule: Rule) {
-      data.value.push(rule);
+    add(rule: Rule) {
+      data.push(rule);
     },
+    delete(id: string) {
+      console.debug(`Deleting rule '${id}'...`);
+      data.splice(data.findIndex(r => r.id === id), 1);
+    },
+    edit(id: string, rule: Rule) {
+      data.splice(data.findIndex(r => r.id === id), 1, rule);
+    }
   };
 });

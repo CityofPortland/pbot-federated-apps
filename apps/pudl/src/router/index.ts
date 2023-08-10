@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import { authRoutes } from '@pbotapps/components';
 
-import Home from '../pages/Home.vue';
+import Home from '../pages/home.vue';
 import zones from '../pages/zones.vue';
 import zone from '../pages/zone.vue';
 import schema from '../pages/schema.vue';
@@ -14,34 +14,14 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/zones/:zone',
     component: zone,
-    props: route => {
-      const { zones } = useStore();
-      const zone = zones.find(z => z.name == route.params.zone);
-      return { zone };
-    },
   },
   {
     path: '/zones/:zone/:schema',
     component: schema,
-    props: route => {
-      const { schemas } = useStore();
-      const schema = schemas(route.params.zone as string)?.find(
-        s => s.name == route.params.schema
-      );
-      return { schema };
-    },
   },
   {
     path: '/zones/:zone/:schema/:table',
     component: table,
-    props: route => {
-      const { tables } = useStore();
-      const table = tables(
-        route.params.zone as string,
-        route.params.schema as string
-      )?.find(t => t.name == route.params.table);
-      return { table };
-    },
   },
   ...authRoutes,
 ];
@@ -55,7 +35,7 @@ router.beforeResolve(async () => {
   const store = useStore();
 
   if (!store.zones.length) {
-    await store.getZones();
+    store.getZones();
   }
 });
 

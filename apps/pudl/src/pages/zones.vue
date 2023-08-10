@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 import { useStore } from '../store';
 
 const { path } = useRoute();
-const { zones } = useStore();
+const store = useStore();
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const { zones } = useStore();
       </header>
       <ul>
         <li
-          v-for="(zone, index) in zones"
+          v-for="(zone, index) in store.zones"
           :key="index"
           class="grid grid-cols-2 items-start gap-2 hover:bg-gray-100"
         >

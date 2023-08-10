@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Anchor, Button } from '@pbotapps/components';
 import { v4 as uuid } from 'uuid';
-import { reactive, ref } from 'vue';
+import { reactive, ref, toRefs } from 'vue';
 
-import RuleForm from '../components/rules/Form.vue';
+import RuleForm from '../components/rules/form.vue';
 import { Rule, useRuleStore } from '../store/rules';
 
 const props = defineProps({
@@ -27,7 +27,9 @@ const props = defineProps({
 
 const emit = defineEmits(['changed']);
 
-const { addRule } = useRuleStore();
+const { add, delete: deleteRule, edit } = useRuleStore();
+
+const { rules } = toRefs(props);
 
 const showForm = reactive({
   new: false,
@@ -36,11 +38,6 @@ const showForm = reactive({
 props.rules.forEach((_, idx) => (showForm[idx.toString()] = false));
 
 const newRule = ref({ ...props.defaultRule });
-
-const editRule = (index: number, rule: Rule) => {
-  console.debug(`Editing rule '${JSON.stringify(rule)}'`);
-  emit('changed', index, rule);
-};
 </script>
 
 <template>
@@ -65,7 +62,7 @@ const editRule = (index: number, rule: Rule) => {
         addRule($event);
         showForm['new'] = false;
       "
-      @cancel="showForm['new'] = false"
+      @cancel="newRule = {...defaultRule}; showForm['new'] = false;"
     />
   </aside>
   <main>
@@ -77,7 +74,7 @@ const editRule = (index: number, rule: Rule) => {
       <span class="font-semibold">fields</span>
       <span></span>
     </header>
-    <main class="flex flex-col gap-4">
+    <main class="flex flex-col gap-12">
       <div v-for="(rule, idx) in rules" :key="rule.id">
         <div v-if="!showForm[idx]" class="grid grid-cols-6 items-start gap-2">
           <span>
@@ -89,10 +86,10 @@ const editRule = (index: number, rule: Rule) => {
           <span>
             {{ rule.subject }}
           </span>
-          <code class="whitespace-pre-wrap">
+          <code>
             {{ rule.conditions }}
           </code>
-          <code class="whitespace-pre-wrap">
+          <code>
             {{ rule.fields }}
           </code>
           <span class="flex gap-2">
@@ -103,7 +100,7 @@ const editRule = (index: number, rule: Rule) => {
               label="edit"
               @click="showForm[idx] = true"
             />
-            <Button size="small" color="red" variant="neutral" label="delete" />
+            <Button size="small" color="red" variant="neutral" label="delete" @click="deleteRule(rule.id)" />
           </span>
         </div>
         <div v-if="!showForm[idx]">
@@ -123,7 +120,7 @@ const editRule = (index: number, rule: Rule) => {
           <RuleForm
             :rule="{ ...rule }"
             @changed="
-              editRule(idx, $event);
+              edit(idx, $event);
               showForm[idx] = false;
             "
             @cancel="showForm[idx] = false"

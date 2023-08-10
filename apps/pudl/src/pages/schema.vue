@@ -1,23 +1,30 @@
 <script setup lang="ts">
 import { Anchor } from '@pbotapps/components';
 import { v4 as uuid } from 'uuid';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+
 import Rules from './rules.vue';
+import { useStore } from '../store';
 import { useRuleStore } from '../store/rules';
 
-defineProps({
-  schema: { type: Object, required: true },
-});
-
 const { params, path } = useRoute();
+const store = useStore();
+const ruleStore = useRuleStore();
 
-const rules = useRuleStore();
+const schema = computed(() => store.schemas(params.zone as string)?.find(s => s.name == params.schema))
+
+
+const rules = computed(() => ruleStore.rules({
+            zone: params.zone as string,
+            schema: params.schema as string,
+            table: params.table as string,
+          }));
 </script>
 
 <template>
-  <article class="flex flex-col space-y-4">
+  <article v-if="schema" class="flex flex-col space-y-4">
     <h1 class="text-4xl font-bold mb-4">{{ schema.name }}</h1>
-    <p v-if="schema.description" class="mb-2">{{ schema.description }}</p>
     <main>
       <h2 class="text-2xl font-semibold mb-2">tables</h2>
 
@@ -50,13 +57,7 @@ const rules = useRuleStore();
     </main>
     <aside>
       <Rules
-        :rules="
-          rules.rules({
-            zone: params.zone as string,
-            schema: params.schema as string,
-            table: params.table as string,
-          })
-        "
+        :rules="rules"
         :default-rule="{
           id: uuid(),
           inverted: false,
@@ -68,7 +69,6 @@ const rules = useRuleStore();
           },
           users: [],
         }"
-        @changed="(index, rule) => rules.data.find(r => rule.id === r.id)"
       />
     </aside>
   </article>
