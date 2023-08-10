@@ -54,9 +54,9 @@ jobs:
           - service: meta
             directory: services/meta
             repository: federation/service/meta
-            cluster-name: pudl-kube-web-2
-            cluster-rg: pudl-kube-rg
-            cluster-ns: test
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps-test
             values: |
               ingress:
                 enabled: true
@@ -65,23 +65,27 @@ jobs:
                       - path: /graphql/meta
                         pathType: Prefix
               extraEnv:
-                - name: DATASOURCE_PASSWORD
+                - name: ELASTICSEARCH_HOST
+                  value: https://pbotapps-es-http:9200
+                - name: ELASTICSEARCH_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: '{{ include "chart.fullname" . }}'
-                      key: DATASOURCE_PASSWORD
-                - name: DATASOURCE_USERNAME
-                  value: meta
-                - name: DATASOURCE_HOST
-                  value: cockroachdb-public
-                - name: DATASOURCE_PORT
-                  value: "26257"
+                      name: pbotapps-es-elastic-user
+                      key: elastic
+              volumes:
+                - name: elastic-cert
+                  secret:
+                    secretName: pbotapps-es-http-ca-internal
+              volumeMounts:
+                - mountPath: /home/node/services/meta/dist/elastic.crt
+                  name: elastic-cert
+                  subPath: tls.crt
             password: META_DATASOURCE_PASSWORD
           - service: pudl
             directory: services/pudl
             repository: federation/service/pudl
-            cluster-name: pudl-kube-data-1
-            cluster-rg: pudl-kube-rg
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
             cluster-ns: pudl-test
             values: |
               ingress:
@@ -114,7 +118,7 @@ jobs:
                 - name: PUDL_POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: pudl-test-raw-metastore
+                      name: pudl-metastore
                       key: POSTGRES_PASSWORD
                 - name: PUDL_POSTGRES_HOST
                   value: pudl-test-postgres
@@ -125,9 +129,9 @@ jobs:
           - service: sign
             directory: services/sign
             repository: federation/service/sign
-            cluster-name: pudl-kube-web-2
-            cluster-rg: pudl-kube-rg
-            cluster-ns: test
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps-test
             values: |
               ingress:
                 enabled: true
@@ -155,7 +159,20 @@ jobs:
                 - name: AZURE_STORAGE_ACCOUNT
                   value: pbotapps
                 - name: ELASTICSEARCH_HOST
-                  value: http://elasticsearch-master:9200
+                  value: https://pbotapps-es-http:9200
+                - name: ELASTICSEARCH_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: pbotapps-es-elastic-user
+                      key: elastic
+              volumes:
+                - name: elastic-cert
+                  secret:
+                    secretName: pbotapps-es-http-ca-internal
+              volumeMounts:
+                - mountPath: /home/node/services/sign/dist/elastic.crt
+                  name: elastic-cert
+                  subPath: tls.crt
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

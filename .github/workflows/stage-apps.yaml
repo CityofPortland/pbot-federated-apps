@@ -70,8 +70,8 @@ jobs:
           - app: pudl
             directory: apps/pudl
             repository: federation/app/pudl
-            cluster-name: pudl-kube-data-1
-            cluster-rg: pudl-kube-rg
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
             cluster-ns: pudl-test
             values: |
               ingress:
@@ -91,9 +91,9 @@ jobs:
           - app: sign-library
             directory: apps/sign-library
             repository: federation/app/sign-library
-            cluster-name: pudl-kube-web-2
-            cluster-rg: pudl-kube-rg
-            cluster-ns: test
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps-test
             values: |
               ingress:
                 enabled: true

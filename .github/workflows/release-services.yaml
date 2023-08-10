@@ -19,8 +19,8 @@ jobs:
           - service: pudl
             directory: services/pudl
             repository: federation/service/pudl
-            cluster-name: pudl-kube-data-1
-            cluster-rg: pudl-kube-rg
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
             cluster-ns: pudl
             values: |
               ingress:
@@ -53,7 +53,7 @@ jobs:
                 - name: PUDL_POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: pudl-raw-metastore
+                      name: pudl-metastore
                       key: POSTGRES_PASSWORD
                 - name: PUDL_POSTGRES_HOST
                   value: pudl-postgres
