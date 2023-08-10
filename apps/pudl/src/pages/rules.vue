@@ -25,8 +25,6 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['changed']);
-
 const { add, delete: deleteRule, edit } = useRuleStore();
 
 const { rules } = toRefs(props);
@@ -59,7 +57,7 @@ const newRule = ref({ ...props.defaultRule });
       :rule="newRule"
       class="mb-4"
       @changed="
-        addRule($event);
+        add($event);
         showForm['new'] = false;
       "
       @cancel="newRule = {...defaultRule}; showForm['new'] = false;"
