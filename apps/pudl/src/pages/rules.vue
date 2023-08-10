@@ -118,7 +118,7 @@ const newRule = ref({ ...props.defaultRule });
           <RuleForm
             :rule="{ ...rule }"
             @changed="
-              edit(idx, $event);
+              edit(rule.id, $event);
               showForm[idx] = false;
             "
             @cancel="showForm[idx] = false"
