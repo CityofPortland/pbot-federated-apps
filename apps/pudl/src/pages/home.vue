@@ -31,5 +31,20 @@ import { Anchor } from '@pbotapps/components';
         >.
       </p>
     </header>
+    <main>
+      <p>
+        PUDL is organized into two "zones":
+        <router-link to="/zones/raw" custom v-slot="{ href, navigate }">
+          <Anchor :url="href" @click="navigate">raw</Anchor>
+        </router-link>
+        and
+        <router-link to="/zones/enriched" custom v-slot="{ href, navigate }">
+          <Anchor :url="href" @click="navigate">enriched</Anchor> </router-link
+        >. The "raw" zone contains data that has only had the processing
+        necessary to transform it into a tabular structure. The "enriched" zone
+        contains data created from data in the raw zone. It has had the
+        processing done to make it appropriate for consumption in dashboards.
+      </p>
+    </main>
   </article>
 </template>

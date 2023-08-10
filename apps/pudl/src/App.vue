@@ -27,7 +27,7 @@ const path = computed(() => currentRoute.value.path);
       <template #branding>
         <router-link to="/" class="w-full flex items-center">
           <Logo class="w-16 md:w-20 mr-3 flex-shrink-0" />
-          <span class="truncate text-xl">PUDL</span>
+          <span class="truncate text-xl">pudl</span>
         </router-link>
       </template>
       <template #menu>
@@ -37,7 +37,7 @@ const path = computed(() => currentRoute.value.path);
           custom
           v-slot="{ href, navigate }"
         >
-          <Anchor :url="href" @click="navigate">Zones</Anchor>
+          <Anchor :url="href" @click="navigate">zones</Anchor>
         </router-link>
         <Nav class="mt-3 md:mt-0 md:ml-auto">
           <SignIn v-if="!accessToken" />

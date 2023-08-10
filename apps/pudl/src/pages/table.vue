@@ -1,32 +1,69 @@
 <script setup lang="ts">
-import { Box } from '@pbotapps/components';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import Rules from './rules.vue';
+import { useStore } from '../store';
+import { useRuleStore } from '../store/rules';
 
-const props = defineProps({ table: { type: Object, required: true } });
+const { params } = useRoute();
+const ruleStore = useRuleStore();
+const store = useStore();
 
-const columns = [...props.table.columns].sort((a, b) => a.index - b.index);
+const table = computed(() => store.tables(params.zone as string, params.schema as string)?.find(t => t.name == params.table))
+
+const columns = computed(() => [...table.value?.columns!].sort((a, b) => a.index - b.index));
+
+const rules = computed(() => ruleStore.rules({
+  zone: params.zone as string,
+  schema: params.schema as string,
+  table: params.table as string
+}));
 </script>
 
 <template>
-  <article class="flex flex-col space-y-4">
-    <h1 class="text-3xl capitalize">{{ table.name }}</h1>
-    <h2 class="text-2xl">Fields</h2>
-    <table class="table-fixed w-full">
-      <Box as="thead">
-        <tr>
-          <th class="border-b font-semibold p-2 pl-4 text-left">Name</th>
-          <th class="border-b font-semibold p-2 pl-4 text-left">Type</th>
-        </tr>
-      </Box>
-      <tbody>
-        <tr v-for="column in columns" :key="column.name" class="border-b">
-          <td class="p-2 pl-4">
-            {{ column.name }}
-          </td>
-          <td class="p-2 pl-4">
-            {{ column.type }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <article v-if="table" class="flex flex-col space-y-4">
+    <h1 class="text-4xl font-bold mb-4 break-all">{{ table.name }}</h1>
+    <main>
+      <h2 class="text-2xl font-semibold mb-2">fields</h2>
+      <section>
+        <header class="grid grid-cols-2 gap-2 mb-2">
+          <span class="font-semibold">name</span>
+          <span class="font-semibold">type</span>
+        </header>
+        <main>
+          <ul>
+            <li
+              v-for="column in columns"
+              :key="column.name"
+              class="grid grid-cols-2 items-start gap-2 hover:bg-gray-100"
+            >
+              <span class="break-all">
+                {{ column.name }}
+              </span>
+              <span class="break-all">
+                {{ column.type }}
+              </span>
+            </li>
+          </ul>
+        </main>
+      </section>
+    </main>
+    <section>
+      <Rules
+        :rules="rules"
+        :default-rule="{
+          id: '',
+          inverted: false,
+          action: 'read',
+          subject: 'table',
+          conditions: {
+            name: table.name,
+            zone: params.zone as string,
+            schema: params.schema as string,
+          },
+          users: [],
+        }"
+      />
+    </section>
   </article>
 </template>

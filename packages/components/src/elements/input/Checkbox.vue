@@ -9,7 +9,6 @@
       :class="classes"
       class="mr-1"
       :checked="checked"
-      :modelValue="modelValue"
       @input="$emit('changed', id)"
     />
     <label :for="id"><slot></slot></label>
@@ -28,9 +27,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    modelValue: {
-      type: [Boolean, Array, Set],
-    },
     required: {
       type: Boolean,
       default: false,
@@ -38,10 +34,6 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false,
-    },
-    value: {
-      type: String,
-      required: true,
     },
   },
   inheritAttrs: false,
