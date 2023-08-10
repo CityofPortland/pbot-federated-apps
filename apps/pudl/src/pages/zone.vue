@@ -2,7 +2,7 @@
 import { Anchor } from '@pbotapps/components';
 import { useRoute } from 'vue-router';
 import { RouterLink } from 'vue-router';
-import Rules from './Rules.vue';
+import Rules from './rules.vue';
 import { useRuleStore } from '../store/rules';
 
 defineProps({ zone: { type: Object, required: true } });

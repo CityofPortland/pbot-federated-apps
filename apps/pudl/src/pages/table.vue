@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Box } from '@pbotapps/components';
 import { useRoute } from 'vue-router';
-import Rules from './Rules.vue';
+import Rules from './rules.vue';
 import { useRuleStore } from '../store/rules';
 
 const props = defineProps({ table: { type: Object, required: true } });

@@ -19,6 +19,7 @@ const props = defineProps({
       action: 'read',
       subject: '',
       conditions: {},
+      fields: {},
       users: [],
     }),
   },
@@ -68,16 +69,17 @@ const editRule = (index: number, rule: Rule) => {
     />
   </aside>
   <main>
-    <header class="grid grid-cols-5 gap-2 mb-2">
+    <header class="grid grid-cols-6 gap-2 mb-2">
       <span class="font-semibold">type</span>
       <span class="font-semibold">action</span>
       <span class="font-semibold">subject</span>
       <span class="font-semibold">conditions</span>
-      <span class="font-semibold">administration</span>
+      <span class="font-semibold">fields</span>
+      <span></span>
     </header>
     <main class="flex flex-col gap-4">
       <div v-for="(rule, idx) in rules" :key="rule.id">
-        <div v-if="!showForm[idx]" class="grid grid-cols-5 items-start gap-2">
+        <div v-if="!showForm[idx]" class="grid grid-cols-6 items-start gap-2">
           <span>
             {{ rule.inverted ? 'cannot' : 'can' }}
           </span>
@@ -89,6 +91,9 @@ const editRule = (index: number, rule: Rule) => {
           </span>
           <code class="whitespace-pre-wrap">
             {{ rule.conditions }}
+          </code>
+          <code class="whitespace-pre-wrap">
+            {{ rule.fields }}
           </code>
           <span class="flex gap-2">
             <Button

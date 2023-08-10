@@ -2,7 +2,7 @@
 import { Anchor } from '@pbotapps/components';
 import { v4 as uuid } from 'uuid';
 import { useRoute } from 'vue-router';
-import Rules from './Rules.vue';
+import Rules from './rules.vue';
 import { useRuleStore } from '../store/rules';
 
 defineProps({

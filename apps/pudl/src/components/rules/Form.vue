@@ -20,7 +20,7 @@ const rule = ref(props.rule);
 </script>
 <template>
   <form @submit.prevent class="grid grid-cols-4 gap-2">
-    <Entry id="inverted" label="Inverted" v-slot="{ id, required }">
+    <Entry id="inverted" label="inverted" v-slot="{ id, required }">
       <Checkbox
         :id="id"
         :required="required"
@@ -30,15 +30,16 @@ const rule = ref(props.rule);
         {{ rule.inverted ? 'cannot' : 'can' }}
       </Checkbox>
     </Entry>
-    <Entry id="action" label="Action" v-slot="{ id, required }">
+    <Entry id="action" label="action" v-slot="{ id, required }">
       <Input
         :id="id"
         :required="required"
+        disabled
         v-model="rule.action"
         class="w-full"
       />
     </Entry>
-    <Entry id="subject" label="Subject" v-slot="{ id, required }">
+    <Entry id="subject" label="subject" v-slot="{ id, required }">
       <Input
         :id="id"
         :required="required"
@@ -46,7 +47,7 @@ const rule = ref(props.rule);
         class="w-full"
       />
     </Entry>
-    <Entry id="conditions" label="Conditions" v-slot="{ id, required }">
+    <Entry id="conditions" label="conditions" v-slot="{ id, required }">
       <Textarea
         :id="id"
         :required="required"
@@ -56,11 +57,21 @@ const rule = ref(props.rule);
         rows="4"
       />
     </Entry>
+    <Entry id="fields" label="fields" v-slot="{ id, required }">
+      <Textarea
+        :id="id"
+        :required="required"
+        :modelValue="JSON.stringify(rule.fields, null, 2)"
+        @changed="rule.fields = JSON.parse($event)"
+        class="w-full whitespace-pre-wrap"
+        rows="4"
+      />
+    </Entry>
     <Entry
       id="users"
-      label="Users"
+      label="users"
       v-slot="{ id, required }"
-      class="col-span-5"
+      class="col-span-6"
     >
       <p>
         Enter one user email per line. E-mails must be exactly as they appear
@@ -75,15 +86,15 @@ const rule = ref(props.rule);
         rows="4"
       />
     </Entry>
-    <section class="col-span-4 justify-self-end flex gap-2">
+    <section class="col-span-5 justify-self-end flex gap-2">
       <Button
-        label="Save"
+        label="save"
         color="green"
         size="small"
         @click="$emit('changed', rule)"
       />
       <Button
-        label="Cancel"
+        label="cancel"
         color="gray"
         variant="light"
         size="small"
