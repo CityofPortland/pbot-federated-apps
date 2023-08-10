@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
-    "@types/node": "^16.18.36",
+    "@types/node": "^18.17.4",
     "@types/passport": "^1.0.12",
     "@types/passport-anonymous": "^1.0.3",
     "@types/passport-azure-ad": "^4.3.1",

@@ -33,7 +33,7 @@
     "@rollup/plugin-typescript": "^8.5.0",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash": "^4.14.195",
-    "@types/node": "^16.18.36",
+    "@types/node": "^18.17.4",
     "@vercel/ncc": "^0.34.0",
     "bytes": "^3.1.2",
     "glob": "^8.1.0",

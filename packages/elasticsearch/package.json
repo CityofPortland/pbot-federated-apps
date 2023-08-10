@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
   "devDependencies": {
-    "@types/node": "^18.16.18",
+    "@types/node": "^18.17.4",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "eslint": "^8.43.0",
