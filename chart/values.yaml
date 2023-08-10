@@ -45,6 +45,8 @@ service:
 ingress:
   enabled: false
   className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
     - host: pbotapps.local
       paths:

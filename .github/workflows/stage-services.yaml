@@ -61,9 +61,14 @@ jobs:
               ingress:
                 enabled: true
                 hosts:
-                  - paths:
+                  - host: pbotapps-test.portland.gov
+                    paths:
                       - path: /graphql/meta
                         pathType: Prefix
+                tls:
+                  - secretName: pbotapps-test-portland-gov-tls
+                    hosts:
+                      - pbotapps-test.portland.gov
               extraEnv:
                 - name: ELASTICSEARCH_HOST
                   value: https://pbotapps-es-http:9200
@@ -140,6 +145,10 @@ jobs:
                     paths:
                       - path: /graphql/sign
                         pathType: Prefix
+                tls:
+                  - secretName: pbotapps-test-portland-gov-tls
+                    hosts:
+                      - pbotapps-test.portland.gov
               extraEnv:
                 - name: AZURE_CLIENT_ID
                   valueFrom:
