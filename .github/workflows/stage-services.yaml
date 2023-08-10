@@ -118,7 +118,7 @@ jobs:
                 - name: PUDL_POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: pudl-metastore
+                      name: pudl-test-metastore
                       key: POSTGRES_PASSWORD
                 - name: PUDL_POSTGRES_HOST
                   value: pudl-test-postgres
