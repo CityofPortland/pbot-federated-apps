@@ -1,29 +1,24 @@
 <template>
   <nav class="flex" aria-label="Breadcrumb">
-    <ol class="inline-flex items-center space-x-1 md:space-x-3">
-      <li class="inline-flex items-center capitalize gap-2">
+    <ol class="inline-flex items-center space-x-1 md:space-x-2">
+      <li class="after:content-['/'] after:ml-2">
         <router-link to="/" custom v-slot="{ href, navigate }">
-          <Anchor :url="href" @click="navigate">Home</Anchor>
+          <Anchor :url="href" @click="navigate">home</Anchor>
         </router-link>
-        <span>/</span>
       </li>
       <li
-        class="inline-flex items-center capitalize gap-2"
-        v-for="(crumb, index) in crumbs"
+        v-for="crumb in crumbs.slice(undefined, -1)"
         :key="crumb"
+        class="after:content-['/'] after:ml-2"
       >
-        <router-link
-          v-if="index < crumbs.length - 1"
-          :to="crumb"
-          custom
-          v-slot="{ href, navigate }"
-        >
+        <router-link :to="crumb" custom v-slot="{ href, navigate }">
           <Anchor :url="href" @click="navigate">
             {{ crumb.split('/').pop() }}
           </Anchor>
         </router-link>
-        <span v-if="index < crumbs.length - 1">/</span>
-        <span v-else>{{ crumb.split('/').pop() }}</span>
+      </li>
+      <li>
+        <span>{{ crumbs.at(-1).split('/').pop() }}</span>
       </li>
     </ol>
   </nav>
