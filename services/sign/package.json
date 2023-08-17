@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/sign",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Catalog application for managing metadata of objects in the Federation",
   "main": "dist/index.js",
   "module": "dist/index",
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-apps.git"
   },
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+    "url": "https://github.com/CityofPortland/pbotapps-federated-apps/issues"
   },
-  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "dependencies": {
     "@apollo/server": "^4.9.1",
     "@apollo/subgraph": "^2.4.12",
@@ -56,7 +56,7 @@
     "passport-azure-ad": "^4.3.5",
     "pg": "^8.11.2",
     "reflect-metadata": "^0.1.13",
-    "sharp": "^0.31.3"
+    "sharp": "^0.32.4"
   },
   "devDependencies": {
     "@elastic/transport": "^8.3.2",

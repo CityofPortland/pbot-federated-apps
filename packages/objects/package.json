@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/objects",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Very low-level objects shared by more than one service or app",
   "type": "module",
   "main": "dist/index.js",
@@ -17,14 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-apps.git"
   },
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+    "url": "https://github.com/CityofPortland/pbotapps-federated-apps/issues"
   },
-  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",

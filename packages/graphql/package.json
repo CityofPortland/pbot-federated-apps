@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/graphql",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Things related to running an Apollo GraphQL Server",
   "type": "module",
   "main": "dist/index.js",
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-apps.git"
   },
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+    "url": "https://github.com/CityofPortland/pbotapps-federated-apps/issues"
   },
-  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^8.5.9",

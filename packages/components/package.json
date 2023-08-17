@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/components",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Common components for applications",
   "main": "dist/components.js",
   "module": "dist/components.mjs",
