@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/pudl",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Meta application for managing applications and users of applications",
   "type": "module",
   "main": "dist/index.js",
@@ -18,46 +18,46 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-apps.git"
   },
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+    "url": "https://github.com/CityofPortland/pbotapps-federated-apps/issues"
   },
-  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "dependencies": {
-    "@apollo/server": "^4.7.4",
-    "@apollo/subgraph": "^2.4.8",
+    "@apollo/server": "^4.9.0",
+    "@apollo/subgraph": "^2.5.1",
     "@casl/ability": "^5.4.4",
     "@graphql-tools/schema": "^8.5.1",
     "@pbotapps/graphql": "workspace:^",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "graphql": "^16.6.0",
+    "graphql": "^16.7.1",
     "graphql-scalars": "^1.22.2",
     "graphql-tag": "^2.12.6",
-    "knex": "^2.4.2",
-    "pg": "^8.11.0"
+    "knex": "^2.5.1",
+    "pg": "^8.11.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
-    "@types/node": "^16.18.36",
+    "@types/node": "^16.18.39",
     "@types/passport": "^1.0.12",
     "@types/passport-anonymous": "^1.0.3",
     "@types/passport-azure-ad": "^4.3.1",
-    "@types/validator": "^13.7.17",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
-    "@typescript-eslint/parser": "^5.60.0",
-    "eslint": "^8.43.0",
-    "eslint-config-prettier": "^8.8.0",
+    "@types/validator": "^13.9.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.46.0",
+    "eslint-config-prettier": "^8.9.0",
     "eslint-config-typescript": "^3.0.0",
     "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "rollup": "^2.79.1",
     "ts-node": "^10.9.1",
-    "tslib": "^2.5.3",
+    "tslib": "^2.6.1",
     "typescript": "^4.9.5"
   }
 }

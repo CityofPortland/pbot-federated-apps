@@ -4,18 +4,18 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "bugs": {
-    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
+    "url": "https://github.com/CityofPortland/pbotapps-federated-apps/issues"
   },
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-apps.git"
   },
   "license": "MIT",
   "scripts": {
@@ -26,10 +26,10 @@
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "dependencies": {
-    "@apollo/server": "^4.7.4",
-    "@apollo/subgraph": "^2.4.8",
+    "@apollo/server": "^4.9.0",
+    "@apollo/subgraph": "^2.5.1",
     "@casl/ability": "^5.4.4",
-    "@elastic/elasticsearch": "^8.8.1",
+    "@elastic/elasticsearch": "^8.9.0",
     "@pbotapps/authorization": "workspace:^",
     "@pbotapps/elasticsearch": "workspace:^",
     "@pbotapps/graphql": "workspace:^",
@@ -40,15 +40,15 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-jwt": "^7.7.7",
-    "graphql": "^16.6.0",
+    "graphql": "^16.7.1",
     "graphql-scalars": "^1.22.2",
     "graphql-tag": "^2.12.6",
-    "knex": "^2.4.2",
+    "knex": "^2.5.1",
     "mustache": "^4.2.0",
     "passport": "^0.5.3",
     "passport-anonymous": "^1.0.1",
     "passport-azure-ad": "^4.3.5",
-    "pg": "^8.11.0",
+    "pg": "^8.11.2",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "2.0.0-beta.1",
     "typeorm": "^0.3.17"
@@ -58,11 +58,11 @@
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/mustache": "^4.2.2",
-    "@types/node": "^16.18.36",
+    "@types/node": "^16.18.39",
     "@types/passport": "^1.0.12",
     "@types/passport-anonymous": "^1.0.3",
     "@types/passport-azure-ad": "^4.3.1",
-    "@types/validator": "^13.7.17",
+    "@types/validator": "^13.9.0",
     "nodemon": "^2.0.22",
     "sqlite3": "^5.1.6",
     "ts-node": "^10.9.1",

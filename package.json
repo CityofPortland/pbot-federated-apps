@@ -1,6 +1,6 @@
 {
   "name": "pbotapps-federated-apps",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "PBOT applications relying on federated graphs",
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "license": "MIT",
@@ -9,11 +9,11 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "color": "^4.2.3",
-    "eslint": "^8.45.0",
+    "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-config-typescript": "^3.0.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-vue": "^9.15.1",
+    "eslint-plugin-vue": "^9.16.1",
     "prettier": "^2.8.8",
     "tailwindcss": "^3.3.3",
     "tslib": "^2.6.1",
@@ -33,7 +33,7 @@
     }
   },
   "dependencies": {
-    "@tabler/icons-vue": "^2.29.0",
+    "@tabler/icons-vue": "^2.30.0",
     "pinia-plugin-persistedstate": "^3.2.0"
   }
 }
