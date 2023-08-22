@@ -1,3 +1,4 @@
+import { RuleType } from '@pbotapps/authorization';
 import {
   formData,
   query,
@@ -25,7 +26,11 @@ fragment fields on SignInterface {
   }
   legend
   mutcdCode
+  odotCode
+  obsoletePolicy
+  replacedBy
   shape
+  source
   status
   type
   width
@@ -68,8 +73,15 @@ export const useStore = defineStore('sign-library', {
       signs: new Array<Sign>(),
     },
     errors: new Array<unknown>(),
+    rules: new Array<RuleType>(),
   }),
   getters: {
+    hasRule: state => (action: string, subject: string) => {
+      const rule = state.rules.find(
+        r => r.action === action && r.subject === subject
+      );
+      return rule != undefined;
+    },
     sign:
       state =>
       (code: string): Partial<Sign> | undefined => {
@@ -202,6 +214,53 @@ export const useStore = defineStore('sign-library', {
 
       return res;
     },
+    async getSign(code: string) {
+      const { clientId, getToken } = useLogin();
+      const token = await getToken([`${clientId}/.default`]);
+
+      const options: GraphQLOptions = {
+        operation: `
+        query getSign {
+          signs(input: { _id: "${code}" }) {
+            _id
+            ...fields
+            _revisions {
+              ...fields
+            }
+          }
+        }
+        ${fragment}
+        `,
+      };
+
+      if (token)
+        options.headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+      const res = await query<{ signs: Array<Sign> }>(options)
+        .then(res => {
+          if (res.errors) {
+            this.errors = res.errors;
+          }
+          return res.data;
+        })
+        .then(data => data?.signs?.filter(s => (s ? true : false)));
+
+      if (res && res.length) {
+        const signs = res || [];
+
+        const db = await openDB('sign-library', 1, dbCallbacks);
+
+        signs.forEach(s => {
+          db.put('sign', JSON.parse(JSON.stringify(s)));
+        });
+
+        return signs.pop();
+      }
+
+      return undefined;
+    },
     async getSigns() {
       const db = await openDB('sign-library', 1, dbCallbacks);
 
@@ -248,14 +307,55 @@ export const useStore = defineStore('sign-library', {
           }
           return res.data;
         })
-        .then(data => data?.signs.filter(s => (s ? true : false)));
+        .then(data => data?.signs?.filter(s => (s ? true : false)));
 
-      this.data.signs = res || [];
+      if (res && res.length) {
+        this.data.signs = res || [];
 
-      const db = await openDB('sign-library', 1, dbCallbacks);
-      this.data.signs.forEach(s => {
-        db.put('sign', JSON.parse(JSON.stringify(s)));
-      });
+        const db = await openDB('sign-library', 1, dbCallbacks);
+
+        await db.clear('sign');
+
+        this.data.signs.forEach(s => {
+          db.put('sign', JSON.parse(JSON.stringify(s)));
+        });
+      }
+    },
+    async refreshRules() {
+      const { clientId, getToken } = useLogin();
+      const token = await getToken([`${clientId}/.default`]);
+
+      const options: GraphQLOptions = {
+        operation: `
+        query refreshRules {
+          rules {
+            _id
+            action
+            subject
+          }
+        }
+        `,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const res = await query<{ rules: Array<RuleType>; signs: Array<Sign> }>(
+        options
+      )
+        .then(res => {
+          if (res.errors) {
+            this.errors = res.errors;
+          }
+          return res.data;
+        })
+        .then(data => data?.rules)
+        .catch(() => {
+          this.errors.push('Unathorized');
+          return new Array<RuleType>();
+        });
+
+      this.rules = res || [];
     },
   },
 });

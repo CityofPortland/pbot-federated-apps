@@ -4,6 +4,7 @@ export const COLORS = [
   'blue',
   'black',
   'brown',
+  'flourescent pink',
   'green',
   'orange',
   'pink',
@@ -16,7 +17,13 @@ export const COLORS = [
 
 export type Color = (typeof COLORS)[number];
 
-export const SHAPES = ['diamond', 'octagon', 'rectangle', 'square'] as const;
+export const SHAPES = [
+  'diamond',
+  'octagon',
+  'rectangle',
+  'square',
+  'triangle',
+] as const;
 
 export type Shape = (typeof SHAPES)[number];
 
@@ -38,7 +45,7 @@ export const TYPES = [
 export type Type = (typeof TYPES)[number];
 
 export type Sign = BaseUserChangeableType & {
-  _revisions: Array<Partial<Omit<Sign, '_revisions'>>>;
+  _revisions?: Array<Partial<Omit<Sign, '_revisions'>>>;
   code: string;
   color: Array<Color | string>;
   comment?: string;
@@ -50,7 +57,11 @@ export type Sign = BaseUserChangeableType & {
   };
   legend: string;
   mutcdCode: string;
+  obsoletePolicy?: string;
+  odotCode: string;
+  replacedBy: string;
   shape: Shape;
+  source: string;
   status: Status;
   type: Array<Type>;
   width: number;

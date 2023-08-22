@@ -81,6 +81,9 @@ function parseHit<T>(hit: SearchHit<T>) {
 
 export const resolvers: GraphQLResolverMap<Context> = {
   Query: {
+    rules: (_root, _args, context) => {
+      return context.rules;
+    },
     signs: async (
       _root,
       { input }: { input?: FindSignInput }
@@ -139,6 +142,14 @@ export const resolvers: GraphQLResolverMap<Context> = {
   },
   Mutation: {
     async addSign(_root, { input }: { input: SignInput }, context) {
+      if (
+        !context.rules.find(
+          rule => rule.action == 'create' && rule.subject == 'sign'
+        )
+      ) {
+        throw new Error('You are not authorized to add signs');
+      }
+
       const { code, design, image, ...rest } = input;
 
       if (
@@ -199,6 +210,14 @@ export const resolvers: GraphQLResolverMap<Context> = {
       { _id, input }: { _id: string; input: SignInput },
       context
     ) {
+      if (
+        !context.rules.find(
+          rule => rule.action == 'edit' && rule.subject == 'sign'
+        )
+      ) {
+        throw new Error('You are not authorized to edit signs');
+      }
+
       if (
         !(await elasticsearchClient.exists({
           index: 'sign-library',
@@ -261,6 +280,20 @@ export const resolvers: GraphQLResolverMap<Context> = {
           id: _id,
         })
         .then(hit => parseHit(hit));
+    },
+    _revisions(sign: Sign, _args, context) {
+      if (!context.user) {
+        return null;
+      } else {
+        return sign._revisions;
+      }
+    },
+    comment(sign: Sign, _args, context) {
+      if (!context.user) {
+        return null;
+      } else {
+        return sign.comment;
+      }
     },
   },
   DateTime: DateTimeResolver,

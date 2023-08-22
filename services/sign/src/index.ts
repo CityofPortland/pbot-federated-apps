@@ -1,14 +1,11 @@
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { GraphQLSchemaModule } from '@apollo/subgraph/dist/schema-helper';
-import { handleUser, RuleType } from '@pbotapps/authorization';
+import { handleRules } from '@pbotapps/authorization';
 import { createServer } from '@pbotapps/graphql';
-import { User } from '@pbotapps/objects';
 import graphqlUpload from 'graphql-upload/graphqlUploadExpress.mjs';
 
-import { elasticsearchClient } from './client.js';
 import { typeDefs } from './types.js';
 import { resolvers } from './resolvers.js';
-import { handleRules } from '../../../packages/authorization/dist/middleware.js';
 
 const schema: GraphQLSchemaModule = { typeDefs, resolvers };
 
@@ -17,44 +14,43 @@ createServer({
   requireToken: false,
   schema: buildSubgraphSchema(schema),
   handlers: [
-    handleUser({
-      getUser: where =>
-        elasticsearchClient
-          .get<User>({
-            index: 'metabase_user',
-            id: where._id,
-          })
-          .then(res => ({ _id: res._id, ...res._source })),
-    }),
     handleRules(
       {
         getRules: async ({ user, application }) => {
-          const rules = await elasticsearchClient
-            .get<{ rules: Array<string> }>({
-              index: 'metabase_user',
-              id: user._id,
-            })
-            .then(res => ({ _id: res._id, ...res._source }))
-            .then(user => user.rules);
+          const rules = [];
 
-          let results = [];
-
-          if (rules) {
-            results = await Promise.all(
-              rules.map(r =>
-                elasticsearchClient
-                  .get<RuleType & { applicationId: string }>({
-                    index: 'metabase_rule',
-                    id: r,
-                  })
-                  .then(res => ({ _id: res._id, ...res._source }))
-              )
+          if (
+            [
+              'Michael.McDonald@portlandoregon.gov',
+              'Matthew.Machado@portlandoregon.gov',
+              'Peter.Wojcicki@portlandoregon.gov',
+            ].includes(user._id)
+          ) {
+            rules.push(
+              {
+                _changed: new Date(),
+                _changedBy: 'Michael.McDonald@portlandoregon.gov',
+                _created: new Date(),
+                _createdBy: 'Michael.McDonald@portlandoregon.gov',
+                _id: 'null',
+                application,
+                action: 'create',
+                subject: 'sign',
+              },
+              {
+                _changed: new Date(),
+                _changedBy: 'Michael.McDonald@portlandoregon.gov',
+                _created: new Date(),
+                _createdBy: 'Michael.McDonald@portlandoregon.gov',
+                _id: 'null',
+                application,
+                action: 'edit',
+                subject: 'sign',
+              }
             );
-
-            results = results.filter(r => r.applicationId == application._id);
           }
 
-          return results;
+          return rules;
         },
       },
       { _id: 'sign' }

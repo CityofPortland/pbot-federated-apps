@@ -7,7 +7,16 @@ import Revisions from '../pages/Revisions.vue';
 import View from '../pages/View.vue';
 
 const routes: RouteRecordRaw[] = [
-  { path: '/', component: Home },
+  { path: '/', redirect: '/search' },
+  {
+    path: '/search',
+    component: Home,
+    beforeEnter(to) {
+      if (!to.query.status) {
+        return { ...to, query: { status: to.query.status || 'in_use' } };
+      }
+    },
+  },
   { path: '/:code', component: View, props: true },
   { path: '/:code/edit', component: Edit, props: true },
   { path: '/:code/revisions', component: Revisions, props: true },
@@ -18,4 +27,9 @@ const routes: RouteRecordRaw[] = [
 export default createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+  scrollBehavior() {
+    return {
+      top: 0,
+    };
+  },
 });

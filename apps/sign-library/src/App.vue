@@ -21,6 +21,7 @@ const { accessToken } = useLogin();
 const store = useStore();
 
 store.getSigns();
+store.refreshRules();
 </script>
 
 <template>

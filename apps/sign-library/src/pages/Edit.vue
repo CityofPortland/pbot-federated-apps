@@ -89,11 +89,11 @@ const types = computed(() => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const payload = {} as Record<keyof SignInput, any>;
+const payload = ref({} as Record<keyof SignInput, any>);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const change = (key: keyof SignInput, value: any) => {
-  payload[key] = value;
+  payload.value[key] = value;
 };
 
 type T = {
@@ -103,7 +103,7 @@ type T = {
 const save = ({ redirect }: T) => {
   if (formRef.value?.reportValidity()) {
     store
-      .addRevision({ ...payload, code: sign.value.code })
+      .addRevision({ ...payload.value, code: sign.value.code })
       .then(sign => (sign ? router.push(redirect(sign)) : undefined))
       .catch(err => console.error(err));
   }
@@ -180,9 +180,86 @@ const save = ({ redirect }: T) => {
           :key="status"
           :value="status"
           :selected="status == sign.status"
-          class="capitalize"
         >
           {{ status.replace('_', ' ') }}
+        </option>
+      </Select>
+    </Entry>
+    <Entry
+      v-if="payload.status == 'obsolete'"
+      id="obsoletePolicy"
+      label="Obsoletion Policy"
+      required
+      v-slot="{ id, required }"
+    >
+      <Select
+        :id="id"
+        :name="id"
+        :required="required"
+        placeholder="Select one"
+        v-model="sign.obsoletePolicy"
+        @changed="change('obsoletePolicy', $event)"
+        class="px-2 py-1"
+      >
+        <option value="remove" :selected="sign.obsoletePolicy == 'remove'">
+          Remove Do Not Replace
+        </option>
+        <option
+          value="replace_maintenance"
+          :selected="sign.obsoletePolicy == 'replace_maintenance'"
+        >
+          Replace Upon Maintenance
+        </option>
+        <option
+          value="replace_now"
+          :selected="sign.obsoletePolicy == 'replace_now'"
+        >
+          Replace Now
+        </option>
+        <option
+          value="code_only"
+          :selected="sign.obsoletePolicy == 'code_only'"
+        >
+          Sign Code Only is Obsolete
+        </option>
+        <option
+          value="replace_workorder"
+          :selected="sign.obsoletePolicy == 'replace_workorder'"
+        >
+          Replace by Work Order
+        </option>
+      </Select>
+    </Entry>
+    <Entry
+      v-if="
+        payload.status == 'obsolete' &&
+        ['replace_maintenance', 'replace_now', 'replace_workorder'].includes(
+          payload.obsoletePolicy
+        )
+      "
+      id="replacedBy"
+      label="Replaced by"
+      required
+      v-slot="{ id, required }"
+    >
+      <Select
+        :id="id"
+        :name="id"
+        :required="required"
+        placeholder="Select one"
+        v-model="sign.replacedBy"
+        @changed="change('replacedBy', $event)"
+        class="px-2 py-1"
+      >
+        <option
+          v-for="replacement in store.data.signs.filter(
+            s => s.code != sign.code
+          )"
+          :key="replacement._id"
+          :value="replacement._id"
+          :selected="sign.replacedBy == replacement.code"
+        >
+          {{ replacement.code }}
         </option>
       </Select>
     </Entry>
@@ -209,6 +286,25 @@ const save = ({ redirect }: T) => {
         />
       </template>
     </Entry>
+    <Entry id="odotCode" label="ODOT code">
+      <template v-slot:label="{ id, label }">
+        <label :id="`${id}-label`" class="font-semibold">
+          <Anchor
+            url="https://www.oregon.gov/odot/Engineering/Documents_TrafficStandards/Sign-Policy-2022.pdf"
+            >{{ label }}</Anchor
+          >
+        </label>
+      </template>
+      <template v-slot="{ id, required }">
+        <Input
+          :id="id"
+          :name="id"
+          :required="required"
+          v-model="sign.odotCode"
+          @changed="change('odotCode', $event)"
+        />
+      </template>
+    </Entry>
     <Entry id="shape" label="Shape" required v-slot="{ id, required }">
       <Select
         :id="id"
@@ -224,7 +320,6 @@ const save = ({ redirect }: T) => {
           :key="shape"
           :value="shape"
           :selected="shape == sign.shape"
-          class="capitalize"
         >
           {{ shape }}
         </option>
@@ -279,6 +374,9 @@ const save = ({ redirect }: T) => {
         v-model="sign.legend"
         @changed="change('legend', $event)"
       />
+    </Entry>
+    <Entry id="source" label="Source" v-slot="{ id, required }">
+      <Input :id="id" :name="id" :required="required" v-model="sign.source" />
     </Entry>
     <Entry id="comment" label="Comment" v-slot="{ id }">
       <Textarea
