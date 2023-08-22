@@ -28,7 +28,6 @@ jobs:
             directory: apps/sign-library
             registry: pbotapps
             repository: federation/app/sign-library
-            baseURL: /sign-library
             files: |
               packages/components/.env.production.local:
                 - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql/sign

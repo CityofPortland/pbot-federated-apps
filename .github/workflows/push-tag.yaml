@@ -20,6 +20,13 @@ jobs:
             files: |
               packages/components/.env.production.local:
                 - VITE_GRAPHQL_URL=https://pudl.portland.gov/graphql
+          - app: sign-library
+            directory: apps/sign-library
+            registry: pbotapps
+            repository: federation/app/sign-library
+            files: |
+              packages/components/.env.production.local:
+                - VITE_GRAPHQL_URL=https://pbotapps.portland.gov/graphql/sign
     steps:
       - uses: actions/checkout@v3
       - uses: ./packages/actions/file-writer
@@ -58,6 +65,8 @@ jobs:
         include:
           - registry: pbotapps
             repository: federation/service/pudl
+          - registry: pbotapps
+            repository: federation/service/sign
     steps:
       - uses: actions/checkout@v3
       - name: Pull
