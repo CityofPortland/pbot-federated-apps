@@ -41,12 +41,15 @@ export type Sign = BaseUserChangeableType & {
   _revisions: Array<Partial<Omit<Sign, '_revisions'>>>;
   code: string;
   color: Array<SignColor>;
-  description?: string;
+  comment?: string;
   height: number;
   image?: SignImage;
   legend: string;
   mutcdCode?: string;
+  obsoletePolicy: string;
+  replacedBy: string;
   shape: SignShape;
+  source: string;
   status: SignStatus;
   type: Array<SignType>;
   width: number;
@@ -81,6 +84,7 @@ export const typeDefs: DocumentNode = gql`
   scalar DateTime
 
   type Query {
+    rules: [Rule]
     signs(input: FindSignInput): [Sign]
   }
 
@@ -98,7 +102,11 @@ export const typeDefs: DocumentNode = gql`
     image: Upload
     legend: String
     mutcdCode: String
+    odotCode: String
+    obsoletePolicy: String
+    replacedBy: ID
     shape: SignShape
+    source: String
     status: SignStatus
     type: [SignType]
     width: Int
@@ -151,7 +159,11 @@ export const typeDefs: DocumentNode = gql`
     image: SignImage
     legend: String
     mutcdCode: String
+    odotCode: String
+    obsoletePolicy: String
+    replacedBy: ID
     shape: SignShape
+    source: String
     status: SignStatus
     type: [SignType]
     width: Int
@@ -169,7 +181,11 @@ export const typeDefs: DocumentNode = gql`
     image: SignImage
     legend: String
     mutcdCode: String
+    odotCode: String
+    obsoletePolicy: String
+    replacedBy: ID
     shape: SignShape
+    source: String
     status: SignStatus
     type: [SignType]
     width: Int
@@ -181,7 +197,7 @@ export const typeDefs: DocumentNode = gql`
     _changed: DateTime!
     _createdBy: ID!
     _changedBy: ID!
-    _revisions: [SignRevision]!
+    _revisions: [SignRevision]
     code: String!
     color: [String]
     comment: String
@@ -189,9 +205,23 @@ export const typeDefs: DocumentNode = gql`
     image: SignImage
     legend: String!
     mutcdCode: String
+    odotCode: String
+    obsoletePolicy: String
+    replacedBy: ID
     shape: SignShape
+    source: String
     status: SignStatus
     type: [SignType]
     width: Int!
+  }
+
+  type Rule @key(fields: "_id") {
+    _id: ID!
+    _created: DateTime!
+    _changed: DateTime!
+    _createdBy: ID!
+    _changedBy: ID!
+    action: String!
+    subject: String!
   }
 `;

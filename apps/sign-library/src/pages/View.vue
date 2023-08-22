@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Anchor, FieldList, Field } from '@pbotapps/components';
-import { computed } from 'vue';
+import { Anchor, FieldList, Field, Box } from '@pbotapps/components';
+import { onMounted, ref, toRefs } from 'vue';
 
 import MissingImage from '../components/MissingImage.vue';
-import Status from '../components/Status.vue';
 import { useStore } from '../store';
 import { Sign } from '../types';
+import { onBeforeRouteUpdate } from 'vue-router';
 
 const store = useStore();
 
@@ -13,14 +13,27 @@ const props = defineProps({
   code: { type: String, required: true },
 });
 
-const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
+const { code } = toRefs(props);
+
+const sign = ref<Partial<Sign>>({});
+
+//const sign = computed(() => await store.getSign(code.value));
+
+onMounted(async () => {
+  sign.value = { ...(await store.getSign(code.value)) };
+});
+onBeforeRouteUpdate(async to => {
+  sign.value = { ...(await store.getSign(to.params.code as string)) };
+  return true;
+});
 </script>
 
 <template>
-  <article>
+  <article v-if="sign">
     <header class="prose prose-lg max-w-none flex">
       <h1 class="flex-1">{{ sign.code }}</h1>
       <router-link
+        v-if="store.hasRule('edit', 'sign')"
         :to="`/${sign.code}/edit`"
         custom
         v-slot="{ href, navigate }"
@@ -28,75 +41,55 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
         <Anchor :url="href" @click="navigate" class="no-underline">Edit</Anchor>
       </router-link>
     </header>
-    <main class="mt-8 flex flex-col md:flex-row gap-4">
-      <section class="prose w-full md:w-3/4">
-        <figure>
-          <MissingImage v-if="!sign.image" class="w-64 h-64" />
+    <main class="mt-8 space-y-8">
+      <header class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <figure class="justify-self-center">
+          <MissingImage
+            v-if="!sign.image || !sign.image.full"
+            class="w-64 h-64"
+          />
           <img
             v-else
-            class="flex justify-center items-center h-64"
+            class="flex justify-center items-center max-h-80"
             :src="sign.image.full"
           />
         </figure>
-        <section>
-          <FieldList class="grid grid-cols-1 gap-1">
+        <FieldList class="justify-self-start space-y-2 md:text-sm">
+          <Box
+            :color="sign.status == 'obsolete' ? 'tangerine' : 'transparent'"
+            variant="light"
+            :class="{
+              'p-2 -mx-2 border border-current rounded-md':
+                sign.status == 'obsolete',
+            }"
+          >
+            <Field name="Status" display="above">
+              {{ sign.status }}
+            </Field>
             <Field
-              v-if="sign.image"
-              name="Image"
-              display="inline"
+              v-if="sign.obsoletePolicy"
+              name="Obsoletion policy"
+              display="above"
+            >
+              {{ sign.obsoletePolicy }}
+            </Field>
+            <Field
+              v-if="sign.replacedBy"
+              name="Replaced by"
+              display="above"
               class="not-prose"
             >
-              <ul class="flex gap-1 list-none">
-                <li>
-                  <Anchor :url="sign.image.thumbnail" class="no-underline">
-                    Thumbnail
-                  </Anchor>
-                </li>
-                <li>
-                  <Anchor :url="sign.image.full" class="no-underline">
-                    Full
-                  </Anchor>
-                </li>
-                <li>
-                  <Anchor
-                    v-if="sign.image.design"
-                    :url="sign.image.design"
-                    class="no-underline"
-                  >
-                    Design file
-                  </Anchor>
-                </li>
-              </ul>
+              <router-link
+                :to="`/${sign.replacedBy}`"
+                custom
+                v-slot="{ href, navigate }"
+              >
+                <Anchor :url="href" @click="navigate">
+                  {{ sign.replacedBy }}
+                </Anchor>
+              </router-link>
             </Field>
-            <Field name="Status" display="inline">
-              <Status :status="sign.status" />
-            </Field>
-            <Field name="Type" display="inline">
-              {{ sign.type || 'NULL' }}
-            </Field>
-            <Field name="MUTCD code" display="inline">
-              {{ sign.mutcdCode || 'NULL' }}
-            </Field>
-            <Field name="Shape" display="inline">
-              {{ sign.shape || 'NULL' }}
-            </Field>
-            <Field name="Color" display="inline">
-              {{ sign.color || 'NULL' }}
-            </Field>
-            <Field name="Size" display="inline">
-              {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
-            </Field>
-            <Field name="Legend" display="inline">
-              {{ sign.legend || 'NULL' }}
-            </Field>
-            <Field v-if="sign.comment" name="Comments" display="inline">
-              {{ sign.comment || 'NULL' }}
-            </Field>
-          </FieldList>
-        </section>
-      </section>
-      <aside class="w-full md:w-1/4 prose md:prose-sm">
-        <FieldList>
+          </Box>
           <Field v-if="sign._created" name="Created" display="above">
             {{
               new Date(Date.parse(sign._created.toString())).toLocaleString(
@@ -136,7 +129,70 @@ const sign = computed(() => store.sign(props.code) ?? ({} as Sign));
             </router-link>
           </Field>
         </FieldList>
-      </aside>
+      </header>
+      <section class="md:w-3/4">
+        <FieldList class="space-y-2">
+          <Field
+            v-if="
+              sign.image &&
+              (sign.image.design || sign.image.full || sign.image.thumbnail)
+            "
+            name="Image"
+            display="inline"
+            class="not-prose"
+          >
+            <ul class="flex gap-1 list-none">
+              <li v-if="sign.image.thumbnail">
+                <Anchor :url="sign.image.thumbnail" class="no-underline">
+                  Thumbnail
+                </Anchor>
+              </li>
+              <li v-if="sign.image.full">
+                <Anchor :url="sign.image.full" class="no-underline">
+                  Full
+                </Anchor>
+              </li>
+              <li>
+                <Anchor
+                  v-if="sign.image.design"
+                  :url="sign.image.design"
+                  class="no-underline"
+                >
+                  Design file
+                </Anchor>
+              </li>
+            </ul>
+          </Field>
+          <Field name="Type" display="inline">
+            {{ sign.type || 'NULL' }}
+          </Field>
+          <Field v-if="sign.mutcdCode" name="MUTCD code" display="inline">
+            {{ sign.mutcdCode }}
+          </Field>
+          <Field v-if="sign.odotCode" name="ODOT code" display="inline">
+            {{ sign.odotCode }}
+          </Field>
+          <Field name="Shape" display="inline">
+            {{ sign.shape || 'NULL' }}
+          </Field>
+          <Field name="Color" display="inline">
+            {{ sign.color || 'NULL' }}
+          </Field>
+          <Field name="Size" display="inline">
+            {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
+          </Field>
+          <Field name="Legend" display="inline">
+            {{ sign.legend || 'NULL' }}
+          </Field>
+          <Field v-if="sign.source" name="Source" display="inline">
+            {{ sign.source }}
+          </Field>
+          <Field v-if="sign.comment" name="Comments" display="inline">
+            {{ sign.comment || 'NULL' }}
+          </Field>
+        </FieldList>
+      </section>
     </main>
   </article>
+  <span v-else>Loading...</span>
 </template>
