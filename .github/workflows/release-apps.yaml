@@ -35,6 +35,26 @@ jobs:
                   - secretName: pudl-portland-gov-tls
                     hosts:
                       - pudl.portland.gov
+          - app: sign-library
+            directory: apps/sign-library
+            repository: federation/app/sign-library
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps
+            values: |
+              ingress:
+                enabled: true
+                annotations:
+                  nginx.ingress.kubernetes.io/rewrite-target: /$2
+                hosts:
+                  - host: pbotapps.portland.gov
+                    paths:
+                      - path: /sign-library(/|$)(.*)
+                        pathType: Prefix
+                tls:
+                  - secretName: pbotapps-portland-gov-tls
+                    hosts:
+                      - pbotapps.portland.gov
     steps:
       - uses: actions/checkout@v3
       - name: Create values file

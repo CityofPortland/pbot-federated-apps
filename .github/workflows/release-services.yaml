@@ -61,6 +61,57 @@ jobs:
                   value: "5432"
                 - name: PUDL_POSTGRES_USERNAME
                   value: hive_admin
+          - service: sign
+            directory: services/sign
+            repository: federation/service/sign
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps
+            values: |
+              ingress:
+                enabled: true
+                hosts:
+                  - host: pbotapps.portland.gov
+                    paths:
+                      - path: /graphql/sign
+                        pathType: Prefix
+                tls:
+                  - secretName: pbotapps-portland-gov-tls
+                    hosts:
+                      - pbotapps.portland.gov
+              extraEnv:
+                - name: AZURE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_ID
+                - name: AZURE_TENANT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_TENANT_ID
+                - name: AZURE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_SECRET
+                - name: AZURE_STORAGE_ACCOUNT
+                  value: pbotapps
+                - name: ELASTICSEARCH_HOST
+                  value: https://pbotapps-es-http:9200
+                - name: ELASTICSEARCH_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: pbotapps-es-elastic-user
+                      key: elastic
+              volumes:
+                - name: elastic-cert
+                  secret:
+                    secretName: pbotapps-es-http-ca-internal
+              volumeMounts:
+                - mountPath: /home/node/services/sign/dist/elastic.crt
+                  name: elastic-cert
+                  subPath: tls.crt
     steps:
       - uses: actions/checkout@v3
       - name: Create azure secrets
