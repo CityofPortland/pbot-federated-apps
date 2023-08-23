@@ -4,8 +4,8 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Page from '../pages/Page.vue';
 
 const routes: RouteRecordRaw[] = [
-  { path: '/:tree*', component: Page },
   ...authRoutes,
+  { path: '/:tree*', component: Page },
 ];
 
 const router = createRouter({
@@ -13,7 +13,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeResolve(to => {
+router.beforeResolve(() => {
   const auth = useLogin();
 
   if (auth.accessToken) {

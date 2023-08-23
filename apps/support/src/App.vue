@@ -23,7 +23,7 @@ const { accessToken } = useLogin();
       <template #branding>
         <router-link to="/" class="w-full flex items-center">
           <Logo class="w-16 md:w-20 mr-3 flex-shrink-0" />
-          <span class="truncate text-xl">App</span>
+          <span class="truncate text-xl">Support</span>
         </router-link>
       </template>
       <template #menu>

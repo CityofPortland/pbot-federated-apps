@@ -1,5 +1,6 @@
 {
-  "name": "@pbotapps/resources",
+  "name": "@pbotapps/support",
+  "description": "Frontend app for displaying technical support documents",
   "private": true,
   "version": "1.0.1",
   "scripts": {

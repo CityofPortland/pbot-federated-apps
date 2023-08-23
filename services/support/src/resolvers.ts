@@ -17,18 +17,17 @@ export const resolvers: GraphQLResolverMap<Context> = {
     page: async (_root, { tree }: { tree: Array<string> }): Promise<Page> => {
       let path = resolve(__dirname, 'pages', ...tree);
 
-      tree.forEach(async node => {
-        path = resolve(path, node);
-      });
-
-      if (!fs.existsSync(path)) {
-        throw new Error(`'${path}' does not exist`);
-      }
-
-      if (fs.statSync(path).isDirectory()) {
+      // If this exists with no modification, it *should* be a directory
+      //   get the index.md that *should* be there
+      // Otherwise this should be referencing a markdown file
+      if (fs.existsSync(path)) {
         path = resolve(path, 'index.md');
       } else {
         path = path + '.md';
+      }
+
+      if (!fs.existsSync(path)) {
+        throw new Error(`'${path}' does not exist!`);
       }
 
       const { data, content } = matter.read(path);

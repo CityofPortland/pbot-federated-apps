@@ -14,13 +14,18 @@ export const typeDefs: DocumentNode = gql`
       import: ["@key", "@shareable"]
     )
 
-  type Query {
-    page(tree: [String!]!): Page
-  }
-
   type Page {
     title: String!
-    scripts: [String]
+    scripts: [Script]
     content: String!
+  }
+
+  type Script {
+    src: String
+    body: String
+  }
+
+  type Query {
+    page(tree: [String!]!): Page
   }
 `;
