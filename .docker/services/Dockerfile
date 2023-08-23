@@ -1,4 +1,4 @@
-FROM node:16 as builder
+FROM node:18 as builder
 
 ARG WORKDIR
 
@@ -18,7 +18,7 @@ WORKDIR /home/node/${WORKDIR}
 RUN pnpm --filter "{.}..." install
 RUN pnpm --filter "{.}..." build
 
-FROM node:16-bullseye-slim
+FROM node:18-bullseye-slim
 
 ARG WORKDIR
 
