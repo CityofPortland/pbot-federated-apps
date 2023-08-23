@@ -1,7 +1,8 @@
 {
-  "name": "@pbotapps/lcr",
+  "name": "@pbotapps/support",
+  "description": "Frontend app for displaying technical support documents",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.0.1",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -9,18 +10,12 @@
   },
   "dependencies": {
     "@pbotapps/components": "workspace:^1.0.3",
-    "@tabler/icons-vue": "^2.32.0",
-    "autoprefixer": "^10.4.15",
-    "axios": "^1.4.0",
-    "moment": "^2.29.4",
-    "pinia": "^2.1.6",
-    "pinia-plugin-persistedstate": "^3.2.0",
-    "postcss": "^8.4.28",
+    "showdown": "^2.1.0",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.4",
-    "vue-tabler-icons": "^2.21.0"
+    "vue-router": "^4.2.4"
   },
   "devDependencies": {
+    "@types/showdown": "^2.0.1",
     "@vitejs/plugin-vue": "^4.3.3",
     "typescript": "^4.9.5",
     "vite": "^4.4.9",

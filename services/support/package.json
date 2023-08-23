@@ -1,7 +1,7 @@
 {
-  "name": "@pbotapps/sign",
-  "version": "1.0.3",
-  "description": "Catalog application for managing metadata of objects in the Federation",
+  "name": "@pbotapps/support",
+  "version": "1.0.1",
+  "description": "Service to serve markdown documents for technical support",
   "main": "dist/index.js",
   "module": "dist/index",
   "type": "module",
@@ -10,20 +10,20 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -b tsconfig.build.json",
+    "build": "tsc -b tsconfig.build.json && cp -rT src/pages/ dist/pages/",
     "clean": "rm -rf ./dist",
     "dev": "nodemon"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CityofPortland/pbotapps-federated-apps.git"
+    "url": "git+https://github.com/CityofPortland/pbotapps-federated-graphs.git"
   },
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CityofPortland/pbotapps-federated-apps/issues"
+    "url": "https://github.com/CityofPortland/pbotapps-federated-graphs/issues"
   },
-  "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
+  "homepage": "https://github.com/CityofPortland/pbotapps-federated-graphs#readme",
   "dependencies": {
     "@apollo/server": "^4.9.1",
     "@apollo/subgraph": "^2.4.12",
@@ -49,6 +49,7 @@
     "graphql-tag": "^2.12.6",
     "graphql-tools": "^8.3.20",
     "graphql-upload": "^16.0.2",
+    "gray-matter": "^4.0.3",
     "jsonwebtoken": "^8.5.1",
     "knex": "^2.5.1",
     "passport": "^0.5.3",
@@ -56,7 +57,8 @@
     "passport-azure-ad": "^4.3.5",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
-    "sharp": "^0.32.5"
+    "sharp": "^0.31.3",
+    "showdown": "^2.1.0"
   },
   "devDependencies": {
     "@elastic/transport": "^8.3.3",
