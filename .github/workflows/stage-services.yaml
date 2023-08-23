@@ -29,6 +29,10 @@ jobs:
             directory: services/sign
             registry: pbotapps
             repository: federation/service/sign
+          - service: support
+            directory: services/support
+            registry: pbotapps
+            repository: federation/service/support
     steps:
       - uses: actions/checkout@v3
       - name: Build
@@ -182,6 +186,40 @@ jobs:
                 - mountPath: /home/node/services/sign/dist/elastic.crt
                   name: elastic-cert
                   subPath: tls.crt
+          - service: support
+            directory: services/support
+            repository: federation/service/support
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps-test
+            values: |
+              ingress:
+                enabled: true
+                hosts:
+                  - host: pbotapps-test.portland.gov
+                    paths:
+                      - path: /graphql/support
+                        pathType: Prefix
+                tls:
+                  - secretName: pbotapps-test-portland-gov-tls
+                    hosts:
+                      - pbotapps-test.portland.gov
+              extraEnv:
+                - name: AZURE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_ID
+                - name: AZURE_TENANT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_TENANT_ID
+                - name: AZURE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_SECRET
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
