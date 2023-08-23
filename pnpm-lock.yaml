@@ -204,6 +204,7 @@ importers:
   apps/support:
     specifiers:
       '@pbotapps/components': workspace:^1.0.3
+      '@types/showdown': ^2.0.1
       '@vitejs/plugin-vue': ^4.3.3
       showdown: ^2.1.0
       typescript: ^4.9.5
@@ -217,6 +218,7 @@ importers:
       vue: 3.3.4
       vue-router: 4.2.4_vue@3.3.4
     devDependencies:
+      '@types/showdown': 2.0.1
       '@vitejs/plugin-vue': 4.3.3_vite@4.4.9+vue@3.3.4
       typescript: 4.9.5
       vite: 4.4.9
@@ -2871,6 +2873,10 @@ packages:
       '@types/node': 18.17.8
     dev: true
 
+  /@types/showdown/2.0.1:
+    resolution: {integrity: sha512-xdnAw2nFqomkaL0QdtEk0t7yz26UkaVPl4v1pYJvtE1T0fmfQEH3JaxErEhGByEAl3zUZrkNBlneuJp0WJGqEA==}
+    dev: true
+
   /@types/terraformer__arcgis/2.0.2:
     resolution: {integrity: sha512-0B1Y2LqGJbinZ/cF/5sZwY+1EfrsAJ/M80BVl49I/1m7Y6cO5+3kzwU/pksdJWQgmbpfAk03JHb0EgUYd9R87w==}
     dependencies:
@@ -3076,7 +3082,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.4.9_@types+node@18.17.8
+      vite: 4.4.9
       vue: 3.3.4
     dev: true
 
