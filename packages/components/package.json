@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@azure/msal-browser": "^2.38.1",
-    "@pbotapps/authorization": "workspace:^1.0.3",
+    "@pbotapps/authorization": "workspace:^",
     "@vueuse/core": "^9.13.0",
     "crypto-js": "^4.1.1",
     "lodash": "^4.17.21",

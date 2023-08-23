@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pbotapps/authorization": "workspace:^1.0.3",
-    "@pbotapps/components": "workspace:^1.0.3",
-    "@pbotapps/objects": "workspace:^1.0.3",
+    "@pbotapps/authorization": "workspace:^",
+    "@pbotapps/components": "workspace:^",
+    "@pbotapps/objects": "workspace:^",
     "@vueuse/core": "^10.3.0",
     "idb": "^7.1.1",
     "pinia": "^2.1.6",

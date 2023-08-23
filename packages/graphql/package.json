@@ -39,8 +39,8 @@
   "dependencies": {
     "@apollo/server": "^4.9.1",
     "@apollo/subgraph": "^2.4.12",
-    "@pbotapps/authorization": "workspace:^1.0.3",
-    "@pbotapps/objects": "workspace:^1.0.3",
+    "@pbotapps/authorization": "workspace:^",
+    "@pbotapps/objects": "workspace:^",
     "axios": "^1.4.0",
     "cors": "^2.8.5",
     "dataloader": "^2.2.2",
