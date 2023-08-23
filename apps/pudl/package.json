@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pbotapps/components": "workspace:^",
+    "@pbotapps/components": "workspace:^1.0.3",
     "axios": "^0.27.2",
     "pinia": "^2.1.6",
     "uuid": "^9.0.0",
@@ -16,11 +16,11 @@
     "vue-router": "^4.2.4"
   },
   "devDependencies": {
-    "@types/node": "^18.17.4",
+    "@types/node": "^18.17.8",
     "@types/uuid": "^9.0.2",
-    "@vitejs/plugin-vue": "^4.2.3",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.27",
+    "@vitejs/plugin-vue": "^4.3.3",
+    "autoprefixer": "^10.4.15",
+    "postcss": "^8.4.28",
     "postcss-import": "^14.1.0",
     "tailwindcss": "^3.3.3",
     "typescript": "^4.9.5",

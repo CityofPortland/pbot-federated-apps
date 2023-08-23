@@ -33,12 +33,12 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fast-xml-parser": "^4.2.7",
-    "graphql": "^16.7.1",
+    "graphql": "^16.8.0",
     "graphql-tag": "^2.12.6",
     "metalsmith": "^2.6.1",
     "proj4": "^2.9.0",
     "simple-git": "^3.19.1",
-    "tslib": "^2.6.1"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.3.0",
@@ -53,7 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "copyfiles": "^2.4.1",
-    "eslint": "^8.46.0",
+    "eslint": "^8.47.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.22",
