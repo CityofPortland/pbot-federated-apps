@@ -69,6 +69,8 @@ async function getPage(tree: string | Array<string>) {
 onMounted(() => {
   getPage(route.params.tree);
 
+  const re = new RegExp('^(?:[a-z+]+:)?//', 'i');
+
   if (pageElement.value) {
     pageElement.value.onclick = event => {
       const target = event.target as HTMLElement | null;
@@ -78,8 +80,6 @@ onMounted(() => {
           const href = target.attributes.getNamedItem('href');
 
           if (href) {
-            const re = new RegExp('^(?:[a-z+]+:)?//', 'i');
-
             if (!re.test(href.value)) {
               event.preventDefault();
               router.push({
@@ -90,8 +90,25 @@ onMounted(() => {
         }
       }
     };
+
+    const mo = new MutationObserver(function(mutations){
+        mutations.forEach(function(mutation){
+          pageElement.value?.querySelectorAll('img').forEach((el) => {
+            const src = el.attributes.getNamedItem('src');
+            if (src) {
+              if (!re.test(src.value) && !src.value.startsWith(import.meta.env.BASE_URL)) {
+                src.value = `${import.meta.env.BASE_URL}${src.value}`.replaceAll('//', '/');
+              }
+            }
+          })
+        });
+    });
+
+    mo.observe(pageElement.value, { childList: true, subtree: true });
   }
+
 });
+
 onBeforeRouteUpdate(to => {
   getPage(to.params.tree);
   return true;
