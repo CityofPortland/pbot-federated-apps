@@ -38,7 +38,7 @@ An enhancement request for existing Technology at PBOT (like Maximo, Amanda, PUD
 
 General IT support such as recovering a password, requesting a network account for a new employee or support for an issue with a PBOT application. Hardware issues.
 
-https://portland.service-now.com/sp
+[Service Now](https://portland.service-now.com/sp)
 
 ## GIS Support
 
