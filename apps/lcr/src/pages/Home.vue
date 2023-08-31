@@ -70,7 +70,7 @@ function handleSort(newSort: string) {
 
 <template>
   <div>
-    <h2 class="text-3xl font-bold mb-2">Search Users</h2>
+    <h2 class="text-3xl font-bold mb-2 text-blue-600">Search Users</h2>
     <section>
       <form
         @submit.prevent="findUsers"
@@ -234,7 +234,7 @@ function handleSort(newSort: string) {
 
     <div class="mt-5 shadow border-b border-gray-200 sm:rounded-lg mb-3">
       <table
-        className="divide-y divide-gray-200"
+        className="divide-y divide-gray-200 mx-auto w-full"
         v-if="lcr.pagedMaximoUsers != null"
       >
         <thead className="bg-gray-50">
