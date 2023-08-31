@@ -16,23 +16,31 @@ scripts:
 
 # Request Submission
 
-## Multiple / Don’t Know
+## Project Support
 
-If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place.
+#### Data Issue
 
-<a href="#" class="feedback-button">Submit a support request</a>
+A problem identified with the way data is defined, collected, accessed, managed, or used throughout its lifecycle. **Reporting data issues does not require Division Manager or Group Director authorization.**
 
-## Data Issue
-
-A problem identified with the way data is defined, collected, accessed, managed, or used throughout its lifecycle. Reporting data issues does not require Division Manager or Group Director authorization.
-
-<a href="#" class="feedback-button">Submit a support request</a>
-
-## Existing Technology Enhancement
+#### Existing Technology Enhancement
 
 An enhancement request for existing Technology at PBOT (like Maximo, Amanda, PUDL, eBuilder, or GIS).
 
-<a href="#" class="feedback-button">Submit a support request</a>
+#### New Technology Request
+
+An idea for something that you don’t think is covered by our existing applications.
+
+#### Performance Support
+
+Support for designing and refining performance metrics and program evaluation strategies.
+
+#### Process Support
+
+Support for developing or redesigning business processes including process discovery, mapping, improvement, and optimization.
+
+*If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place.*
+
+<a href="#" class="feedback-button">Submit your request</a>
 
 ## General Support
 
@@ -42,27 +50,11 @@ General IT support such as recovering a password, requesting a network account f
 
 ## GIS Support
 
-Service Now? Email? Confirm with Kirk.
+Get support with GIS related applications and maps, apps, or dashboards created therein.
 
-## New Technology Request
+PBOT GIS Support Email: <pbotgissupport@portlandoregon.gov>
 
-An idea for something that you don’t think is covered by our existing applications.
-
-<a href="#" class="feedback-button">Submit a support request</a>
-
-## Performance Support
-
-Support for designing and refining performance metrics and program evaluation strategies.
-
-<a href="#" class="feedback-button">Submit a support request</a>
-
-## Process Support
-
-Support for developing or redesigning business processes including process discovery, mapping, improvement, and optimization.
-
-<a href="#" class="feedback-button">Submit a support request</a>
-
-## Training Needs
+## Training Support
 
 [City Learner](https://cityofport.plateau.com/learning)
 
