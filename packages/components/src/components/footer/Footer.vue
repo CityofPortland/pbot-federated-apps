@@ -11,10 +11,10 @@
               ADA Title II laws and reasonably provides: translation,
               interpretation, modifications, accommodations, alternative
               formats, auxiliary aids and services. To request these services,
-              contact
-              <Anchor url="tel:503-823-5185">503-823-5185</Anchor>, City TTY
-              <Anchor url="tel:503-823-6868">503-823-6868</Anchor>, Relay
-              Service <Anchor url="tel:711">711</Anchor>.
+              contact the Portland Bureau of Transportation at 311 (<Anchor
+                url="tel:503-823-4000"
+                >503-823-4000</Anchor
+              >), for Relay Service & TTY: <Anchor url="tel:711">711</Anchor>.
             </p>
             <p>
               Traducción e Interpretación | Biên Dịch và Thông Dịch | अनुवादन
@@ -22,7 +22,7 @@
               iyo Fasiraad Письмовий і усний переклад | Traducere și
               interpretariat | Chiaku me Awewen Kapas | Translation and
               Interpretation
-              <Anchor url="tel:503-823-5185">503-823-5185</Anchor>
+              <Anchor url="tel:503-823-4000">503-823-4000</Anchor>
             </p>
           </div>
         </section>
@@ -33,9 +33,23 @@
           <div class="order-last md:order-first">
             <Copyright />
           </div>
-          <div class="md:col-span-3">
-            <slot name="middle"></slot>
-          </div>
+          <Nav title="General information">
+            <NavItem>
+              <Anchor url="//portland.gov">City of Portland</Anchor>
+            </NavItem>
+            <NavItem>
+              <Anchor url="//portland.gov/transportation"
+                >Portland Bureau of Transportation</Anchor
+              >
+            </NavItem>
+            <slot name="general-info"></slot>
+          </Nav>
+          <slot name="middle"></slot>
+          <Nav title="Application support">
+            <NavItem>
+              <Anchor url="#" @click="reset">Reset application</Anchor>
+            </NavItem>
+          </Nav>
         </section>
         <section v-if="hasBottom">
           <slot name="bottom"></slot>
@@ -51,10 +65,12 @@ import { defineComponent } from 'vue';
 import Anchor from '../../elements/anchor/Anchor.vue';
 import Box, { BoxColor, BoxColorVariant } from '../../elements/box/Box';
 import Copyright from '../copyright/Copyright.vue';
+import Nav from '../nav/Nav.vue';
+import NavItem from '../nav/NavItem.vue';
 
 export default defineComponent({
   name: 'Footer',
-  components: { Anchor, Box, Copyright },
+  components: { Anchor, Box, Copyright, Nav, NavItem },
   props: {
     color: {
       type: String as () => BoxColor,
@@ -69,6 +85,11 @@ export default defineComponent({
     return {
       hasTop: slots.top !== undefined,
       hasBottom: slots.bottom !== undefined,
+      reset: () => {
+        window.localStorage.clear();
+        window.sessionStorage.clear();
+        location.reload();
+      },
     };
   },
 });
