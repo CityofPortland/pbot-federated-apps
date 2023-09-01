@@ -32,7 +32,7 @@ Submit your project, consultation, idea, or enhancement request via the [appropr
 
 ### Review
 
-The [Strategy, Data, and Performance](./team) and Technology Services divisions will review the request, evaluate the effort, and determine next steps for the request.
+The [Strategy, Data, and Performance and Technology Services divisions](./team) will review the request, evaluate the effort, and determine next steps for the request.
 
 ### Refine
 
