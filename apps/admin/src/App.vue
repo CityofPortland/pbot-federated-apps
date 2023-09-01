@@ -39,22 +39,7 @@ const { accessToken } = useLogin();
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 mt-4">
       <router-view />
     </main>
-    <Footer color="gray" variant="light">
-      <template #middle>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Nav title="General information">
-            <NavItem>
-              <Anchor url="//portland.gov">City of Portland</Anchor>
-            </NavItem>
-            <NavItem>
-              <Anchor url="//portland.gov/transportation"
-                >Portland Bureau of Transportation</Anchor
-              >
-            </NavItem>
-          </Nav>
-        </div>
-      </template>
-    </Footer>
+    <Footer color="gray" variant="light" />
   </div>
 </template>
 
