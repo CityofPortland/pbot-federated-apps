@@ -295,6 +295,13 @@ export const resolvers: GraphQLResolverMap<Context> = {
         return sign.comment;
       }
     },
+    source(sign: Sign, _args, context) {
+      if (!context.user) {
+        return null;
+      } else {
+        return sign.source;
+      }
+    },
   },
   DateTime: DateTimeResolver,
   Upload: GraphQLUpload,
