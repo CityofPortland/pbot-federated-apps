@@ -4,6 +4,12 @@ title: Team descriptions
 
 # Team Descriptions
 
+Here you will find overviews for the three groups involved in supporting data, process, and technology at PBOT with links to intranet pages for more information!
+
+If you are looking to sumbmit a support request, [click here](./requests).
+
+If you are looking for general information on the support process, [click here](./index).
+
 ## [Strategy, Data, and Performance (SDP)](https://employees.portland.gov/pbot/strategy-data-and-performance)
 
 The Strategy, Data, and Performance division helps answer the question: "Is PBOT doing what it is supposed to be doing? And if not, how can we ensure it does?" Located within the Office of the Director, we provide timely strategic, data-driven, and performance-focused direction, guidance and support to PBOT leadership and all PBOT Groups. The team is composed of 5 PBOT staff.

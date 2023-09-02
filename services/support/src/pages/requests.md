@@ -16,7 +16,13 @@ scripts:
 
 # Request Submission
 
+Below you will find support options grouped into four broad categories: project, general, GIS, and training. Further information can be found under each category on the types of requests you might make. If you want to know more about who handles these requests, check out our [team descriptions](./team).
+
+<div class="bg-marine-500 bg-opacity-50">
+
 ## Project Support
+
+The Strategy, Data, and Performance Division and the Technology Services Division review project requests at PBOT. To learn more about this process, you can check out our overview on the [homepage](./index).
 
 #### Data Issue
 
@@ -40,19 +46,25 @@ Support for developing or redesigning business processes including process disco
 
 *If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place.*
 
-<a href="#" class="feedback-button">Submit your request</a>
+<a href="#" class="feedback-button rounded border border-sky-800 bg-white px-4 py-2 font-semibold text-sky-800 hover:bg-sky-800 hover:text-sky-50">Submit your request</a>
+
+</div>
 
 ## General Support
 
-General IT support such as recovering a password, requesting a network account for a new employee or support for an issue with a PBOT application. Hardware issues.
+General IT support such as recovering a password, requesting a network account for a new employee, problems with your computer (or other hardware) or support for an issue with a PBOT application.
 
 [Service Now](https://portland.service-now.com/sp)
+
+<div class="bg-green-500 bg-opacity-50">
 
 ## GIS Support
 
 Get support with GIS related applications and maps, apps, or dashboards created therein.
 
 PBOT GIS Support Email: <pbotgissupport@portlandoregon.gov>
+
+</div>
 
 ## Training Support
 
@@ -64,4 +76,4 @@ PBOT GIS Support Email: <pbotgissupport@portlandoregon.gov>
 
 [QuickHelp (Office365 Trainings)](https://app.quickhelp.com/PortlandOregon/)
 
-Other type of training needed? <a href="#" class="feedback-button">Submit a support request</a>
+Other type of training needed? <a href="#" class="feedback-button rounded border border-sky-800 bg-white px-4 py-2 font-semibold text-sky-800 hover:bg-sky-800 hover:text-sky-50">Submit your request</a>

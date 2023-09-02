@@ -20,11 +20,17 @@ Support Types:
 
 [Submit your support request](./requests)
 
+## Staff That Work with Data, Technology, and Process 
+
+What is the difference between Strategy, Data, and Performance Division (SDP), PBOT Technology Services Division (TSD), and Bureau of Technology Services (BTS)? What is my role in data, process, or technology improvement?
+
+We are working on putting together some clarifying information and to start we have added team descriptions which you can check out [here](./team).
+
 ## Internal Support Request Routing at PBOT
 
 Here is a process overview of how PBOT support requests for data, performance, process, and technology projects are reviewed by the Strategy, Data, and Performance and Technology Services teams
 
-![Here is the alt text](/img/timeline.png 'PBOT Solutions Operations Support requet timeline')
+![A graphic visualization of the internal support request routing process at PBOT. The first stage, submit, is represented by clipart of a page of paper over a green circle. The text beneath it reads "You submit support request." The second stage, review, is represent by clipart of three upper torsos with a shared speech bubble over an orange circle. The text beneath it reads "PBOT Strategy, Data, and Performance (SDP) and Technology Services (TSD) Divisions jointly review request." The third stage, refine, is represented by clipart of a head with a thought bubble over a blue circle. The text beneath it reads "If additional information is required, SDP or TSD will contact you." The final stage, route, is represented by clipart of a file inbox with a check mark over a gray circle. The text beneath it reads "Upon completion of the request evaluation, a decision will be made as to request handling, and additional guidance will be provided to you."](/img/timeline.png 'PBOT Solutions Operations Support requet timeline')
 
 ### Submit
 
@@ -32,7 +38,7 @@ Submit your project, consultation, idea, or enhancement request via the [appropr
 
 ### Review
 
-The [Strategy, Data, and Performance and Technology Services divisions](./team) will review the request, evaluate the effort, and determine next steps for the request.
+The Strategy, Data, and Performance and Technology Services divisions will review the request, evaluate the effort, and determine next steps for the request.
 
 ### Refine
 
@@ -42,7 +48,7 @@ Any additional information needed to be able to evaluate and reroute the request
 
 The next steps are determined for the support request and a member of the Strategy, Data, and Performance or Technology Services division follows up with you to share the feedback of the evaluation, provides resources if applicable, and engage with you on what’s coming up.
 
-NOTE:
+#### Process Notes
 
 - An analyst will follow up with next steps within two to four business weeks.
 
@@ -52,21 +58,33 @@ NOTE:
 
 - If your request involves purchasing of any kind, please evaluate with management what budget exists for this request or if a budget request will be needed.
 
-- Software outside of BTS standards will likely require an exception. This will add time to request processing prior to implementation. (BTS standards - https://www.portland.gov/omf/bts/org-and-principles/standards-and-strategies)
+- Software outside of BTS standards will likely require an exception. This will add time to request processing prior to implementation. ([BTS Standards](https://www.portland.gov/omf/bts/org-and-principles/standards-and-strategies))
 
 ## Dashboards
 
-[Technology Services Project Support Requests – Dashboard](https://ronindashboards-us.herokuapp.com/jira/shared/dashboard?boardToken=VTJGc2RHVmtYMTg2d2J5MW0vV3JwRjRiMXJOMHcyQU40d01RQm4vNDBRbllxMGxsZGlZVVhuVUVBZG11NFNhMTdVL0JwMzVkZ0R5Rk5xb2tXa21xMmFNbk1qYWd0dmxjaVlnWUNIUllHODV2RHpPaUdTdHJmNm8zaHZWTklLc3VPTzIwS1hrTDlNMXpKSElvMFRJaXlmZDdYaFJkOU90ZVI2bGdjTGhYSmJvcjZudGoxL29jczZWUy8zd1Vmc0x1T2p2ZlR3Q2E1cEs3VDd2SHI3UjFHR3RMNkxRNHo2cjcrcWFLK3Q3NUFJR0o2bkh0WnNzd2xJYWoxVEE3TFJ5eQ%3D%3D) = SOS Dashboard (needs to be rebuilt)
+### PBOT Technology Services Dashboard
+
+Coming soon!
 
 ### Data Issues Dashboard
+
+Coming soon!
 
 ### BTS Dashboards
 
 - [BTS Project Kanban](https://portland.ppmpro.com/dashboard/uceNOUMTzRGTOJjhlqcI)
+- [BTS Project Details](https://portland.ppmpro.com/dashboard/NruspJxYYcfervGzBGcD)
 - [COP Current Projects Information Dashboard](https://portland.ppmpro.com/dashboard/GyqElKZbvmUKVicAinLR)
-- [Project Details](https://portland.ppmpro.com/dashboard/NruspJxYYcfervGzBGcD)
 
 ## Quick Links
+
+- [PBOT Strategic Plan](https://employees.portland.gov/pbot/leadership-and-organizational-charts/pbot-strategic-plan)
+
+- [Strategy, Data, and Performance Division Intranet Page](https://employees.portland.gov/pbot/strategy-data-and-performance)
+
+- [Technology Services Division Intranet Page](https://employees.portland.gov/pbot/technology-resources)
+
+- [PBOT Data Services](https://employees.portland.gov/pbot/strategy-data-and-performance/data-services)
 
 - [Bureau of Technology Services Intranet Page](https://employees.portland.gov/technology)
 
@@ -75,11 +93,3 @@ NOTE:
 - [BTS Technology Help or Access Request](https://portland.service-now.com/sp)
 
 - [BTS Technology Catalog](https://employees.portland.gov/technology/catalog)
-
-- [Strategy, Data, and Performance Division Intranet Page](https://employees.portland.gov/pbot/strategy-data-and-performance)
-
-- [PBOT Strategic Plan](https://employees.portland.gov/pbot/leadership-and-organizational-charts/pbot-strategic-plan)
-
-- [PBOT Data Services](https://employees.portland.gov/pbot/strategy-data-and-performance/data-services)
-
-- [Technology Services Division Intranet Page](https://employees.portland.gov/pbot/technology-resources)
