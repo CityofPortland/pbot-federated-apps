@@ -195,8 +195,8 @@ export const typeDefs: DocumentNode = gql`
     _id: ID!
     _created: DateTime!
     _changed: DateTime!
-    _createdBy: ID!
-    _changedBy: ID!
+    _createdBy: ID
+    _changedBy: ID
     _revisions: [SignRevision]
     code: String!
     color: [String]
