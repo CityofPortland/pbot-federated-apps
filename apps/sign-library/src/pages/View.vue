@@ -101,6 +101,9 @@ onBeforeRouteUpdate(async to => {
               )
             }}
           </Field>
+          <Field v-if="sign._createdBy" name="Created by" display="above">
+            {{ sign._createdBy }}
+          </Field>
           <Field v-if="sign._changed" name="Changed" display="above">
             {{
               new Date(Date.parse(sign._changed.toString())).toLocaleString(
@@ -111,6 +114,9 @@ onBeforeRouteUpdate(async to => {
                 }
               )
             }}
+          </Field>
+          <Field v-if="sign._changedBy" name="Changed by" display="above">
+            {{ sign._changedBy }}
           </Field>
           <Field
             v-if="sign._revisions"

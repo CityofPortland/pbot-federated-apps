@@ -228,7 +228,7 @@ const fieldValues = computed(() => {
     .sort((a, b) => (counts.get(b) || 0) - (counts.get(a) || 0))
     .slice(0, 20)
     .map(x => ({
-      id: x,
+      id: x || 'NULL',
       checked: includes.value[field.value]
         ? includes.value[field.value].some(i => i == x)
         : false,
