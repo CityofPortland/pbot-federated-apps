@@ -18,7 +18,7 @@ scripts:
 
 Below you will find support options grouped into four broad categories: project, general, GIS, and training. Further information can be found under each category on the types of requests you might make. If you want to know more about who handles these requests, check out our [team descriptions](./team).
 
-<div class="bg-marine-500 bg-opacity-50">
+<div class="pl-4 border-l-4 border-marine-500" markdown="1">
 
 ## Project Support
 
@@ -44,9 +44,9 @@ Support for designing and refining performance metrics and program evaluation st
 
 Support for developing or redesigning business processes including process discovery, mapping, improvement, and optimization.
 
-*If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place.*
+_If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place._
 
-<a href="#" class="feedback-button rounded border border-sky-800 bg-white px-4 py-2 font-semibold text-sky-800 hover:bg-sky-800 hover:text-sky-50">Submit your request</a>
+<a href="#" class="feedback-button inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
 
 </div>
 
@@ -56,13 +56,13 @@ General IT support such as recovering a password, requesting a network account f
 
 [Service Now](https://portland.service-now.com/sp)
 
-<div class="bg-green-500 bg-opacity-50">
+<div class="border-l-4 border-green-500 pl-4" markdown="1">
 
 ## GIS Support
 
 Get support with GIS related applications and maps, apps, or dashboards created therein.
 
-PBOT GIS Support Email: <pbotgissupport@portlandoregon.gov>
+PBOT GIS Support Email: [pbotgissupport@portlandoregon.gov](mailto:pbotgissupport@portlandoregon.gov)
 
 </div>
 
@@ -76,4 +76,4 @@ PBOT GIS Support Email: <pbotgissupport@portlandoregon.gov>
 
 [QuickHelp (Office365 Trainings)](https://app.quickhelp.com/PortlandOregon/)
 
-Other type of training needed? <a href="#" class="feedback-button rounded border border-sky-800 bg-white px-4 py-2 font-semibold text-sky-800 hover:bg-sky-800 hover:text-sky-50">Submit your request</a>
+Other type of training needed? <a href="#" class="feedback-button inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
