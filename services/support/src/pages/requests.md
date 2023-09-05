@@ -50,11 +50,15 @@ _If you aren’t sure where to start with submitting your request, use the form 
 
 </div>
 
+<div class="pl-4 border-l-4 border-tangerine-500" markdown="1">
+
 ## General Support
 
 General IT support such as recovering a password, requesting a network account for a new employee, problems with your computer (or other hardware) or support for an issue with a PBOT application.
 
 [Service Now](https://portland.service-now.com/sp)
+
+</div>
 
 <div class="border-l-4 border-green-500 pl-4" markdown="1">
 
@@ -65,6 +69,8 @@ Get support with GIS related applications and maps, apps, or dashboards created 
 PBOT GIS Support Email: [pbotgissupport@portlandoregon.gov](mailto:pbotgissupport@portlandoregon.gov)
 
 </div>
+
+<div class="border-l-4 border-red-500 pl-4" markdown="1">
 
 ## Training Support
 
@@ -77,3 +83,5 @@ PBOT GIS Support Email: [pbotgissupport@portlandoregon.gov](mailto:pbotgissuppor
 [QuickHelp (Office365 Trainings)](https://app.quickhelp.com/PortlandOregon/)
 
 Other type of training needed? <a href="#" class="feedback-button inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
+
+</div>

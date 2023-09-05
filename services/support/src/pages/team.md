@@ -36,7 +36,7 @@ Responsibilities:
 
 - GIS support, data maintenance, administration, and consultation
 
-- Systems analysis
+- Technology systems analysis
 
 - Procurement initiation support and consultation
 
@@ -45,8 +45,6 @@ Responsibilities:
 - Technology project management for bureau projects
 
 - Consulting and Reporting
-
-- Link to support catalog: <maybe in PBOT Data Catalog? Maybe export to Intranet>
 
 - PBOT technology policy creation
 
