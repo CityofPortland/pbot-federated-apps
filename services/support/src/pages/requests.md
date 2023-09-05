@@ -16,53 +16,63 @@ scripts:
 
 # Request Submission
 
-## Multiple / Don’t Know
+Below you will find support options grouped into four broad categories: project, general, GIS, and training. Further information can be found under each category on the types of requests you might make. If you want to know more about who handles these requests, check out our [team descriptions](./team).
 
-If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place.
+<div class="pl-4 border-l-4 border-marine-500" markdown="1">
 
-<a href="#" class="feedback-button">Submit a support request</a>
+## Project Support
 
-## Data Issue
+The Strategy, Data, and Performance Division and the Technology Services Division review project requests at PBOT. To learn more about this process, you can check out our overview on the [homepage](./index).
 
-A problem identified with the way data is defined, collected, accessed, managed, or used throughout its lifecycle. Reporting data issues does not require Division Manager or Group Director authorization.
+#### Data Issue
 
-<a href="#" class="feedback-button">Submit a support request</a>
+A problem identified with the way data is defined, collected, accessed, managed, or used throughout its lifecycle. **Reporting data issues does not require Division Manager or Group Director authorization.**
 
-## Existing Technology Enhancement
+#### Existing Technology Enhancement
 
 An enhancement request for existing Technology at PBOT (like Maximo, Amanda, PUDL, eBuilder, or GIS).
 
-<a href="#" class="feedback-button">Submit a support request</a>
-
-## General Support
-
-General IT support such as recovering a password, requesting a network account for a new employee or support for an issue with a PBOT application. Hardware issues.
-
-https://portland.service-now.com/sp
-
-## GIS Support
-
-Service Now? Email? Confirm with Kirk.
-
-## New Technology Request
+#### New Technology Request
 
 An idea for something that you don’t think is covered by our existing applications.
 
-<a href="#" class="feedback-button">Submit a support request</a>
-
-## Performance Support
+#### Performance Support
 
 Support for designing and refining performance metrics and program evaluation strategies.
 
-<a href="#" class="feedback-button">Submit a support request</a>
-
-## Process Support
+#### Process Support
 
 Support for developing or redesigning business processes including process discovery, mapping, improvement, and optimization.
 
-<a href="#" class="feedback-button">Submit a support request</a>
+_If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place._
 
-## Training Needs
+<a href="#" class="feedback-button inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
+
+</div>
+
+<div class="pl-4 border-l-4 border-tangerine-500" markdown="1">
+
+## General Support
+
+General IT support such as recovering a password, requesting a network account for a new employee, problems with your computer (or other hardware) or support for an issue with a PBOT application.
+
+[Service Now](https://portland.service-now.com/sp)
+
+</div>
+
+<div class="border-l-4 border-green-500 pl-4" markdown="1">
+
+## GIS Support
+
+Get support with GIS related applications and maps, apps, or dashboards created therein.
+
+PBOT GIS Support Email: [pbotgissupport@portlandoregon.gov](mailto:pbotgissupport@portlandoregon.gov)
+
+</div>
+
+<div class="border-l-4 border-red-500 pl-4" markdown="1">
+
+## Training Support
 
 [City Learner](https://cityofport.plateau.com/learning)
 
@@ -72,4 +82,6 @@ Support for developing or redesigning business processes including process disco
 
 [QuickHelp (Office365 Trainings)](https://app.quickhelp.com/PortlandOregon/)
 
-Other type of training needed? <a href="#" class="feedback-button">Submit a support request</a>
+Other type of training needed? <a href="#" class="feedback-button inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
+
+</div>
