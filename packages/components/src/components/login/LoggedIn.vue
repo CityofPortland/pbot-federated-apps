@@ -73,37 +73,42 @@ export default defineComponent({
         resolve({ name: 'OAuthCallback' }).href
       );
 
-      const res = await axios.get('https://graph.microsoft.com/v1.0/me/', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const photoRes = await axios.get(
-        'https://graph.microsoft.com/v1.0/me/photos/48x48/$value',
-        {
+      try {
+        const res = await axios.get('https://graph.microsoft.com/v1.0/me/', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          responseType: 'blob',
-        }
-      );
+        });
 
-      user.value = {
-        firstName: res.data.givenName,
-        lastName: res.data.surname,
-        email: res.data.mail,
-        photo: URL.createObjectURL(photoRes.data),
-      };
+        user.value = {
+          firstName: res.data.givenName,
+          lastName: res.data.surname,
+          email: res.data.mail,
+        };
+
+        const photoRes = await axios.get(
+          'https://graph.microsoft.com/v1.0/me/photos/48x48/$value',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: 'blob',
+          }
+        );
+
+        user.value = {
+          ...user.value,
+          photo: URL.createObjectURL(photoRes.data),
+        };
+      } catch {
+        user.value = {
+          ...user.value,
+        };
+      }
     });
 
     return {
       user,
-      photo: computed(() =>
-        user.value && user.value.photo
-          ? URL.createObjectURL(user.value.photo)
-          : undefined
-      ),
       initials: computed(
         () =>
           (user.value?.firstName?.slice(0, 1) || '') +
