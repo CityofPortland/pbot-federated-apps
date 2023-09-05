@@ -101,9 +101,7 @@ export default defineComponent({
           photo: URL.createObjectURL(photoRes.data),
         };
       } catch {
-        user.value = {
-          ...user.value,
-        };
+        return;
       }
     });
 
