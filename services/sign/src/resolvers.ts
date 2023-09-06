@@ -281,6 +281,20 @@ export const resolvers: GraphQLResolverMap<Context> = {
         })
         .then(hit => parseHit(hit));
     },
+    _changedBy(sign: Sign, _args, context) {
+      if (!context.user) {
+        return null;
+      } else {
+        return sign._changedBy;
+      }
+    },
+    _createdBy(sign: Sign, _args, context) {
+      if (!context.user) {
+        return null;
+      } else {
+        return sign._createdBy;
+      }
+    },
     _revisions(sign: Sign, _args, context) {
       if (!context.user) {
         return null;
@@ -293,6 +307,13 @@ export const resolvers: GraphQLResolverMap<Context> = {
         return null;
       } else {
         return sign.comment;
+      }
+    },
+    source(sign: Sign, _args, context) {
+      if (!context.user) {
+        return null;
+      } else {
+        return sign.source;
       }
     },
   },

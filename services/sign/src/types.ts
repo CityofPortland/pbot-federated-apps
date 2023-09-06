@@ -195,13 +195,13 @@ export const typeDefs: DocumentNode = gql`
     _id: ID!
     _created: DateTime!
     _changed: DateTime!
-    _createdBy: ID!
-    _changedBy: ID!
+    _createdBy: ID
+    _changedBy: ID
     _revisions: [SignRevision]
     code: String!
     color: [String]
     comment: String
-    height: Int!
+    height: Int
     image: SignImage
     legend: String!
     mutcdCode: String
@@ -212,7 +212,7 @@ export const typeDefs: DocumentNode = gql`
     source: String
     status: SignStatus
     type: [SignType]
-    width: Int!
+    width: Int
   }
 
   type Rule @key(fields: "_id") {

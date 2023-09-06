@@ -8,7 +8,7 @@ Here you will find overviews for the three groups involved in supporting data, p
 
 If you are looking to sumbmit a support request, [click here](./requests).
 
-If you are looking for general information on the support process, [click here](./index).
+If you are looking for general information on the support process, [click here](..).
 
 ## [Strategy, Data, and Performance (SDP)](https://employees.portland.gov/pbot/strategy-data-and-performance)
 
@@ -36,7 +36,7 @@ Responsibilities:
 
 - GIS support, data maintenance, administration, and consultation
 
-- Systems analysis
+- Technology systems analysis
 
 - Procurement initiation support and consultation
 
@@ -45,8 +45,6 @@ Responsibilities:
 - Technology project management for bureau projects
 
 - Consulting and Reporting
-
-- Link to support catalog: <maybe in PBOT Data Catalog? Maybe export to Intranet>
 
 - PBOT technology policy creation
 
