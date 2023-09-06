@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -b tsconfig.build.json && cp -rT src/pages/ dist/pages/",
+    "build": "tsc -b tsconfig.build.json && node scripts/build.mjs",
     "clean": "rm -rf ./dist",
     "dev": "nodemon"
   },
