@@ -13,17 +13,17 @@ const router = createRouter({
   routes,
 });
 
-router.beforeResolve(() => {
+router.beforeResolve(to => {
   const auth = useLogin();
 
-  if (auth.accessToken) {
+  if (
+    auth.accessToken.value ||
+    authRoutes.map(r => r.name).includes(to.name || 'NONE')
+  ) {
     return true;
   }
 
   return { name: 'Login' };
 });
 
-export default createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
-});
+export default router;
