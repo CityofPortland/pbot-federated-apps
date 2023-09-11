@@ -11,6 +11,7 @@
         color="blue"
         variant="neutral"
         class="flex-initial w-64"
+        :redirect="{ path: '/' }"
       />
     </section>
   </main>

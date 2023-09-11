@@ -53,8 +53,9 @@ export default defineComponent({
       } finally {
         loading.value = false;
 
-        if (route.value) {
-          router.push(route.value);
+        if (route.value && route.value.path) {
+          const { hash, path, query } = route.value;
+          router.push({ hash, path, query });
         } else {
           router.push({ path: '/' });
         }
