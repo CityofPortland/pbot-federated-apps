@@ -9,7 +9,7 @@ type LoginContext = {
   clientId: string;
   msal: PublicClientApplication;
   getToken(scopes?: Array<string>, redirect?: string): Promise<string | void>;
-  route: RemovableRef<RouteLocation>;
+  route: RemovableRef<Partial<RouteLocation>>;
 };
 
 export const authRoutes: Array<RouteRecordRaw> = [

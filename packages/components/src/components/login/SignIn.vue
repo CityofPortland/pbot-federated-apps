@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouteLocationPathRaw, useRouter } from 'vue-router';
 
 import { useLogin } from '../../composables/use-login';
 import Button from '../../elements/button/Button.vue';
@@ -18,7 +18,7 @@ import Button from '../../elements/button/Button.vue';
 export default defineComponent({
   components: { Button },
   props: {
-    redirect: String,
+    redirect: { type: Object as () => RouteLocationPathRaw },
   },
   setup(props) {
     const { getToken, route } = useLogin();
@@ -27,8 +27,12 @@ export default defineComponent({
     return {
       signIn: () => {
         route.value = props.redirect
-          ? resolve({ path: props.redirect })
-          : currentRoute.value;
+          ? { path: props.redirect.path }
+          : {
+              hash: currentRoute.value.hash,
+              path: currentRoute.value.path,
+              query: currentRoute.value.query,
+            };
         getToken(['User.Read'], resolve({ name: 'OAuthCallback' }).href);
       },
     };
