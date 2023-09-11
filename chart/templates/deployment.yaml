@@ -43,6 +43,12 @@ spec:
             - name: http
               containerPort: {{ .Values.containerPort | default 80 }}
               protocol: TCP
+          startupProbe:
+            httpGet:
+              path: {{ .Values.probePath | default "/" }}
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: {{ .Values.probePath | default "/" }}
