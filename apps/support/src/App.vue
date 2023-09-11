@@ -2,19 +2,20 @@
 import { ref } from 'vue';
 
 import {
-  Anchor,
   Footer,
   Header,
   LoggedIn,
   Logo,
   Nav,
-  NavItem,
   SignIn,
   useLogin,
+  authRoutes,
 } from '@pbotapps/components';
+import { useRoute } from 'vue-router';
 
 const menuOpen = ref(false);
 const { accessToken } = useLogin();
+const route = useRoute();
 </script>
 
 <template>
@@ -28,8 +29,13 @@ const { accessToken } = useLogin();
       </template>
       <template #menu>
         <Nav class="mt-3 md:mt-0 md:ml-auto">
-          <SignIn v-if="!accessToken" />
-          <LoggedIn v-else />
+          <SignIn
+            v-if="
+              !accessToken &&
+              !authRoutes.map(r => r.name).includes(route.name || 'NONE')
+            "
+          />
+          <LoggedIn v-if="accessToken" />
         </Nav>
       </template>
     </Header>
