@@ -7,6 +7,7 @@
         color="blue"
         variant="neutral"
         class="flex-initial w-64"
+        :redirect="{ path: '/' }"
       />
     </section>
   </main>
@@ -25,13 +26,12 @@ export default defineComponent({
     const { accessToken, msal, route } = useLogin();
     const router = useRouter();
 
-    route.value = router.resolve({ path: '/' });
+    route.value = { path: '/' };
 
     if (accessToken.value && accessToken.value !== '') {
       accessToken.value = '';
       msal.logoutRedirect({
-        postLogoutRedirectUri: useRouter().resolve({ name: 'OAuthCallback' })
-          .href,
+        postLogoutRedirectUri: router.resolve({ name: 'OAuthCallback' }).href,
       });
     }
   },

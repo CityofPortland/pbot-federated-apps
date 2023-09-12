@@ -11,12 +11,23 @@
         color="blue"
         variant="neutral"
         class="flex-initial w-64"
-        :redirect="{ path: '/' }"
+        :redirect="redirect"
       />
     </section>
   </main>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { RouteLocationPathRaw } from 'vue-router';
 import SignIn from '../components/login/SignIn.vue';
+import { useLogin } from '../composables/use-login';
+
+const { route } = useLogin();
+
+const redirect = ref<RouteLocationPathRaw>({ path: '/' });
+
+if (route.value && route.value.path) {
+  redirect.value = { ...route.value };
+}
 </script>

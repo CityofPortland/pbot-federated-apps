@@ -27,7 +27,7 @@ export default defineComponent({
     return {
       signIn: () => {
         route.value = props.redirect
-          ? { path: props.redirect.path }
+          ? { ...props.redirect }
           : {
               hash: currentRoute.value.hash,
               path: currentRoute.value.path,

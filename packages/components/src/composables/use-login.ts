@@ -1,4 +1,4 @@
-import { RouteRecordRaw, RouteLocation } from 'vue-router';
+import { RouteRecordRaw, RouteLocationPathRaw } from 'vue-router';
 import { Configuration, PublicClientApplication } from '@azure/msal-browser';
 import { assert, RemovableRef, useStorage } from '@vueuse/core';
 
@@ -9,7 +9,7 @@ type LoginContext = {
   clientId: string;
   msal: PublicClientApplication;
   getToken(scopes?: Array<string>, redirect?: string): Promise<string | void>;
-  route: RemovableRef<Partial<RouteLocation>>;
+  route: RemovableRef<RouteLocationPathRaw>;
 };
 
 export const authRoutes: Array<RouteRecordRaw> = [
@@ -50,7 +50,7 @@ const msal = new PublicClientApplication(msalConfig);
 
 export function useLogin(): LoginContext {
   const accessToken = useStorage('pbotapps.auth.accessToken', '');
-  const route = useStorage('pbotapps.auth.route', {} as RouteLocation);
+  const route = useStorage('pbotapps.auth.route', {} as RouteLocationPathRaw);
 
   const getToken = async (
     scopes: Array<string> = [`${clientId}/.default`, 'offline_access'],

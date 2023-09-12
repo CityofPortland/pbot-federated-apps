@@ -23,6 +23,8 @@ router.beforeResolve(to => {
     return true;
   }
 
+  auth.route.value = { hash: to.hash, path: to.path, query: to.query };
+
   return { name: 'Login' };
 });
 
