@@ -6,7 +6,7 @@ title: Team descriptions
 
 Here you will find overviews for the three groups involved in supporting data, process, and technology at PBOT with links to intranet pages for more information!
 
-If you are looking to sumbmit a support request, [click here](./requests).
+If you are looking to submit a support request, [click here](./requests).
 
 If you are looking for general information on the support process, [click here](..).
 
