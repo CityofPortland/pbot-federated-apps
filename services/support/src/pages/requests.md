@@ -18,9 +18,9 @@ scripts:
 
 Below you will find support options grouped into three broad categories: project, GIS, and training. Further information can be found under each category on the types of requests you might make. If you want to know more about who handles these requests, check out our [team descriptions](./team).
 
-<div class="pl-4 pr-4 border-1 border-red-500 rounded-md" markdown="1">
+<div class="px-4 border border-red-500 bg-red-100 rounded-md" markdown="1">
 
-If you need help with a password, email, Microsoft Office, teams, printers, etc. please got to [Service Now](https://portland.service-now.com/sp) and submit your request!
+If you need help with a password, email, Microsoft Office, teams, printers, etc. please use [Service Now](https://portland.service-now.com/sp) to submit your request!
 
 </div>
 
