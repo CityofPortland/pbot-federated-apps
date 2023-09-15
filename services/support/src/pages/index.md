@@ -13,13 +13,13 @@ Support Types:
 - Existing technology enhancement
 - Maps and GIS support
 - New technology request
-- Performance support 
+- Performance support
 - Process support
 - Training needs
 
 [Submit your support request](./requests)
 
-## Staff That Work with Data, Technology, and Process 
+## Staff That Work with Data, Technology, and Process
 
 What is the difference between Strategy, Data, and Performance Division (SDP), PBOT Technology Services Division (TSD), and Bureau of Technology Services (BTS)? What is my role in data, process, or technology improvement?
 
@@ -78,17 +78,10 @@ Coming soon!
 ## Quick Links
 
 - [PBOT Strategic Plan](https://employees.portland.gov/pbot/leadership-and-organizational-charts/pbot-strategic-plan)
-
 - [Strategy, Data, and Performance Division Intranet Page](https://employees.portland.gov/pbot/strategy-data-and-performance)
-
 - [Technology Services Division Intranet Page](https://employees.portland.gov/pbot/technology-resources)
-
 - [PBOT Data Services](https://employees.portland.gov/pbot/strategy-data-and-performance/data-services)
-
 - [Bureau of Technology Services Intranet Page](https://employees.portland.gov/technology)
-
 - [BTS Standards](https://www.portland.gov/omf/bts/org-and-principles/standards-and-strategies)
-
 - [Service Now](https://portland.service-now.com/sp)
-
 - [BTS Technology Catalog](https://employees.portland.gov/technology/catalog)

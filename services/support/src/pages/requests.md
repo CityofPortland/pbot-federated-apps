@@ -28,7 +28,7 @@ If you need help with a password, email, Microsoft Office, teams, printers, etc.
 
 ## Project Support
 
-The PBOT Strategy, Data, and Performance Division and the PBOT Technology Services Division review project requests at PBOT. To learn more about this process, you can check out our overview on the [homepage](./index).
+The PBOT Strategy, Data, and Performance Division and the PBOT Technology Services Division review project requests at PBOT. To learn more about this process, you can check out our overview on the [homepage](..).
 
 _If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place._
 
