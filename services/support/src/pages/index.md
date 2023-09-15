@@ -5,18 +5,17 @@ scripts: []
 
 # Welcome to PBOT Solutions Operations Support
 
-To help streamline requesting help for an issue or project, the Strategy, Data, and Performance and Technology Services Divisions have collaborated to put together a single form for requesting operations support at PBOT. This site is designed to help clarify the types of requests, who works on them, and guide you to the right form to address your support need.
+Use this site to submit your data, process, or technology request to the PBOT Strategy, Data, & Performance and the PBOT Technology Services Divisions. In PBOT, finding the right group to meet a technology-related need can be a little confusing so we’ve put together information on these pages to help you understand the types of requests you can make and who will work on them so you get your ask to the right people.
 
 Support Types:
 
-- Data Issue
-- Existing Technology Enhancement
-- General Support
-- GIS
-- New Technology Request (Request for Proposals)
-- Performance Support (designing, thinking through performance metrics and program evaluation strategies)
-- Process Support (discovery, mapping, improvement, optimization)
-- Training Needs
+- Data issue
+- Existing technology enhancement
+- Maps and GIS support
+- New technology request
+- Performance support 
+- Process support
+- Training needs
 
 [Submit your support request](./requests)
 
@@ -24,7 +23,7 @@ Support Types:
 
 What is the difference between Strategy, Data, and Performance Division (SDP), PBOT Technology Services Division (TSD), and Bureau of Technology Services (BTS)? What is my role in data, process, or technology improvement?
 
-We are working on putting together some clarifying information and to start we have added team descriptions which you can check out [here](./team).
+We are working on putting together some clarifying information and to start we have added [team descriptions](./team). If you have suggestions on helpful information to include or questions you would like to see answered, submit a project support request [here](./requests)!
 
 ## Internal Support Request Routing at PBOT
 
@@ -34,7 +33,7 @@ Here is a process overview of how PBOT support requests for data, performance, p
 
 ### Submit
 
-Submit your project, consultation, idea, or enhancement request via the [appropriate form](./requests).
+Submit your project, consultation, idea, or enhancement request. [Submit your request](./requests)
 
 ### Review
 
@@ -90,6 +89,6 @@ Coming soon!
 
 - [BTS Standards](https://www.portland.gov/omf/bts/org-and-principles/standards-and-strategies)
 
-- [BTS Technology Help or Access Request](https://portland.service-now.com/sp)
+- [Service Now](https://portland.service-now.com/sp)
 
 - [BTS Technology Catalog](https://employees.portland.gov/technology/catalog)
