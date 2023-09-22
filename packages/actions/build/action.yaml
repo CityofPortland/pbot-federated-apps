@@ -7,6 +7,10 @@ inputs:
   directory:
     description: 'Which app to build'
     required: true
+  environment:
+    description: 'What environment this build should target'
+    required: true
+    default: production
   artifact-name:
     description: What name to give your artifact
     required: false
@@ -38,7 +42,8 @@ runs:
         docker buildx \
         build \
         --file ${{ inputs.dockerfile }} \
-        --build-arg WORKDIR=${{ inputs.directory }} \
+        --build-arg="WORKDIR=${{ inputs.directory }}" \
+        --build-arg="MODE=${{ inputs.environment }}"
         --tag ${{ github.sha }} \
         --output type=docker,dest=${{ github.sha }}.tar \
         .

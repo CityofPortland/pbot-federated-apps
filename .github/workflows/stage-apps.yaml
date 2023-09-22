@@ -46,6 +46,7 @@ jobs:
         with:
           input: |
             packages/components/.env.local:
+              - NODE_ENV=staging
               - VITE_AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}
               - VITE_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
       - uses: ./packages/actions/file-writer
@@ -59,6 +60,7 @@ jobs:
           dockerfile: ./.docker/apps/Dockerfile
           artifact-name: ${{ matrix.app }}-image
           directory: ${{ matrix.directory }}
+          environment: staging
       - name: Push
         uses: ./packages/actions/push
         with:

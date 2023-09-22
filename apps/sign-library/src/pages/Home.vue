@@ -21,7 +21,7 @@ import {
 import MissingImage from '../components/MissingImage.vue';
 import Status from '../components/Status.vue';
 import { useStore } from '../store';
-import { SHAPES, STATUSES, TYPES } from '../types';
+import { SHAPES, STATUSES, Sign, TYPES } from '../types';
 
 const route = useRoute();
 const router = useRouter();
@@ -106,28 +106,54 @@ const signs = computed(() => {
     );
   }
 
+  results = results.sort((a, b) =>
+    a[sort.value]
+      ? b[sort.value]
+        ? (a[sort.value] || 0) < (b[sort.value] || 0)
+          ? sortOrder.value == 'desc'
+            ? 1
+            : -1
+          : sortOrder.value == 'asc'
+          ? 1
+          : -1
+        : 0
+      : 0
+  );
+
   return results;
 });
 
-const pageIndex = ref(0);
-const PAGE_SIZE = 10;
-
-const pageLength = computed(() => [
-  ...Array(Math.floor(signs.value.length / PAGE_SIZE + 1)).keys(),
-]);
-
-const page = computed(() =>
-  signs.value.slice(
-    pageIndex.value * PAGE_SIZE,
-    (pageIndex.value + 1) * PAGE_SIZE
-  )
+const pageIndex = computed(
+  () => Number.parseInt(route.query.page as string) - 1
 );
 
-watchEffect(() => {
-  if (pageLength.value.length < pageIndex.value) {
-    pageIndex.value = pageLength.value.length - 1;
-  }
+const pageSize = computed(
+  () => Number.parseInt(route.query.pageSize as string) || 0
+);
+
+const pageLength = computed(() => [
+  ...Array(Math.floor(signs.value.length / pageSize.value + 1)).keys(),
+]);
+
+const page = computed(() => {
+  let s = signs.value.slice(
+    pageIndex.value * pageSize.value,
+    (pageIndex.value + 1) * pageSize.value
+  );
+
+  return s;
 });
+
+const sort = computed<keyof Sign>(() => route.query.sort as keyof Sign);
+
+const sortOrder = computed<'asc' | 'desc'>(
+  () => route.query.sortOrder as 'asc' | 'desc'
+);
+// watchEffect(() => {
+//   if (pageLength.value.length < pageIndex.value) {
+//     pageIndex.value = pageLength.value.length - 1;
+//   }
+// });
 
 const colors = computed(() => {
   const [unique, counts] = signs.value.reduce(
@@ -214,7 +240,7 @@ const property = (key: string, object: Record<string, any>) =>
   (object[key] || '').toString();
 
 const fieldValues = computed(() => {
-  if (!field.value) return undefined;
+  if (!field.value || field.value == 'none') return undefined;
 
   const counts = signs.value.reduce((acc, curr) => {
     acc.set(
@@ -269,7 +295,7 @@ const fieldValues = computed(() => {
     </header>
     <main class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
       <aside>
-        <form class="grid grid-cols-1 gap-4">
+        <form class="grid grid-cols-1 gap-4" @submit.prevent="">
           <Input
             id="query"
             type="search"
@@ -288,7 +314,6 @@ const fieldValues = computed(() => {
               <Select
                 :id="id"
                 :name="id"
-                placeholder="Select one"
                 v-model="field"
                 @changed="
                   field = $event;
@@ -296,11 +321,19 @@ const fieldValues = computed(() => {
                 "
                 class="px-2 py-1"
               >
+                <option value="none">none</option>
                 <option
                   v-for="key in Object.keys(signs[0])
                     .filter(key => !key.startsWith('_'))
                     .filter(
-                      key => !['color', 'shape', 'status', 'type'].includes(key)
+                      key =>
+                        ![
+                          'color',
+                          'comment',
+                          'shape',
+                          'status',
+                          'type',
+                        ].includes(key)
                     )"
                   :key="key"
                   :value="key"
@@ -351,9 +384,54 @@ const fieldValues = computed(() => {
           Loading signs..
         </Message>
         <div v-else class="grid grid-cols-1 gap-4">
-          <p class="mb-4">
-            Showing {{ pageIndex * PAGE_SIZE + 1 }} -
-            {{ Math.min((pageIndex + 1) * PAGE_SIZE, signs.length) }} of
+          <div class="flex flex-wrap gap-4">
+            <Entry id="pageSize" label="Page size" v-slot="{ id }">
+              <Select
+                :id="id"
+                :name="id"
+                @changed="changeQuery({ pageSize: $event })"
+                class="px-2 py-1"
+              >
+                <option :value="10" :selected="pageSize == 10">10</option>
+                <option :value="20" :selected="pageSize == 20">20</option>
+                <option :value="50" :selected="pageSize == 50">50</option>
+              </Select>
+            </Entry>
+            <Entry id="sort" label="Sort by" v-slot="{ id }">
+              <Select
+                :id="id"
+                :name="id"
+                @changed="changeQuery({ sort: $event })"
+                class="px-2 py-1"
+              >
+                <option value="_id" :selected="sort == '_id'">code</option>
+                <option value="_changed" :selected="sort == '_changed'">
+                  date changed
+                </option>
+                <option value="_created" :selected="sort == '_created'">
+                  date created
+                </option>
+              </Select>
+            </Entry>
+            <Entry id="sortOrder" label="Sort order" v-slot="{ id }">
+              <Select
+                :id="id"
+                :name="id"
+                @changed="changeQuery({ sortOrder: $event })"
+                class="px-2 py-1"
+              >
+                <option value="asc" :selected="sortOrder == 'asc'">
+                  ascending
+                </option>
+                <option value="desc" :selected="sortOrder == 'desc'">
+                  descending
+                </option>
+              </Select>
+            </Entry>
+          </div>
+          <p class="text-center">
+            Showing {{ pageIndex * pageSize + 1 }} -
+            {{ Math.min((pageIndex + 1) * pageSize, signs.length) }} of
             {{ signs.length }} signs
           </p>
           <ul class="list-none flex flex-col gap-4">
@@ -364,7 +442,12 @@ const fieldValues = computed(() => {
                     v-if="!sign.image || !sign.image.thumbnail"
                     class="w-32 h-32"
                   />
-                  <img v-else :src="sign.image.thumbnail" />
+                  <img
+                    async
+                    loading="lazy"
+                    v-else
+                    :src="sign.image.thumbnail"
+                  />
                 </figure>
                 <main class="flex-1 space-y-4">
                   <header class="inline-flex items-center gap-4">
@@ -400,9 +483,10 @@ const fieldValues = computed(() => {
             </li>
           </ul>
           <Pager
+            v-if="pageLength"
             :value="pageIndex"
             :list="pageLength"
-            @select="pageIndex = $event.index"
+            @select="changeQuery({ page: $event.index + 1 })"
             class="justify-self-center"
           />
         </div>

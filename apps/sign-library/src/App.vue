@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import {
-  Anchor,
+  Box,
   Footer,
   Header,
   LoggedIn,
   Logo,
   Nav,
-  NavItem,
   SignIn,
   useLogin,
 } from '@pbotapps/components';
@@ -22,6 +21,10 @@ const store = useStore();
 
 store.getSigns();
 store.refreshRules();
+
+watch(accessToken, () => store.refreshRules());
+
+const dev = computed(() => import.meta.env.MODE != 'production');
 </script>
 
 <template>
@@ -40,6 +43,14 @@ store.refreshRules();
         </Nav>
       </template>
     </Header>
+    <section role="notifications">
+      <Box
+        v-if="dev"
+        color="orange"
+        class="p-4 text-center text-xl font-semibold uppercase"
+        >Development version</Box
+      >
+    </section>
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 my-4">
       <router-view />
     </main>

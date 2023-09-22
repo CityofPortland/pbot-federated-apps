@@ -7,13 +7,34 @@ import Revisions from '../pages/Revisions.vue';
 import View from '../pages/View.vue';
 
 const routes: RouteRecordRaw[] = [
-  { path: '/', redirect: '/search' },
+  {
+    path: '/',
+    redirect: () => ({
+      path: '/search',
+      query: {
+        status: 'in_use',
+        pageSize: 10,
+        page: 1,
+        sort: '_changed',
+        sortOrder: 'asc',
+      },
+    }),
+  },
   {
     path: '/search',
     component: Home,
     beforeEnter(to) {
-      if (!to.query.status) {
-        return { ...to, query: { status: to.query.status || 'in_use' } };
+      if (!to.query) {
+        return {
+          ...to,
+          query: {
+            status: 'in_use',
+            pageSize: 10,
+            page: 1,
+            sort: '_changed',
+            sortOrder: 'asc',
+          },
+        };
       }
     },
   },
