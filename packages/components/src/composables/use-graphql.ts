@@ -10,6 +10,7 @@ export type GraphQLOptions = {
   operation: string;
   headers?: AxiosRequestHeaders;
   variables?: Record<string, unknown>;
+  cache?: boolean;
 };
 
 export type GraphQLResponse<T> = {
@@ -34,7 +35,7 @@ export async function query<T>(
 
   const hash = sha256(operation).toString();
 
-  if (cache.has(hash)) {
+  if (options.cache && cache.has(hash)) {
     return cache.get(hash) as GraphQLResponse<T>;
   }
 
@@ -56,7 +57,9 @@ export async function query<T>(
     }
   );
 
-  cache.set(hash, res.data);
+  if (options.cache) {
+    cache.set(hash, res.data);
+  }
 
   return res.data;
 }
