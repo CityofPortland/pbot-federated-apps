@@ -67,6 +67,8 @@ const dbCallbacks: OpenDBCallbacks<unknown> = {
   },
 };
 
+const getDb = () => openDB('sign-library', 1, dbCallbacks);
+
 export const useStore = defineStore('sign-library', {
   state: () => ({
     data: {
@@ -202,7 +204,7 @@ export const useStore = defineStore('sign-library', {
           })
           .then(data => data?.editSign);
 
-        res &&
+        if (res) {
           this.data.signs.splice(
             this.data.signs.findIndex(s => s.code == code),
             1,
@@ -210,6 +212,9 @@ export const useStore = defineStore('sign-library', {
               ...res,
             }
           );
+          const db = await getDb();
+          db.put('signs', { ...res });
+        }
       }
 
       return res;
@@ -250,7 +255,7 @@ export const useStore = defineStore('sign-library', {
       if (res && res.length) {
         const signs = res || [];
 
-        const db = await openDB('sign-library', 1, dbCallbacks);
+        const db = await getDb();
 
         signs.forEach(s => {
           db.put('sign', JSON.parse(JSON.stringify(s)));
@@ -262,7 +267,7 @@ export const useStore = defineStore('sign-library', {
       return undefined;
     },
     async getSigns() {
-      const db = await openDB('sign-library', 1, dbCallbacks);
+      const db = await getDb();
 
       const signs = await db.getAll('sign');
 
@@ -312,7 +317,7 @@ export const useStore = defineStore('sign-library', {
       if (res && res.length) {
         this.data.signs = res || [];
 
-        const db = await openDB('sign-library', 1, dbCallbacks);
+        const db = await getDb();
 
         await db.clear('sign');
 
