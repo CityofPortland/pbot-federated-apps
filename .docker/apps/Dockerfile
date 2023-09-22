@@ -1,5 +1,6 @@
 FROM node:18 as builder
 
+ARG MODE=production
 ARG WORKDIR
 
 COPY .docker/apps/rootfs /
@@ -14,7 +15,8 @@ RUN npm install -g pnpm &&\
 WORKDIR /home/node/${WORKDIR}
 
 RUN pnpm --filter "{.}..." install && \
-    pnpm --filter "{.}..." build
+    pnpm --filter "{.}^..." build && \
+    pnpm build --mode ${MODE}
 
 FROM nginx
 

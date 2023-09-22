@@ -170,7 +170,7 @@ jobs:
                       name: '{{ include "chart.fullname" . }}'
                       key: AZURE_CLIENT_SECRET
                 - name: AZURE_STORAGE_ACCOUNT
-                  value: pbotapps
+                  value: pbotappsstorage2
                 - name: ELASTICSEARCH_HOST
                   value: https://pbotapps-es-http:9200
                 - name: ELASTICSEARCH_PASSWORD
