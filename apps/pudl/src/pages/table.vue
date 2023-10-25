@@ -9,15 +9,23 @@ const { params } = useRoute();
 const ruleStore = useRuleStore();
 const store = useStore();
 
-const table = computed(() => store.tables(params.zone as string, params.schema as string)?.find(t => t.name == params.table))
+const table = computed(() =>
+  store
+    .tables(params.zone as string, params.schema as string)
+    ?.find(t => t.name == params.table)
+);
 
-const columns = computed(() => [...table.value?.columns!].sort((a, b) => a.index - b.index));
+const columns = computed(() =>
+  [...table.value?.columns!].sort((a, b) => a.index - b.index)
+);
 
-const rules = computed(() => ruleStore.rules({
-  zone: params.zone as string,
-  schema: params.schema as string,
-  table: params.table as string
-}));
+const rules = computed(() =>
+  ruleStore.rules({
+    zone: params.zone as string,
+    schema: params.schema as string,
+    table: params.table as string,
+  })
+);
 </script>
 
 <template>
@@ -35,7 +43,7 @@ const rules = computed(() => ruleStore.rules({
             <li
               v-for="column in columns"
               :key="column.name"
-              class="grid grid-cols-2 items-start gap-2 hover:bg-gray-100"
+              class="grid grid-cols-2 items-start gap-2 py-1 hover:bg-gray-100"
             >
               <span class="break-all">
                 {{ column.name }}
