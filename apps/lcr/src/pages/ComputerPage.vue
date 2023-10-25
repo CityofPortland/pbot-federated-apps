@@ -7,7 +7,7 @@ import CollapsablePanel from '../components/CollapsablePanel/CollapsablePanel.vu
 import ReplacementStatus from '../components/replacementStatus/ReplacementStatus.vue';
 import computerTypeIcon from '../components/icons/computerTypeIcon.vue';
 import { CopActiveComputer } from './../types/pagedCopActiveComputers';
-
+import ReplacementSharedDevice from '../components/replacementSharedDevice/ReplacementSharedDevice.vue';
 const store = useLcrStore();
 const router = useRouter();
 
@@ -108,16 +108,77 @@ async function saveNotes() {
               </div>
               <div>
                 <label
-                  for="primaryUser"
+                  for="btsPrimaryUser"
                   class="block text-sm font-semibold text-gray-800"
-                  >Primary User
+                  >BTS Primary User
 
                   <input
                     disabled="true"
                     name="primaryUser"
                     type="text"
                     :value="activeComputer.primaryUser"
-                    placeholder="Primary User"
+                    placeholder="BTS Primary User"
+                    class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                /></label>
+              </div>
+              <div>
+                <label
+                  for="pbotPrimaryUser"
+                  class="block text-sm font-semibold text-gray-800"
+                  >PBOT Primary User
+
+                  <input
+                    disabled="true"
+                    name="pbotPrimaryUser"
+                    type="text"
+                    :value="activeComputer.primaryUser"
+                    placeholder="PBOT Primary User"
+                    class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                /></label>
+              </div>
+            </div>
+
+            <div class="grid mt-6 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
+                <label
+                  for="serviceTagNo"
+                  class="block text-sm font-semibold text-gray-800"
+                  >Service Tag Number
+                  <input
+                    disabled="true"
+                    name="serviceTagNo"
+                    type="text"
+                    placeholder="Service Tag Number"
+                    :value="activeComputer.serviceTagNumber"
+                    class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                /></label>
+              </div>
+              <div>
+                <label
+                  for="serviceNowTicketNumber"
+                  class="block text-sm font-semibold text-gray-800"
+                  >ServiceNow Ticket Number
+                  <input
+                    disabled="true"
+                    name="serviceNowTicketNumber"
+                    type="text"
+                    placeholder="ServiceNow Ticket Number"
+                    :value="activeComputer.serviceNowTicketNumber"
+                    class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
+                /></label>
+              </div>
+              <div>
+                <label
+                  for="replacementQtr"
+                  class="block text-sm font-semibold text-gray-800"
+                  >Replacement Quarter
+
+                  <input
+                    disabled="true"
+                    name="replacementQtr"
+                    type="datetime"
+                    placeholder="ReplacementQuarter"
+                    :value="activeComputer.replacementQuarter?.substring(0, 10)"
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
               </div>
@@ -135,6 +196,27 @@ async function saveNotes() {
                     :value="activeComputer.lastCommunication?.substring(0, 10)"
                     class="w-full mt-2 px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
                 /></label>
+              </div>
+            </div>
+
+            <div class="grid mt-6 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
+                <label
+                  for="replacementSharedDevice"
+                  class="block text-sm font-semibold text-gray-800"
+                  >Shared Device
+                  <div class="mt-2">
+                    <ReplacementSharedDevice
+                      :computerName="activeComputer.computerName"
+                      :computerShared="activeComputer.sharedDevice"
+                      @update:computerShared="
+                        if (activeComputer) {
+                          activeComputer.sharedDevice = $event;
+                        }
+                      "
+                    ></ReplacementSharedDevice>
+                  </div>
+                </label>
               </div>
             </div>
 
@@ -260,7 +342,7 @@ async function saveNotes() {
                     <div>
                       <label
                         class="relative block text-sm font-semibold text-gray-800"
-                        >Primary Username
+                        >BTS Primary Username
 
                         <IconUserCircle
                           :size="30"
