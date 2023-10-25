@@ -19,6 +19,7 @@ export type PagedCopActiveComputer = {
   replacementStatus: string;
   costCenter?: string;
   deploymentDate: string;
+  pbotPrimaryUser: string;
   primaryUser: string;
   primaryUserName: string;
   lastLogonUser: string;
@@ -36,6 +37,9 @@ export type PagedCopActiveComputer = {
   replacementQuarter: string;
   pbotDivision: string;
   pbotGroup: string;
+  serviceNowTicketNumber: string;
+  sharedDevice: string;
+  serviceTagNumber: string;
   copActiveComputersHistory?: CopActiveComputersHistory[];
 };
 
@@ -55,6 +59,7 @@ export type CopActiveComputer = {
   replacementStatus: string;
   costCenter: string;
   deploymentDate: string;
+  pbotPrimaryUser: string;
   primaryUser: string;
   primaryUserName: string;
   lastLogonUser: string;
@@ -69,14 +74,20 @@ export type CopActiveComputer = {
   cpuSpeed: string;
   totalPhysicalMemory: string;
   workstationNotes?: string;
+  replacementQuarter: string;
+  serviceNowTicketNumber: string;
+  sharedDevice: string;
+  serviceTagNumber: string;
   copActiveComputersHistory?: CopActiveComputersHistory[];
 };
 
 export type ActiveComputersSearchFilter = {
   computerName?: string;
+  pbotPrimaryUser: string;
   primaryUser?: string;
   primaryUserName?: string;
   lastLogonUser?: string;
   pbotGroup?: string;
   replacementQuarter?: string;
+  serviceNowTicketNumber?: string;
 };

@@ -281,19 +281,27 @@ export const useLcrStore = defineStore('lcr', {
       return emptyArr;
     },
     getDomainValues(domainName: string): string[] {
-      if (domainName == 'wsReplacementStatus') {
-        return [
-          'Current',
-          'Due',
-          'In Progress',
-          'Ordered',
-          'Delivered',
-          'Break Fix',
-          'Retired',
-        ];
+      switch (domainName) {
+        case 'wsReplacementStatus':
+          return [
+            'Current',
+            'Due',
+            'In Progress',
+            'Ordered',
+            'Delivered',
+            'Break Fix',
+            'Retired',
+          ];
+        case 'sharedDeviceOptions':
+          return [
+            'Assigned to User',
+            'Shared Device',
+            'Conference Room',
+            'Other (See Notes)',
+          ];
+        default:
+          return [''];
       }
-
-      return [''];
     },
     async updateNoteField(
       computerName: string,
@@ -339,7 +347,31 @@ export const useLcrStore = defineStore('lcr', {
 
         return response;
       } catch (error) {
-        console.log('Error while fetching Maximo users: ', error);
+        console.log('Error while updating computer status: ', error);
+      }
+      return 500;
+    },
+    async updateSharedDevice(
+      computerName: string,
+      newShared: string
+    ): Promise<number> {
+      const url = new URL(
+        import.meta.env.VITE_BASE_URL + `/updateSharedDevice/${computerName}`
+      );
+
+      try {
+        const params = new URLSearchParams();
+        params.append('newShared', newShared);
+
+        const response = await axios
+          .post(url.toString(), params)
+          .then(response => {
+            return response.status;
+          });
+
+        return response;
+      } catch (error) {
+        console.log('Error while updating computer shared device : ', error);
       }
       return 500;
     },
