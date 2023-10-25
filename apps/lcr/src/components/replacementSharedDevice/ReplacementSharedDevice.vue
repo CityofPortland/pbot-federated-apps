@@ -11,9 +11,7 @@ const errorWhileSaving = ref(false);
 
 async function updateSharedDevice(event: Event) {
   let updatedShared = (event.target as HTMLSelectElement).value;
-  console.log(
-    `setting ${props.computerShared} shared device to ${updatedShared}`
-  );
+  //console.log(`setting ${props.computerShared} shared device to ${updatedShared}`);
   savingSharedDevice.value = true;
   errorWhileSaving.value = false;
 
@@ -54,6 +52,7 @@ const emit = defineEmits<{
       @change="updateSharedDevice"
       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg inline-block p-2.5"
     >
+      <option key="" value=""></option>
       <option
         v-for="shared in lcr.getDomainValues('sharedDeviceOptions')"
         :key="shared"

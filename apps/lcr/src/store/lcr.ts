@@ -281,25 +281,27 @@ export const useLcrStore = defineStore('lcr', {
       return emptyArr;
     },
     getDomainValues(domainName: string): string[] {
-      if (domainName == 'wsReplacementStatus') {
-        return [
-          'Current',
-          'Due',
-          'In Progress',
-          'Ordered',
-          'Delivered',
-          'Break Fix',
-          'Retired',
-        ];
-      } else if (domainName == 'sharedDeviceOptions') {
-        return [
-          'Assigned to User',
-          'Shared Device',
-          'Conference Room',
-          'Other (See Notes)',
-        ];
+      switch (domainName) {
+        case 'wsReplacementStatus':
+          return [
+            'Current',
+            'Due',
+            'In Progress',
+            'Ordered',
+            'Delivered',
+            'Break Fix',
+            'Retired',
+          ];
+        case 'sharedDeviceOptions':
+          return [
+            'Assigned to User',
+            'Shared Device',
+            'Conference Room',
+            'Other (See Notes)',
+          ];
+        default:
+          return [''];
       }
-      return [''];
     },
     async updateNoteField(
       computerName: string,
