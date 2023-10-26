@@ -8,7 +8,14 @@ const { getToken } = useLogin();
 const route = useRoute();
 const router = useRouter();
 
+type Heading = {
+  id: string;
+  text: string;
+  ref: HTMLElement;
+};
+
 const content = ref('');
+const headings = ref<Array<Heading>>([]);
 const pageElement = ref<HTMLElement>();
 const scripts = ref(new Array<{ body?: string; src?: string }>());
 
@@ -56,9 +63,7 @@ async function getPage(tree: string | Array<string>) {
       scripts.value = res.data.page.scripts;
     }
 
-    const converter = new showdown.Converter({
-      noHeaderId: true,
-    });
+    const converter = new showdown.Converter({});
 
     content.value = converter.makeHtml(res.data.page.content);
   } catch (err) {
@@ -69,7 +74,8 @@ async function getPage(tree: string | Array<string>) {
 onMounted(() => {
   getPage(route.params.tree);
 
-  const re = new RegExp('^(?:[a-z+]+:)?//', 'i');
+  const websiteRegex = new RegExp('^(?:[a-z]+:)?//', 'i');
+  const emailRegex = new RegExp('^mailto:', 'i');
 
   if (pageElement.value) {
     pageElement.value.onclick = event => {
@@ -80,7 +86,10 @@ onMounted(() => {
           const href = target.attributes.getNamedItem('href');
 
           if (href) {
-            if (!re.test(href.value)) {
+            if (
+              !websiteRegex.test(href.value) &&
+              !emailRegex.test(href.value)
+            ) {
               event.preventDefault();
               router.push({
                 path: href.value,
@@ -91,22 +100,37 @@ onMounted(() => {
       }
     };
 
-    const mo = new MutationObserver(function(mutations){
-        mutations.forEach(function(mutation){
-          pageElement.value?.querySelectorAll('img').forEach((el) => {
-            const src = el.attributes.getNamedItem('src');
-            if (src) {
-              if (!re.test(src.value) && !src.value.startsWith(import.meta.env.BASE_URL)) {
-                src.value = `${import.meta.env.BASE_URL}${src.value}`.replaceAll('//', '/');
-              }
+    const mo = new MutationObserver(function (mutations) {
+      mutations.forEach(function () {
+        pageElement.value?.querySelectorAll('img').forEach(el => {
+          const src = el.attributes.getNamedItem('src');
+          if (src) {
+            if (
+              !websiteRegex.test(src.value) &&
+              !src.value.startsWith(import.meta.env.BASE_URL)
+            ) {
+              src.value = `${import.meta.env.BASE_URL}${src.value}`.replaceAll(
+                '//',
+                '/'
+              );
             }
-          })
+          }
         });
+
+        headings.value = [];
+
+        pageElement.value?.querySelectorAll('h2').forEach(h2 => {
+          const id = h2.attributes.getNamedItem('id')?.value;
+
+          if (id) {
+            headings.value.push({ id, text: h2.innerText, ref: h2 });
+          }
+        });
+      });
     });
 
     mo.observe(pageElement.value, { childList: true, subtree: true });
   }
-
 });
 
 onBeforeRouteUpdate(to => {
@@ -116,9 +140,31 @@ onBeforeRouteUpdate(to => {
 </script>
 
 <template>
-  <article class="mb-12" ref="pageElement">
+  <article
+    class="mb-12 flex flex-col md:flex-row gap-4 relative"
+    ref="pageElement"
+  >
     <main v-if="content" v-html="content" class="prose"></main>
     <main v-else>Loading...</main>
+    <aside v-if="content && headings" class="relative hidden md:block">
+      <nav class="md:sticky top-8 flex flex-col gap-4 z-10">
+        <header>
+          <h2 class="font-bold">On this page</h2>
+        </header>
+        <ul role="navigation" class="pl-4 flex flex-col gap-2">
+          <li v-for="heading in headings" :key="heading.id">
+            <a
+              :href="`#${heading.id}`"
+              class="border-b-2 border-current font-semibold"
+              @click.prevent="
+                heading.ref.scrollIntoView({ behavior: 'smooth' })
+              "
+              >{{ heading.text }}</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </aside>
   </article>
   <Teleport to="head" v-for="(script, idx) in scripts" :key="idx">
     <component :is="'script'" type="text/javascript" :src="script.src">{{
@@ -128,6 +174,9 @@ onBeforeRouteUpdate(to => {
 </template>
 
 <style>
+main.prose {
+  @apply text-current;
+}
 main.prose a {
   @apply no-underline border-b-2 border-current font-bold;
 }
