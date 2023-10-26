@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "dependencies": {
-    "@actions/core": "^1.10.0",
+    "@actions/core": "^1.10.1",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21"
   },
@@ -31,9 +31,9 @@
     "@rollup/plugin-multi-entry": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.5.0",
-    "@types/js-yaml": "^4.0.5",
-    "@types/lodash": "^4.14.197",
-    "@types/node": "^18.17.8",
+    "@types/js-yaml": "^4.0.8",
+    "@types/lodash": "^4.14.200",
+    "@types/node": "^18.18.7",
     "@vercel/ncc": "^0.34.0",
     "bytes": "^3.1.2",
     "glob": "^8.1.0",
