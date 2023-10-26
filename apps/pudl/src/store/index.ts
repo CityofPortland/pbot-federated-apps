@@ -74,7 +74,22 @@ export const useStore = defineStore('pudl', {
         });
 
         if (res.data) {
-          this.data.zones = res.data.zones;
+          const sort = (a: Zone | Schema | Table, b: Zone | Schema | Table) =>
+            a.name.localeCompare(b.name);
+
+          this.data.zones = res.data.zones.map(z => {
+            return {
+              ...z,
+              schemas: z.schemas
+                .map(s => {
+                  return {
+                    ...s,
+                    tables: s.tables.sort(sort),
+                  };
+                })
+                .sort(sort),
+            };
+          });
         }
       } catch (err) {
         this.errors.push(err);

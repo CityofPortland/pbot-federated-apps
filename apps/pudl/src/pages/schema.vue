@@ -12,14 +12,17 @@ const { params, path } = useRoute();
 const store = useStore();
 const ruleStore = useRuleStore();
 
-const schema = computed(() => store.schemas(params.zone as string)?.find(s => s.name == params.schema))
+const schema = computed(() =>
+  store.schemas(params.zone as string)?.find(s => s.name == params.schema)
+);
 
-
-const rules = computed(() => ruleStore.rules({
-            zone: params.zone as string,
-            schema: params.schema as string,
-            table: params.table as string,
-          }));
+const rules = computed(() =>
+  ruleStore.rules({
+    zone: params.zone as string,
+    schema: params.schema as string,
+    table: params.table as string,
+  })
+);
 </script>
 
 <template>
@@ -37,7 +40,7 @@ const rules = computed(() => ruleStore.rules({
           <li
             v-for="(table, index) in schema.tables"
             :key="index"
-            class="grid grid-cols-2 items-start gap-2 hover:bg-gray-100"
+            class="grid grid-cols-2 items-start gap-2 py-1 hover:bg-gray-100"
           >
             <span class="break-all">
               <router-link

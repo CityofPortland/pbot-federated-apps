@@ -19,7 +19,7 @@ const store = useStore();
         <li
           v-for="(zone, index) in store.zones"
           :key="index"
-          class="grid grid-cols-2 items-start gap-2 hover:bg-gray-100"
+          class="grid grid-cols-2 items-start gap-2 py-1 hover:bg-gray-100"
         >
           <router-link
             :to="`${path}/${zone.name}`"
