@@ -43,7 +43,7 @@ import { defineComponent, onMounted, ref, toRefs, watch } from 'vue';
 
 import { debounce } from 'lodash';
 
-import { whenTrue } from '@arcgis/core/core/watchUtils';
+import { when } from '@arcgis/core/core/reactiveUtils';
 import Extent from '@arcgis/core/geometry/Extent';
 import EsriMap from '@arcgis/core/Map';
 import Legend from '@arcgis/core/widgets/Legend';
@@ -145,11 +145,16 @@ export default defineComponent({
         }, 500)
       );
 
-      whenTrue(view, 'stationary', () => {
-        if (view.zoom) {
-          emit('zoom-change', view.zoom);
+      when(
+        () => {
+          view.stationary;
+        },
+        () => {
+          if (view.zoom) {
+            emit('zoom-change', view.zoom);
+          }
         }
-      });
+      );
 
       view.on('click', event => {
         emit('click', event);
