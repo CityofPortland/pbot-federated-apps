@@ -21,9 +21,11 @@ createServer({
 
           if (
             [
+              'Joel.Hudson@portlandoregon.gov',
               'Michael.McDonald@portlandoregon.gov',
               'Matthew.Machado@portlandoregon.gov',
               'Peter.Wojcicki@portlandoregon.gov',
+              'Sabrina.Kao@portlandoregon.gov',
             ].includes(user._id)
           ) {
             rules.push(
