@@ -141,13 +141,13 @@ onBeforeRouteUpdate(to => {
 
 <template>
   <article
-    class="mb-12 flex flex-col md:flex-row gap-4 relative"
+    class="mb-12 flex flex-col lg:flex-row lg:gap-32 relative"
     ref="pageElement"
   >
     <main v-if="content" v-html="content" class="prose"></main>
     <main v-else>Loading...</main>
-    <aside v-if="content && headings" class="relative hidden md:block">
-      <nav class="md:sticky top-8 flex flex-col gap-4 z-10">
+    <aside v-if="content && headings" class="relative hidden lg:block">
+      <nav class="lg:sticky top-8 flex flex-col gap-4 z-10">
         <header>
           <h2 class="font-bold">On this page</h2>
         </header>
@@ -156,9 +156,7 @@ onBeforeRouteUpdate(to => {
             <a
               :href="`#${heading.id}`"
               class="border-b-2 border-current font-semibold"
-              @click.prevent="
-                heading.ref.scrollIntoView({ behavior: 'smooth' })
-              "
+              @click.prevent="heading.ref.scrollIntoView({ behavior: 'auto' })"
               >{{ heading.text }}</a
             >
           </li>
