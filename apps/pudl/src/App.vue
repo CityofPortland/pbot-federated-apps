@@ -7,18 +7,23 @@ import {
   LoggedIn,
   Logo,
   Nav,
-  NavItem,
   SignIn,
   useLogin,
 } from '@pbotapps/components';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const menuOpen = ref(false);
+const { getToken } = useLogin();
 const { currentRoute } = useRouter();
-const { accessToken } = useLogin();
+
+const accessToken = ref<string>();
 
 const path = computed(() => currentRoute.value.path);
+
+onMounted(async () => {
+  accessToken.value = await getToken();
+});
 </script>
 
 <template>

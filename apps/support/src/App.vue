@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import {
   Footer,
@@ -14,8 +14,14 @@ import {
 import { useRoute } from 'vue-router';
 
 const menuOpen = ref(false);
-const { accessToken } = useLogin();
+const { getToken } = useLogin();
 const route = useRoute();
+
+const accessToken = ref<string>();
+
+onMounted(async () => {
+  accessToken.value = await getToken();
+});
 </script>
 
 <template>

@@ -8,7 +8,10 @@ type LoginContext = {
   accessToken: RemovableRef<string>;
   clientId: string;
   msal: PublicClientApplication;
-  getToken(scopes?: Array<string>, redirect?: string): Promise<string | void>;
+  getToken(
+    scopes?: Array<string>,
+    redirect?: string
+  ): Promise<string | undefined>;
   route: RemovableRef<RouteLocationPathRaw>;
 };
 
@@ -70,6 +73,8 @@ export function useLogin(): LoginContext {
         if (redirect) {
           msal.acquireTokenRedirect({ ...request, redirectUri: redirect });
         }
+
+        return undefined;
       });
   };
 
