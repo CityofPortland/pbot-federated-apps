@@ -19,6 +19,7 @@ export enum SignShape {
   'octagon',
   'rectangle',
   'square',
+  'triangle',
 }
 
 export enum SignStatus {
@@ -129,6 +130,7 @@ export const typeDefs: DocumentNode = gql`
     octagon
     rectangle
     square
+    triangle
   }
 
   enum SignStatus {
