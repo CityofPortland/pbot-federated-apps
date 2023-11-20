@@ -4,7 +4,6 @@ import showdown from 'showdown';
 import { onMounted, ref } from 'vue';
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 
-const { getToken } = useLogin();
 const route = useRoute();
 const router = useRouter();
 
@@ -22,6 +21,7 @@ const scripts = ref(new Array<{ body?: string; src?: string }>());
 async function getPage(tree: string | Array<string>) {
   content.value = '';
 
+  const { getToken } = useLogin();
   const token = await getToken();
 
   tree = Array.isArray(route.params.tree)
@@ -141,17 +141,20 @@ onBeforeRouteUpdate(to => {
 
 <template>
   <article
-    class="mb-12 flex flex-col lg:flex-row lg:gap-32 relative"
+    class="flex-1 mb-12 flex flex-col xl:flex-row xl:gap-16 relative"
     ref="pageElement"
   >
     <main v-if="content" v-html="content" class="prose"></main>
     <main v-else>Loading...</main>
-    <aside v-if="content && headings" class="relative hidden lg:block">
-      <nav class="lg:sticky top-8 flex flex-col gap-4 z-10">
-        <header>
+    <aside
+      v-if="content && headings"
+      class="flex-1 relative hidden lg:flex flex-col text-base"
+    >
+      <nav class="lg:sticky top-8 border-l-2 pl-3 py-2">
+        <header class="mb-2">
           <h2 class="font-bold">On this page</h2>
         </header>
-        <ul role="navigation" class="pl-4 flex flex-col gap-2">
+        <ul role="navigation" class="flex flex-col gap-2">
           <li v-for="heading in headings" :key="heading.id">
             <a
               :href="`#${heading.id}`"
@@ -162,6 +165,7 @@ onBeforeRouteUpdate(to => {
           </li>
         </ul>
       </nav>
+      <div class="flex-1" />
     </aside>
   </article>
   <Teleport to="head" v-for="(script, idx) in scripts" :key="idx">

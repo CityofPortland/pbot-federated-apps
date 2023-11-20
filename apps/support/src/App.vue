@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import {
   Footer,
@@ -11,15 +11,20 @@ import {
   useLogin,
   authRoutes,
 } from '@pbotapps/components';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const menuOpen = ref(false);
 const { getToken } = useLogin();
 const route = useRoute();
+const { currentRoute } = useRouter();
 
 const accessToken = ref<string>();
 
 onMounted(async () => {
+  accessToken.value = await getToken();
+});
+
+watch(currentRoute, async () => {
   accessToken.value = await getToken();
 });
 </script>
