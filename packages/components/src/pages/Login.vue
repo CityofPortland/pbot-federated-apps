@@ -19,15 +19,19 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { RouteLocationPathRaw } from 'vue-router';
+import { RouteLocationPathRaw, useRoute } from 'vue-router';
 import SignIn from '../components/login/SignIn.vue';
-import { useLogin } from '../composables/use-login';
+import { authRoutes, useLogin } from '../composables/use-login';
 
 const { route } = useLogin();
 
 const redirect = ref<RouteLocationPathRaw>({ path: '/' });
 
-if (route.value && route.value.path) {
+if (
+  route.value &&
+  route.value.path &&
+  !authRoutes.map(r => r.path).some(p => p == useRoute().path)
+) {
   redirect.value = { ...route.value };
 }
 </script>
