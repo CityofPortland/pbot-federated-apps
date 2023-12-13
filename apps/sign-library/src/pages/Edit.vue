@@ -9,7 +9,7 @@ import {
   Select,
   Textarea,
 } from '@pbotapps/components';
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useStore } from '../store';
@@ -24,19 +24,19 @@ const props = defineProps({
 
 const formRef = ref<HTMLFormElement>();
 
+const code = toRef(props.code);
+
 const sign = computed(() => {
-  const d = {
+  let s = {
     _changed: new Date(),
     _created: new Date(),
   } as Partial<Sign>;
 
-  if (props.code) {
-    const s = store.sign(props.code);
-
-    return s ? s : d;
+  if (code.value) {
+    s = store.sign(code.value) || s;
   }
 
-  return d;
+  return s;
 });
 
 type Option = {
@@ -103,7 +103,7 @@ type T = {
 const save = ({ redirect }: T) => {
   if (formRef.value?.reportValidity()) {
     store
-      .addRevision({ ...payload.value, code: sign.value.code })
+      .addRevision({ ...payload.value, code: code.value })
       .then(sign => (sign ? router.push(redirect(sign)) : undefined))
       .catch(err => console.error(err));
   }
@@ -114,15 +114,15 @@ const save = ({ redirect }: T) => {
   <form
     ref="formRef"
     class="flex flex-col gap-4 max-w-prose"
-    @submit.prevent="save({ redirect: (sign: Sign) => `/${sign.code}` })"
+    @submit.prevent="save({ redirect: () => `/${code}` })"
   >
     <Entry id="code" label="Code" required v-slot="{ id, required }">
       <Input
         :id="id"
         :name="id"
         :required="required"
-        :disabled="code ? true : false"
-        v-model="sign.code"
+        :disabled="props.code ? true : false"
+        v-model.uppercase="code"
       />
     </Entry>
     <Entry id="image" label="Image" v-slot="{ id, required }">
@@ -252,9 +252,7 @@ const save = ({ redirect }: T) => {
         class="px-2 py-1"
       >
         <option
-          v-for="replacement in store.data.signs.filter(
-            s => s.code != sign.code
-          )"
+          v-for="replacement in store.data.signs.filter(s => s.code != code)"
           :key="replacement._id"
           :value="replacement._id"
           :selected="sign.replacedBy == replacement.code"
