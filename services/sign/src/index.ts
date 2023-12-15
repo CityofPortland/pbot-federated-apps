@@ -1,6 +1,6 @@
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { GraphQLSchemaModule } from '@apollo/subgraph/dist/schema-helper';
-import { handleRules } from '@pbotapps/authorization';
+import { RuleType, handleRules } from '@pbotapps/authorization';
 import { createServer } from '@pbotapps/graphql';
 import graphqlUpload from 'graphql-upload/graphqlUploadExpress.mjs';
 
@@ -17,7 +17,7 @@ createServer({
     handleRules(
       {
         getRules: async ({ user, application }) => {
-          const rules = [];
+          const rules = new Array<Partial<RuleType>>();
 
           if (
             [
@@ -59,5 +59,5 @@ createServer({
     ),
     graphqlUpload(),
   ],
-  loaderCallback: undefined,
+  loaderCallback: () => ({}),
 });
