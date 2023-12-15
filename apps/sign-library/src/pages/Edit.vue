@@ -270,7 +270,7 @@ const save = ({ redirect }: T) => {
     />
     <Entry id="mutcdCode" label="MUTCD code">
       <template v-slot:label="{ id, label }">
-        <label :id="`${id}-label`" class="font-semibold">
+        <label :id="`${id}-label`" :for="id" class="font-semibold">
           <Anchor url="https://mutcd.fhwa.dot.gov/">{{ label }}</Anchor>
         </label>
       </template>
@@ -286,7 +286,7 @@ const save = ({ redirect }: T) => {
     </Entry>
     <Entry id="odotCode" label="ODOT code">
       <template v-slot:label="{ id, label }">
-        <label :id="`${id}-label`" class="font-semibold">
+        <label :id="`${id}-label`" :for="id" class="font-semibold">
           <Anchor
             url="https://www.oregon.gov/odot/Engineering/Documents_TrafficStandards/Sign-Policy-2022.pdf"
             >{{ label }}</Anchor
@@ -344,6 +344,7 @@ const save = ({ redirect }: T) => {
       <Input
         id="width"
         name="width"
+        aria-label="Width"
         :required="required"
         type="number"
         :min="1"
@@ -354,6 +355,7 @@ const save = ({ redirect }: T) => {
       <Input
         id="height"
         name="height"
+        aria-label="Height"
         :required="required"
         type="number"
         :min="1"

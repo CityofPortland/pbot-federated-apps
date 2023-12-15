@@ -43,13 +43,13 @@ const dev = computed(() => import.meta.env.MODE != 'production');
         </router-link>
       </template>
       <template #menu>
-        <Nav class="mt-3 md:mt-0 md:ml-auto">
+        <span class="mt-3 md:mt-0 md:ml-auto">
           <SignIn v-if="!accessToken" />
           <LoggedIn v-else />
-        </Nav>
+        </span>
       </template>
     </Header>
-    <section role="notifications">
+    <section role="banner">
       <Box
         v-if="dev"
         color="orange"
