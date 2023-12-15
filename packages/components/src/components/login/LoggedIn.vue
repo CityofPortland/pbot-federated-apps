@@ -12,6 +12,7 @@
           <img
             v-if="user.photo"
             :src="user.photo"
+            alt="User avatar picture"
             class="rounded-full w-6 h-6"
           />
           <Box v-else class="px-0.5 py-1 rounded-full text-xs" color="gray">{{

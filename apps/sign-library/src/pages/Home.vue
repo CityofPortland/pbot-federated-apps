@@ -447,6 +447,7 @@ const fieldValues = computed(() => {
                     loading="lazy"
                     v-else
                     :src="sign.image.thumbnail"
+                    :alt="sign.legend"
                   />
                 </figure>
                 <main class="flex-1 space-y-4">

@@ -26,6 +26,7 @@
       <Select
         id="pager-select"
         name="pager-select"
+        aria-label="Select page"
         class="mr-1 text-sm"
         style="background-position: right 0.125rem center"
         :modelValue="value.toString()"

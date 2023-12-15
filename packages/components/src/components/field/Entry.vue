@@ -45,7 +45,9 @@ const inputClasses = computed(() => ({
       :disabled="disabled"
       :label="label"
     >
-      <label :id="`${id}-label`" :class="labelClasses">{{ label }}</label>
+      <label :id="`${id}-label`" :for="id" :class="labelClasses">{{
+        label
+      }}</label>
     </slot>
     <div :class="inputClasses">
       <slot :id="id" :required="required" :disabled="disabled"></slot>
