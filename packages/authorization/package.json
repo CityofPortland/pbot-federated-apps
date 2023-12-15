@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/authorization",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Very low-level objects shared by more than one service or app",
   "type": "module",
   "main": "dist/index.js",

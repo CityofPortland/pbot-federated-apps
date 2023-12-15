@@ -9,5 +9,5 @@ export interface RuleRepository {
   getRules(where: {
     user: User;
     application: BaseType;
-  }): Promise<Array<RuleType> | undefined>;
+  }): Promise<Array<Partial<RuleType> | undefined>>;
 }
