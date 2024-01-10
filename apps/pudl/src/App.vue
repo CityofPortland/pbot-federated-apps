@@ -50,8 +50,8 @@ onMounted(async () => {
         </Nav>
       </template>
     </Header>
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 mt-4 mb-12">
-      <Breadcrumbs v-if="path != '/'" :path="path" class="mb-4" />
+    <main class="flex-grow">
+      <Breadcrumbs v-if="path != '/'" :path="path" class="mb-4 px-4" />
       <router-view />
     </main>
     <Footer color="gray" variant="light" />

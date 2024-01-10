@@ -26,7 +26,10 @@ const rules = computed(() =>
 </script>
 
 <template>
-  <article v-if="schema" class="flex flex-col space-y-4">
+  <article
+    v-if="schema"
+    class="max-w-7xl mx-auto px-4 mt-4 mb-12 flex flex-col space-y-4"
+  >
     <h1 class="text-4xl font-bold mb-4">{{ schema.name }}</h1>
     <main>
       <h2 class="text-2xl font-semibold mb-2">tables</h2>
