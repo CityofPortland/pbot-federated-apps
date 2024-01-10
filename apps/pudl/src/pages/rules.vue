@@ -60,7 +60,10 @@ const newRule = ref({ ...props.defaultRule });
         add($event);
         showForm['new'] = false;
       "
-      @cancel="newRule = {...defaultRule}; showForm['new'] = false;"
+      @cancel="
+        newRule = { ...defaultRule };
+        showForm['new'] = false;
+      "
     />
   </aside>
   <main>
@@ -98,7 +101,13 @@ const newRule = ref({ ...props.defaultRule });
               label="edit"
               @click="showForm[idx] = true"
             />
-            <Button size="small" color="red" variant="neutral" label="delete" @click="deleteRule(rule.id)" />
+            <Button
+              size="small"
+              color="red"
+              variant="neutral"
+              label="delete"
+              @click="deleteRule(rule.id)"
+            />
           </span>
         </div>
         <div v-if="!showForm[idx]">

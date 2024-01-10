@@ -8,7 +8,7 @@ const store = useStore();
 </script>
 
 <template>
-  <article class="flex flex-col space-y-4">
+  <article class="max-w-7xl mx-auto px-4 mt-4 mb-12 flex flex-col space-y-4">
     <h1 class="text-3xl">zones</h1>
     <main>
       <header class="grid grid-cols-2 gap-2 mb-2">
