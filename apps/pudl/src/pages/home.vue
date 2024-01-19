@@ -43,26 +43,27 @@ const enriched = computed(() => {
   <article class="grid grid-cols-1 gap-4">
     <Box
       as="header"
-      class="p-12 grid grid-cols-1 md:grid-cols-2 justify-items-center gap-12"
+      class="p-12 grid grid-cols-1 md:grid-cols-2 items-center justify-items-center gap-12"
     >
       <div class="mx-auto flex flex-col gap-4 prose-lg">
         <h1>Welcome to PUDL</h1>
         <p>
-          PUDL stands for Portland Urban Data Lake. It's a project to transform
-          the way the
+          PUDL, short for Portland Urban Data Lake, is a project aimed at
+          transforming the
           <Anchor url="https://portland.gov/transportation"
-            >Portland Bureau of Transportation</Anchor
+            >Portland Bureau of Transportation's</Anchor
           >
-          (PBOT) ingests, analyzes, and manages data at any scale. It's built on
-          <Anchor url="https://azure.microsoft.com/">Microsoft Azure</Anchor>
-          using open source technologies including
+          (PBOT) approach to ingesting, analyzing, and managing data at any
+          scale. Developed on
+          <Anchor url="https://azure.microsoft.com/">Microsoft Azure</Anchor>,
+          PUDL leverages open source technologies such as
           <Anchor url="https://kubernetes.io">Kubernetes</Anchor>,
           <Anchor url="https://spark.apache.org">Spark</Anchor>,
           <Anchor url="https://airflow.apache.org">Airflow</Anchor>,
           <Anchor url="https://hive.apache.org">Hive</Anchor>,
           <Anchor url="https://trino.io">Trino</Anchor> and
-          <Anchor url="https://jupyter.org">Jupyter Notebooks</Anchor>. PUDL is
-          managed by PBOT's Technical Services Group, with help from Portland's
+          <Anchor url="https://jupyter.org">Jupyter Notebooks</Anchor>. PBOT's
+          Technical Services Group oversees PUDL, with support from Portland's
           <Anchor url="https://portland.gov/bts"
             >Bureau of Technology Services</Anchor
           >
@@ -131,8 +132,8 @@ const enriched = computed(() => {
         class="p-12 grid grid-cols-1"
       >
         <p class="max-w-prose prose-lg mx-auto">
-          PUDL consists of several "zones" of data. These zones represent the
-          stages of data as it is processed from original sources to warehoused
+          PUDL is organized into distinct "zones" that represent the stages of
+          data as it undergoes processing from original sources to warehoused
           data marts.
         </p>
       </Box>
@@ -160,34 +161,20 @@ const enriched = computed(() => {
                 d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
               />
             </svg>
-
-            <!-- <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-24 h-24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
-              />
-            </svg>
-           -->
-            <h2 class="text-3xl text-center font-bold">Twilight</h2>
+            <h2 class="text-3xl text-center font-bold">Twilight Zone</h2>
+            <h3 class="text-xl text-center font-semibold">
+              Initial Data Intake
+            </h3>
           </header>
           <main class="prose prose-lg text-current">
             <p>
-              The "twilight" zone contains data that is straight from an
-              external source. It may come from an API, an internal database, or
-              even a file. It has had no processing done to it other than to
-              save the data as a file.
+              The "twilight" zone contains data that is captured from an
+              external source. Those external sources may be an API, an internal
+              database, or even a file.
             </p>
             <p>
-              Data here is usually temporary, and is not cataloged for use
-              without further processing.
+              Data in this zone is not processed and typically only exists until
+              it is processed. It is not cataloged for use by Data Analysts.
             </p>
           </main>
         </Box>
@@ -208,10 +195,9 @@ const enriched = computed(() => {
       </Box>
       <Box as="section" color="orange" variant="dark" class="p-12">
         <p class="max-w-prose mx-auto">
-          At this point data has entered PUDL, but is not quite ready to explore
-          by Data Analysts. The data needs to be cataloged to enable tools like
-          Tableau to query it. Data Engineers now develop a pipeline to catalog
-          data into the raw zone.
+          Data at this stage is stored in PUDL but requires further processing
+          before it is ready for exploration by Data Analysts in tools like
+          Tableau.
         </p>
       </Box>
       <Box as="main">
@@ -239,21 +225,19 @@ const enriched = computed(() => {
                 />
               </svg>
 
-              <h2 class="text-3xl text-center font-bold">Raw</h2>
+              <h2 class="text-3xl text-center font-bold">Raw Zone</h2>
+              <h3 class="text-xl text-center font-semibold">
+                Cataloging for Exploration
+              </h3>
             </header>
             <main class="prose prose-lg text-current">
               <p>
-                The "raw" zone contains cataloged data that has had the
-                processing necessary to transform it into a tabular structure.
-                It is typically unaltered otherwise, except to add useful
-                partitions to speed up query times in cases where the amount of
-                data is very large. Raw data is often duplicative, massive, and
-                difficult to use in dashboards. It is best suited for
-                exploration to help define processes for enrichment.
-              </p>
-              <p>
-                Data here is usually only available to PUDL Data Engineers and
-                Data Analysts that provide expertise on the data to help develop
+                The "raw" zone contains cataloged data that Data Engineers have
+                transformed into a tabular structure. Data here is typically
+                unaltered from its initial intake except for necessary
+                processing. Raw data may be duplicative, massive, and otherwise
+                difficult to use use. Raw data here is mainly available to PUDL
+                Data Engineers and Data Analysts to explore and to help develop
                 enrichment processes.
               </p>
             </main>
@@ -296,10 +280,9 @@ const enriched = computed(() => {
         </Box>
         <Box as="section" color="cyan" variant="dark" class="p-12">
           <p class="max-w-prose mx-auto">
-            Data Engineers now use Jupyter notebooks to explore and develop
-            transformations of raw data. These transformations perform tasks
-            like normalization of data types and field names. Thse
-            transformations are then further developed into pipelines that are
+            Data Engineers use Jupyter notebooks to explore and develop
+            transformations, focusing on tasks like normalization of data types
+            and field names. These transformations will evolve into pipelines
             managed by Apache Airflow.
           </p>
         </Box>
@@ -327,23 +310,25 @@ const enriched = computed(() => {
                   d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z"
                 />
               </svg>
-              <h2 class="text-3xl text-center font-bold">Enriched</h2>
+              <h2 class="text-3xl text-center font-bold">Enriched Zone</h2>
+              <h3 class="text-xl text-center font-semibold">
+                Data Ready for Consumption
+              </h3>
             </header>
             <main class="prose prose-lg text-current">
               <p>
-                The "enriched" zone contains data created from data in the raw
-                zone. It has had the processing done to make it appropriate for
-                consumption in dashboards. At this point, data is normalized to
-                be similar across all enriched data, and datasets are able to be
-                joined together easily using common dimensions or similar
+                The "enriched" zone contains data derived from the raw data but
+                processed for consumption in dashboards. Data has undergone
+                tnormalization for consistency across datasets. Datasets are
+                structured for easy joining using common dimensions or similar
                 fields.
               </p>
               <p>
-                Data here is partitioned, filtered, and modified to meet privacy
-                and data stewardship needs. Enriched data is usually appropriate
-                to share to a broad audience, although it may contain sensitive
-                information that is not available to users other than Data
-                Analysts that provide stewardship for the data.
+                Privacy and data stewardship needs are addressed through
+                partitioning, filtering, and modification. Enriched data is
+                suitable for sharing with a broader audience, though sensitive
+                information may be restricted to Data Analysts responsible for
+                stewardship.
               </p>
             </main>
             <footer class="mt-auto flex flex-col items-center not-prose">
@@ -390,7 +375,7 @@ const enriched = computed(() => {
             <figcaption class="text-base italic mt-2">
               A table of data demonstrating the transformation of data from its
               "raw" form to an "enriched" form. There are now extra columns to
-              help appgrpate data, timestamps have been formatted and localized,
+              help aggregate data, timestamps have been formatted and localized,
               and calculated columns are added to allow more robust analysis.
             </figcaption>
           </figure>
