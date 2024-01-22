@@ -7,6 +7,7 @@
       :name="id"
       :value="option.value"
       :checked="option.checked"
+      :required="invalid"
       @changed="toggle(option)"
     >
       {{ option.label }}
@@ -15,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
 import Entry from '@/components/field/Entry.vue';
 import { useInput } from '@/composables/use-input';
 import Checkbox from '@/elements/input/Checkbox.vue';
@@ -48,21 +49,27 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { disabled, options } = toRefs(props);
+    const { disabled } = toRefs(props);
+    const options = reactive(props.options);
 
     const { classes } = useInput(disabled);
 
     return {
       classes,
       toggle: (option: Option) => {
-        option = options.value.find(o => o.id == option.id);
+        option = options.find(o => o.id == option.id);
         option.checked = !option.checked;
-        const value = options.value
+        const value = options
           .filter(option => option.checked)
           .map(option => option.value);
         emit('update:modelValue', value);
         emit('changed', value);
       },
+      invalid: computed(() => {
+        if (!props.required) return false;
+
+        return options.find(o => o.checked) ? true : false;
+      }),
     };
   },
 });
