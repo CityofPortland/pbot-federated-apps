@@ -68,7 +68,7 @@ export default defineComponent({
       invalid: computed(() => {
         if (!props.required) return false;
 
-        return options.find(o => o.checked) ? true : false;
+        return options.find(o => o.checked) ? false : true;
       }),
     };
   },
