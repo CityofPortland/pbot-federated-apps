@@ -319,7 +319,7 @@ const enriched = computed(() => {
               <p>
                 The "enriched" zone contains data derived from the raw data but
                 processed for consumption in dashboards. Data has undergone
-                tnormalization for consistency across datasets. Datasets are
+                normalization for consistency across datasets. Datasets are
                 structured for easy joining using common dimensions or similar
                 fields.
               </p>
