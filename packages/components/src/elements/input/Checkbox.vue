@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { computed, defineComponent, toRefs } from 'vue';
 import { useInput } from '@/composables/use-input';
 
 export default defineComponent({
@@ -38,12 +38,19 @@ export default defineComponent({
   },
   inheritAttrs: false,
   setup(props) {
-    const { disabled } = toRefs(props);
-
-    const { classes } = useInput(disabled);
+    const { checked, disabled, required } = toRefs(props);
 
     return {
-      classes,
+      classes: computed(() => {
+        const { classes } = useInput(disabled);
+
+        if (props.required && !checked.value) {
+          classes.value.push('outline', 'outline-offset-1', 'outline-red-500');
+        }
+
+        return classes.value;
+      }),
+      invalid: computed(() => required.value),
     };
   },
 });

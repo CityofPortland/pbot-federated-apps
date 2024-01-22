@@ -265,6 +265,7 @@ const save = ({ redirect }: T) => {
       :options="types"
       id="types"
       label="Types"
+      :required="true"
       v-model="sign.type"
       @changed="change('type', $event)"
     />
