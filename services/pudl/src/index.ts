@@ -9,6 +9,7 @@ import Zone from './zone/index.js';
 import Schema from './schema/index.js';
 import Table from './table/index.js';
 import Column from './column/index.js';
+import Pipeline from './pipeline/index.js';
 
 if (process.env.NODE_ENV !== 'production') {
   const out = loadenv();
@@ -37,6 +38,7 @@ const schema = [
   Schema,
   Table,
   Column,
+  Pipeline,
 ] as GraphQLSchemaModule[];
 
 createServer({

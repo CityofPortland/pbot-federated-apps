@@ -8,6 +8,19 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
+export const AirflowMetastore = knex({
+  client: 'postgres',
+  connection: {
+    host: process.env.PUDL_POSTGRES_HOST,
+    port: Number.parseInt(process.env.PUDL_POSTGRES_PORT),
+    user: process.env.AIRFLOW_POSTGRES_USERNAME,
+    password: process.env.AIRFLOW_POSTGRES_PASSWORD,
+    database: 'airflow',
+  },
+  pool: { min: 0, max: 2 },
+  searchPath: ['public'],
+}) as Knex;
+
 export const RawMetastore = knex({
   client: 'postgres',
   connection: {
@@ -17,6 +30,7 @@ export const RawMetastore = knex({
     password: process.env.PUDL_POSTGRES_PASSWORD,
     database: 'raw_zone',
   },
+  pool: { min: 0, max: 2 },
   searchPath: ['public'],
 }) as Knex;
 
@@ -29,10 +43,12 @@ export const EnrichedMetastore = knex({
     password: process.env.PUDL_POSTGRES_PASSWORD,
     database: 'enriched_zone',
   },
+  pool: { min: 0, max: 2 },
   searchPath: ['public'],
 }) as Knex;
 
 export default {
+  airflow: AirflowMetastore,
   enriched: EnrichedMetastore,
   raw: RawMetastore,
 };

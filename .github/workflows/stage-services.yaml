@@ -109,6 +109,13 @@ jobs:
                     hosts:
                       - pudl-test.portland.gov
               extraEnv:
+                - name: AIRFLOW_POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: pudl-test-airflow
+                      key: POSTGRES_PASSWORD
+                - name: AIRFLOW_POSTGRES_USERNAME
+                  value: airflow_admin
                 - name: AZURE_CLIENT_ID
                   valueFrom:
                     secretKeyRef:
