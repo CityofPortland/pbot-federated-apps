@@ -37,6 +37,10 @@ router.beforeResolve(async () => {
   if (!store.zones.length) {
     store.getZones();
   }
+
+  if (!store.pipelines.length) {
+    store.getPipelines();
+  }
 });
 
 export default router;
