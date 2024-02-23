@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Box } from '@pbotapps/components';
+import { Box, BoxColor } from '@pbotapps/components';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -40,6 +40,16 @@ const rules = computed(() =>
     table: params.table as string,
   })
 );
+
+const statusColor = (status?: string): BoxColor => {
+  const m = new Map<string, BoxColor>([
+    ['success', 'green'],
+    ['running', 'tangerine'],
+    ['failed', 'red'],
+  ]);
+
+  return status ? m.get(status) || 'transparent' : 'transparent';
+};
 </script>
 
 <template>
@@ -91,11 +101,7 @@ const rules = computed(() =>
             <h3 class="text-xl font-semibold">{{ pipeline.id }}</h3>
             <Box
               v-if="pipeline.lastRun"
-              :color="
-                { success: 'green', failed: 'red', running: 'orange' }[
-                  pipeline.lastRun.status
-                ] || 'transparent'
-              "
+              :color="statusColor(pipeline.lastRun.status)"
               variant="light"
               class="border border-current rounded-md px-1"
               >{{ pipeline.lastRun.status }}</Box
