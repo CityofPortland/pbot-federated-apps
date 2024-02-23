@@ -58,17 +58,17 @@ Support for developing or redesigning business processes including process disco
 
 <div class="border-l-4 border-tangerine-500 pl-4" markdown="1">
 
-## GIS Support
+## GIS Help
 
-Need a print map, web map, or new GIS dataset or change to an existing dataset? Or, maybe, your project requires analysis, like a summary of number of parking citations by neighborhood? That’s a GIS request.
+Is something not looking as expected with a web map, GIS dataset, or GIS application? Or are you encountering an error when trying to access a GIS application? Get help from the GIS team via email.
 
-PBOT GIS Support Email: [pbotgissupport@portlandoregon.gov](mailto:pbotgissupport@portlandoregon.gov)
+PBOT GIS Help Email: [pbotgissupport@portlandoregon.gov](mailto:pbotgissupport@portlandoregon.gov)
 
 </div>
 
 <div class="border-l-4 border-green-500 pl-4" markdown="1">
 
-## Training Support
+## Training
 
 [City Learner](https://cityofport.plateau.com/learning)
 
