@@ -56,7 +56,7 @@
     "passport-azure-ad": "^4.3.5",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.14",
-    "sharp": "^0.32.6"
+    "sharp": "^0.33.3"
   },
   "devDependencies": {
     "@elastic/transport": "^8.4.1",
@@ -65,7 +65,7 @@
     "@types/node": "^18.19.26",
     "@types/passport-anonymous": "^1.0.5",
     "@types/passport-azure-ad": "^4.3.6",
-    "@types/sharp": "^0.31.1",
+    "@types/sharp": "^0.32.0",
     "eslint": "^8.57.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
