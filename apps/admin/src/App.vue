@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 import {
   Anchor,
@@ -8,13 +8,18 @@ import {
   LoggedIn,
   Logo,
   Nav,
-  NavItem,
   SignIn,
-  useLogin,
 } from '@pbotapps/components';
+import { useAuthStore } from './store/auth';
 
 const menuOpen = ref(false);
-const { accessToken } = useLogin();
+const accessToken = ref<string>();
+
+const { getToken } = useAuthStore();
+
+onMounted(async () => {
+  accessToken.value = await getToken();
+});
 </script>
 
 <template>

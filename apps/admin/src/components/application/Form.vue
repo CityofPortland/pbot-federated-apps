@@ -1,18 +1,12 @@
 <script setup lang="ts">
+import { Button, Entry, Input, Textarea, query } from '@pbotapps/components';
 import { toRefs } from 'vue';
-import {
-  Button,
-  Entry,
-  Input,
-  Textarea,
-  query,
-  useLogin,
-} from '@pbotapps/components';
 
 import { Application } from '../../models/application';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../store/auth';
 
-const { clientId, getToken } = useLogin();
+const { getToken } = useAuthStore();
 const router = useRouter();
 
 const props = defineProps({

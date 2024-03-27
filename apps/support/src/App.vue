@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-
 import {
   Footer,
   Header,
@@ -8,17 +6,19 @@ import {
   Logo,
   Nav,
   SignIn,
-  useLogin,
   authRoutes,
 } from '@pbotapps/components';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-const menuOpen = ref(false);
-const { getToken } = useLogin();
+import { useAuthStore } from './store';
+
+const { getToken } = useAuthStore();
 const route = useRoute();
 const { currentRoute } = useRouter();
 
 const accessToken = ref<string>();
+const menuOpen = ref(false);
 
 onMounted(async () => {
   accessToken.value = await getToken();

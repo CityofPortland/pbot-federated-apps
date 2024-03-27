@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import { query, Box } from '@pbotapps/components';
 import { ref, Ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { query, Box, useLogin } from '@pbotapps/components';
 import { Rule } from '../models/rule';
 import Full from '../components/rule/Full.vue';
+import { useAuthStore } from '../store/auth';
 
 const rule: Ref<Rule | undefined> = ref(undefined);
 
+const { getToken } = useAuthStore();
 const { currentRoute } = useRouter();
-const { getToken } = useLogin();
 
 async function getRule() {
   const token = await getToken();

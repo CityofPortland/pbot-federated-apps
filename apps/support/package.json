@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pbotapps/authorization": "workspace:^",
     "@pbotapps/components": "workspace:^",
     "jose": "^4.15.4",
+    "pinia": "^2.1.7",
     "showdown": "^2.1.0",
     "vue": "^3.3.7",
     "vue-router": "^4.2.5"
