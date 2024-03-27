@@ -50,6 +50,15 @@ jobs:
               - VITE_AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}
               - VITE_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
       - uses: ./packages/actions/file-writer
+        if: matrix.directory
+        name: Create files
+        with:
+          input: |
+            ${{ matrix.directory }}/.env.local:
+              - NODE_ENV=staging
+              - VITE_AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}
+              - VITE_AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
+      - uses: ./packages/actions/file-writer
         if: matrix.files
         name: Create files
         with:
