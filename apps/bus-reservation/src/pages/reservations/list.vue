@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Anchor } from '@pbotapps/components';
 import { useRoute } from 'vue-router';
-import { useStore } from '../store';
+import { useStore } from '../../store';
 
 const { path } = useRoute();
 const store = useStore();
@@ -21,7 +21,7 @@ const store = useStore();
         <li
           v-for="(res, index) in store.reservations"
           :key="index"
-          class="grid grid-cols-5 items-start gap-2 py-1 hover:bg-gray-100"
+          class="grid grid-cols-5 items-start gap-2 px-2 py-1 -mx-2 hover:bg-gray-100"
         >
           <span>{{ res.user.label }}</span>
           <span>{{ res.zone.label }}</span>

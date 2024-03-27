@@ -43,7 +43,7 @@ onMounted(async () => {
           </RouterLink>
           <RouterLink
             v-if="accessToken"
-            to="/users"
+            to="/hotels"
             custom
             v-slot="{ href, navigate }"
           >
