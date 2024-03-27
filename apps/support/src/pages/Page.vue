@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { query, useLogin } from '@pbotapps/components';
+import { createAuthStore } from '@pbotapps/authorization';
+import { query } from '@pbotapps/components';
 import showdown from 'showdown';
-import { onMounted, ref } from 'vue';
-import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
-
-const route = useRoute();
-const router = useRouter();
+import { onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '../store';
 
 type Heading = {
   id: string;
   text: string;
   ref: HTMLElement;
 };
+
+const route = useRoute();
+const router = useRouter();
 
 const content = ref('');
 const headings = ref<Array<Heading>>([]);
@@ -21,7 +23,8 @@ const scripts = ref(new Array<{ body?: string; src?: string }>());
 async function getPage(tree: string | Array<string>) {
   content.value = '';
 
-  const { getToken } = useLogin();
+  const { getToken } = useAuthStore();
+
   const token = await getToken();
 
   tree = Array.isArray(route.params.tree)
@@ -72,8 +75,6 @@ async function getPage(tree: string | Array<string>) {
 }
 
 onMounted(() => {
-  getPage(route.params.tree);
-
   const websiteRegex = new RegExp('^(?:[a-z]+:)?//', 'i');
   const emailRegex = new RegExp('^mailto:', 'i');
 
@@ -133,10 +134,7 @@ onMounted(() => {
   }
 });
 
-onBeforeRouteUpdate(to => {
-  getPage(to.params.tree);
-  return true;
-});
+watch(() => route.params.tree, getPage, { immediate: true });
 </script>
 
 <template>

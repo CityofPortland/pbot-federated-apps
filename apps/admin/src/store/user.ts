@@ -1,7 +1,13 @@
-import { query, useLogin } from '@pbotapps/components';
+import { useAuth } from '@pbotapps/authorization';
+import { query } from '@pbotapps/components';
 import { defineStore } from 'pinia';
 import { Rule } from '../models/rule';
 import { User } from '../models/user';
+
+const { getToken } = useAuth({
+  clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
+  tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
+});
 
 export const useUserStore = defineStore('user', {
   state: (): { me?: User; users: Array<User> } => ({
@@ -11,7 +17,6 @@ export const useUserStore = defineStore('user', {
   getters: {},
   actions: {
     async addRule(user: User, rule: Rule) {
-      const { getToken } = useLogin();
       const token = await getToken();
 
       try {
@@ -34,7 +39,6 @@ export const useUserStore = defineStore('user', {
       }
     },
     async getUsers() {
-      const { getToken } = useLogin();
       const token = await getToken();
 
       try {
@@ -68,7 +72,6 @@ export const useUserStore = defineStore('user', {
       }
     },
     async getMe() {
-      const { getToken } = useLogin();
       const token = await getToken();
 
       try {
@@ -108,7 +111,6 @@ export const useUserStore = defineStore('user', {
       }
     },
     async removeRule(user: User, rule: Rule) {
-      const { getToken } = useLogin();
       const token = await getToken();
 
       try {

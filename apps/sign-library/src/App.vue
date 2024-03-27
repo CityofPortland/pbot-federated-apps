@@ -7,16 +7,14 @@ import {
   Header,
   LoggedIn,
   Logo,
-  Nav,
   SignIn,
-  useLogin,
 } from '@pbotapps/components';
 
-import { useStore } from './store';
+import { useAuthStore, useStore } from './store';
 
 const menuOpen = ref(false);
 
-const { getToken } = useLogin();
+const { getToken } = useAuthStore();
 const store = useStore();
 
 const accessToken = ref<string>();

@@ -1,4 +1,5 @@
-import { useLogin, query } from '@pbotapps/components';
+import { createAuthStore } from '@pbotapps/authorization';
+import { query } from '@pbotapps/components';
 import cronstrue from 'cronstrue';
 import cron from 'cron-parser';
 import { defineStore } from 'pinia';
@@ -37,6 +38,11 @@ interface Pipeline {
   };
 }
 
+export const useAuthStore = createAuthStore(
+  import.meta.env.VITE_AZURE_CLIENT_ID,
+  import.meta.env.VITE_AZURE_TENANT_ID
+);
+
 export const useStore = defineStore('pudl', {
   state: () => ({
     data: {
@@ -70,13 +76,11 @@ export const useStore = defineStore('pudl', {
   },
   actions: {
     async getZones() {
-      const { clientId, getToken } = useLogin();
+      const { getToken } = useAuthStore();
 
-      const token = await getToken([`${clientId}/.default`]);
+      const token = await getToken();
 
       this.data.zones = [] as Array<Zone>;
-
-      if (!token) return;
 
       try {
         const res = await query<{ zones: Array<Zone> }>({
@@ -126,13 +130,11 @@ export const useStore = defineStore('pudl', {
       }
     },
     async getPipelines() {
-      const { clientId, getToken } = useLogin();
+      const { getToken } = useAuthStore();
 
-      const token = await getToken([`${clientId}/.default`]);
+      const token = await getToken();
 
       this.data.pipelines = [] as Array<Pipeline>;
-
-      if (!token) return;
 
       try {
         const res = await query<{ pipelines: Array<Pipeline> }>({

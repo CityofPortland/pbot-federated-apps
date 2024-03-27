@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, reactive, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
 import {
   Button,
   Entry,
@@ -9,15 +7,17 @@ import {
   Textarea,
   Toggle,
   query,
-  useLogin,
 } from '@pbotapps/components';
+import { computed, reactive, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useApplicationStore } from '../../store/application';
 import { Application } from '../../models/application';
 import { Rule } from '../../models/rule';
+import { useAuthStore } from '../../store/auth';
 
 const store = useApplicationStore();
-const { getToken } = useLogin();
+const { getToken } = useAuthStore();
 const router = useRouter();
 
 const props = defineProps({

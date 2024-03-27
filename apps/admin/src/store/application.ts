@@ -1,6 +1,12 @@
-import { query, useLogin } from '@pbotapps/components';
+import { useAuth } from '@pbotapps/authorization';
+import { query } from '@pbotapps/components';
 import { defineStore } from 'pinia';
 import { Application } from '../models/application';
+
+const { getToken } = useAuth({
+  clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
+  tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
+});
 
 export const useApplicationStore = defineStore('application', {
   state: () => ({
@@ -8,7 +14,6 @@ export const useApplicationStore = defineStore('application', {
   }),
   actions: {
     async getApplications() {
-      const { getToken } = useLogin();
       const token = await getToken();
 
       try {
