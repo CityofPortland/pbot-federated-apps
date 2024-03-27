@@ -100,61 +100,6 @@ importers:
         specifier: ^1.8.27
         version: 1.8.27(typescript@4.9.5)
 
-  apps/bus-reservation:
-    dependencies:
-      '@pbotapps/authorization':
-        specifier: workspace:^
-        version: link:../../packages/authorization
-      '@pbotapps/components':
-        specifier: workspace:^
-        version: link:../../packages/components
-      axios:
-        specifier: ^0.27.2
-        version: 0.27.2
-      pinia:
-        specifier: ^2.1.7
-        version: 2.1.7(typescript@4.9.5)(vue@3.4.21)
-      uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
-      vue:
-        specifier: ^3.4.21
-        version: 3.4.21(typescript@4.9.5)
-      vue-router:
-        specifier: ^4.3.0
-        version: 4.3.0(vue@3.4.21)
-    devDependencies:
-      '@types/node':
-        specifier: ^18.19.26
-        version: 18.19.26
-      '@types/uuid':
-        specifier: ^9.0.8
-        version: 9.0.8
-      '@vitejs/plugin-vue':
-        specifier: ^4.6.2
-        version: 4.6.2(vite@4.5.3)(vue@3.4.21)
-      autoprefixer:
-        specifier: ^10.4.19
-        version: 10.4.19(postcss@8.4.38)
-      postcss:
-        specifier: ^8.4.38
-        version: 8.4.38
-      postcss-import:
-        specifier: ^14.1.0
-        version: 14.1.0(postcss@8.4.38)
-      tailwindcss:
-        specifier: ^3.4.3
-        version: 3.4.3
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-      vite:
-        specifier: ^4.5.3
-        version: 4.5.3(@types/node@18.19.26)
-      vue-tsc:
-        specifier: ^1.8.27
-        version: 1.8.27(typescript@4.9.5)
-
   apps/lcr:
     dependencies:
       '@pbotapps/components':
@@ -549,6 +494,9 @@ importers:
       '@arcgis/core':
         specifier: ^4.29.10
         version: 4.29.10
+      '@nabla/vite-plugin-eslint':
+        specifier: ^2.0.2
+        version: 2.0.2(eslint@8.57.0)(vite@4.5.3)
       '@rollup/plugin-typescript':
         specifier: ^8.5.0
         version: 8.5.0(rollup@2.79.1)(tslib@2.6.2)(typescript@4.9.5)
@@ -609,9 +557,6 @@ importers:
       vite:
         specifier: ^4.5.3
         version: 4.5.3(@types/node@18.19.26)
-      vite-plugin-eslint:
-        specifier: ^1.8.1
-        version: 1.8.1(eslint@8.57.0)(vite@4.5.3)
       vitepress:
         specifier: ^0.22.4
         version: 0.22.4(typescript@4.9.5)
@@ -3125,6 +3070,18 @@ packages:
       metalsmith: 2.6.3
     dev: false
 
+  /@nabla/vite-plugin-eslint@2.0.2(eslint@8.57.0)(vite@4.5.3):
+    resolution: {integrity: sha512-bwOAkO3kdDyNvGNbIls9bLQHR1t/NKyCd/CSCP89rbmgmxScORq9O84TBc5t1Bh64UWSYmYM5j5HIjwuiVgtGQ==}
+    peerDependencies:
+      eslint: '*'
+      vite: ^4 || ^5
+    dependencies:
+      '@types/eslint': 8.56.6
+      chalk: 4.1.2
+      eslint: 8.57.0
+      vite: 4.5.3(@types/node@18.19.26)
+    dev: true
+
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -3329,14 +3286,6 @@ packages:
       estree-walker: 1.0.1
       picomatch: 2.3.1
       rollup: 2.79.1
-    dev: true
-
-  /@rollup/pluginutils@4.2.1:
-    resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
-    engines: {node: '>= 8.0.0'}
-    dependencies:
-      estree-walker: 2.0.2
-      picomatch: 2.3.1
     dev: true
 
   /@rollup/pluginutils@5.1.0(rollup@2.79.1):
@@ -9792,19 +9741,6 @@ packages:
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
-
-  /vite-plugin-eslint@1.8.1(eslint@8.57.0)(vite@4.5.3):
-    resolution: {integrity: sha512-PqdMf3Y2fLO9FsNPmMX+//2BF5SF8nEWspZdgl4kSt7UvHDRHVVfHvxsD7ULYzZrJDGRxR81Nq7TOFgwMnUang==}
-    peerDependencies:
-      eslint: '>=7'
-      vite: '>=2'
-    dependencies:
-      '@rollup/pluginutils': 4.2.1
-      '@types/eslint': 8.56.6
-      eslint: 8.57.0
-      rollup: 2.79.1
-      vite: 4.5.3(@types/node@18.19.26)
-    dev: true
 
   /vite@2.9.18:
     resolution: {integrity: sha512-sAOqI5wNM9QvSEE70W3UGMdT8cyEn0+PmJMTFvTB8wB0YbYUWw3gUbY62AOyrXosGieF2htmeLATvNxpv/zNyQ==}

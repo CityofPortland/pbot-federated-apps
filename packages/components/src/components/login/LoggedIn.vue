@@ -41,16 +41,17 @@
 </template>
 
 <script lang="ts">
+import { useAuth } from '@pbotapps/authorization';
+import axios from 'axios';
 import { computed, defineComponent, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { useLogin } from '../../composables/use-login';
 import Box from '../../elements/box/Box';
 import Button from '../../elements/button/Button.vue';
 import Dropdown from '../dropdown/Dropdown.vue';
 import DropdownItem from '../dropdown/DropdownItem.vue';
 import DropdownList from '../dropdown/DropdownList.vue';
 import Spinner from '../../elements/icon/Spinner.vue';
-import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -64,10 +65,27 @@ export default defineComponent({
   inheritAttrs: false,
   setup() {
     const user = ref(undefined);
-    const { getToken } = useLogin();
+
+    const { route, getToken } = useAuth({
+      clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
+      tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
+    });
+    const { currentRoute, resolve } = useRouter();
 
     onMounted(async () => {
-      const token = await getToken(['User.Read'], undefined);
+      const token = await getToken([`User.Read`]);
+
+      if (!token) {
+        route.value = {
+          path: currentRoute.value.path,
+        };
+
+        await getToken(
+          ['User.Read'],
+          'none',
+          `${window.location.origin}${resolve({ name: 'OAuthCallback' }).href}`
+        );
+      }
 
       try {
         const res = await axios.get('https://graph.microsoft.com/v1.0/me/', {

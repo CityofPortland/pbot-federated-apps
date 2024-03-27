@@ -23,10 +23,11 @@
 </template>
 
 <script lang="ts">
+import { useAuth } from '@pbotapps/authorization';
+import axios from 'axios';
 import { defineComponent, onMounted, ref, Ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
-import { useLogin } from '../composables/use-login';
 import Message from '../components/message/Message.vue';
 import Spinner from '../elements/icon/Spinner.vue';
 
@@ -37,28 +38,41 @@ export default defineComponent({
     const loading = ref(true),
       error: Ref<unknown | undefined> = ref(undefined);
 
-    const { accessToken, msal, route } = useLogin();
+    const { authority, clientId, requests, route, findRequest, setToken } =
+      useAuth({
+        clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
+        tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
+      });
+    const { query } = useRoute();
     const router = useRouter();
 
     onMounted(async () => {
-      try {
-        const res = await msal.handleRedirectPromise();
+      const { code, state } = query;
+      const params = new URLSearchParams();
 
-        if (res) {
-          accessToken.value = res.accessToken;
-          msal.setActiveAccount(res.account);
-        }
-      } catch (err) {
-        error.value = err;
-      } finally {
-        loading.value = false;
+      const request = findRequest(state as string);
 
-        if (route.value && route.value.path) {
-          const { hash, path, query } = route.value;
-          router.push({ hash, path, query });
-        } else {
-          router.push({ path: '/' });
-        }
+      if (!request) {
+        error.value =
+          'Could not find a corresponding request for this callback';
+        return;
+      }
+
+      params.append('client_id', clientId);
+      params.append('code', code as string);
+      params.append('code_verifier', request.codes.verifier);
+      params.append('grant_type', 'authorization_code');
+      params.append('redirect_uri', request.redirect);
+      params.append('scope', request.scopes.join(' '));
+
+      const res = await axios.post(`${authority}/oauth2/v2.0/token`, params);
+
+      const { access_token, scope, refresh_token } = res.data;
+
+      setToken(scope.split(' '), access_token, refresh_token);
+
+      if (requests.value.length == 0) {
+        router.replace(route.value.path);
       }
     });
 

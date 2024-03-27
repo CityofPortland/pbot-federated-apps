@@ -8,7 +8,7 @@
     :aria-label="label"
     @click="onClick"
   >
-    <slot>{{ label }}</slot>
+    <slot :label="label">{{ label }}</slot>
   </Box>
 </template>
 
