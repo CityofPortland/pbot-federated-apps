@@ -24,16 +24,16 @@
   },
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "devDependencies": {
-    "@types/node": "^18.18.7",
+    "@types/node": "^18.19.26",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "eslint": "^8.52.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-config-typescript": "^3.0.0",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.10.0",
+    "@elastic/elasticsearch": "^8.13.0",
     "@pbotapps/authorization": "workspace:^",
     "@pbotapps/objects": "workspace:^",
     "dataloader": "^2.2.2"
