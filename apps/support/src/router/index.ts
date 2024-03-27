@@ -1,8 +1,9 @@
-import { authRoutes, useLogin } from '@pbotapps/components';
+import { authRoutes } from '@pbotapps/components';
 import { decodeJwt } from 'jose';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 import Page from '../pages/Page.vue';
+import { useAuthStore } from '../store';
 
 const routes: RouteRecordRaw[] = [
   ...authRoutes,
@@ -14,24 +15,28 @@ const router = createRouter({
   routes,
 });
 
-router.beforeResolve(to => {
+router.beforeResolve(async to => {
+  console.debug('beforeResolve');
   // Always allow auth routes, avoids infinite redirect
   if (authRoutes.map(r => r.path).includes(to.path)) return true;
 
-  const auth = useLogin();
+  const { getToken } = useAuthStore();
+
+  const token = await getToken();
 
   // Check for a somewhat valid token
-  if (auth.accessToken.value) {
-    const payload = decodeJwt(auth.accessToken.value);
+  if (token) {
+    const payload = decodeJwt(token);
 
     // If the token is unexpired, then go through
     if (payload.exp && new Date(payload.exp * 1000) > new Date()) {
+      console.debug('beforeResolve', 'allowing navigation');
       return true;
     }
   }
 
   // Save the attempted route before moving on to login
-  auth.route.value = { hash: to.hash, path: to.path, query: to.query };
+  // auth.route.value = { hash: to.hash, path: to.path, query: to.query };
 
   return { name: 'Login' };
 });

@@ -213,7 +213,6 @@ export const useRuleStore = defineStore('rules', () => {
       data.push(rule);
     },
     delete(id: string) {
-      console.debug(`Deleting rule '${id}'...`);
       data.splice(data.findIndex(r => r.id === id), 1);
     },
     edit(id: string, rule: Rule) {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useAuth } from '@pbotapps/authorization';
 import {
   Anchor,
   Breadcrumbs,
@@ -8,13 +9,14 @@ import {
   Logo,
   Nav,
   SignIn,
-  useLogin,
 } from '@pbotapps/components';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { useAuthStore } from './store';
+
 const menuOpen = ref(false);
-const { getToken } = useLogin();
+const { getToken } = useAuthStore();
 const { currentRoute } = useRouter();
 
 const accessToken = ref<string>();

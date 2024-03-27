@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pbotapps/authorization": "workspace:^",
     "@pbotapps/components": "workspace:^",
     "axios": "^0.27.2",
     "cron-parser": "^4.9.0",

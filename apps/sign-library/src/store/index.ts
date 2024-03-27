@@ -1,10 +1,5 @@
-import { RuleType } from '@pbotapps/authorization';
-import {
-  formData,
-  query,
-  useLogin,
-  GraphQLOptions,
-} from '@pbotapps/components';
+import { RuleType, createAuthStore } from '@pbotapps/authorization';
+import { formData, query, GraphQLOptions } from '@pbotapps/components';
 import { openDB, OpenDBCallbacks } from 'idb';
 import { defineStore } from 'pinia';
 import { Sign, SignInput } from '../types';
@@ -69,6 +64,11 @@ const dbCallbacks: OpenDBCallbacks<unknown> = {
 
 const getDb = () => openDB('sign-library', 1, dbCallbacks);
 
+export const useAuthStore = createAuthStore(
+  import.meta.env.VITE_AZURE_CLIENT_ID,
+  import.meta.env.VITE_AZURE_TENANT_ID
+);
+
 export const useStore = defineStore('sign-library', {
   state: () => ({
     data: {
@@ -94,8 +94,9 @@ export const useStore = defineStore('sign-library', {
   },
   actions: {
     async addRevision(payload: Partial<SignInput>) {
-      const { clientId, getToken } = useLogin();
-      const token = await getToken([`${clientId}/.default`]);
+      const { getToken } = useAuthStore();
+      const token = await getToken();
+
       const { code, image, design, ...rest } = payload;
 
       if (!code) {
@@ -220,8 +221,8 @@ export const useStore = defineStore('sign-library', {
       return res;
     },
     async getSign(code: string) {
-      const { clientId, getToken } = useLogin();
-      const token = await getToken([`${clientId}/.default`]);
+      const { getToken } = useAuthStore();
+      const token = await getToken();
 
       const options: GraphQLOptions = {
         operation: `
@@ -282,8 +283,8 @@ export const useStore = defineStore('sign-library', {
       }
     },
     async refreshSigns() {
-      const { clientId, getToken } = useLogin();
-      const token = await getToken([`${clientId}/.default`]);
+      const { getToken } = useAuthStore();
+      const token = await getToken();
 
       const options: GraphQLOptions = {
         operation: `
@@ -327,8 +328,8 @@ export const useStore = defineStore('sign-library', {
       }
     },
     async refreshRules() {
-      const { clientId, getToken } = useLogin();
-      const token = await getToken([`${clientId}/.default`]);
+      const { getToken } = useAuthStore();
+      const token = await getToken();
 
       const options: GraphQLOptions = {
         operation: `

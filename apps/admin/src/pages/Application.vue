@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { onBeforeUpdate, ref, Ref } from 'vue';
-import { onBeforeRouteUpdate, useRouter } from 'vue-router';
+import { onMounted, ref, Ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { query, Box, useLogin } from '@pbotapps/components';
+import { query, Box } from '@pbotapps/components';
 import { Application } from '../models/application';
 import Full from '../components/application/Full.vue';
+import { useAuthStore } from '../store/auth';
 
 const application: Ref<Application | undefined> = ref(undefined);
 
+const { getToken } = useAuthStore();
 const { currentRoute } = useRouter();
-const { getToken } = useLogin();
 
-async function getApplication() {
+onMounted(async () => {
   const token = await getToken();
   const res = await query<{ applications: Array<Application> }>({
     operation: `
@@ -41,9 +42,7 @@ async function getApplication() {
   if (res.data) {
     application.value = res.data.applications[0];
   }
-}
-
-getApplication();
+});
 </script>
 
 <template>
