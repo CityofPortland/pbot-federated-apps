@@ -1,6 +1,6 @@
 import typescript from '@rollup/plugin-typescript';
 import vue from '@vitejs/plugin-vue';
-import eslint from 'vite-plugin-eslint';
+import eslint from '@nabla/vite-plugin-eslint';
 import { fileURLToPath, URL } from 'url';
 import { defineConfig } from 'vite';
 
