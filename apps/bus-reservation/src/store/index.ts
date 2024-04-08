@@ -69,7 +69,22 @@ export const useStore = defineStore('bus-reservation', () => {
   ]);
 
   const addReservation = (res: Reservation) => {
-    reservations.value.push(res);
+    res.id = uuid();
+    const existing = reservations.value.reduce((acc, curr) => {
+      if (curr.zone.id == res.zone.id) {
+        acc.push(curr);
+      } return acc;
+    }, new Array<Reservation>()).reduce((acc, curr) => {
+      if ((res.start >= curr.start && res.start <= curr.end) || (res.end >= curr.start && res.end <= curr.end) || (res.start <= curr.start && res.end >= curr.end)) {
+        acc.push(curr);
+      } return acc;
+    }, new Array<Reservation>());
+    if (existing.length == 0) {
+      reservations.value.push(res);
+    }
+    else {
+      throw Error(`There is an existing reservation in ${res.zone.label} on the same dates`);
+    }
   };
 
   const disableUser = (u: User) => {

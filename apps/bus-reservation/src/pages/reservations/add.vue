@@ -1,57 +1,62 @@
 <script setup lang="ts">
-import { Entry, Select } from '@pbotapps/components';
+import { Entry, Select, Input, Button, Message } from '@pbotapps/components';
 import { ref } from 'vue';
 import { User, Zone, useStore } from '../../store';
+import { toZonedTime } from 'date-fns-tz';
+import { useRouter } from 'vue-router';
 
 const store = useStore();
 
 const hotel = ref<User>(store.users[0]);
 const zone = ref<Zone>(store.zones[4]);
+const formRef = ref<HTMLFormElement>();
+const errors = ref<Error>();
+const router = useRouter();
+
+var date = new Date();
+const start = ref<Date>(new Date());
+const end = ref<Date>();
+const save = () => {
+  if (formRef.value?.reportValidity()) {
+    try {
+      store.addReservation({ zone: zone.value, user: hotel.value, start: start.value, end: end.value });
+      router.push({ path: '/reservations' });
+    } catch (error) {
+      errors.value = error as Error;
+    }
+  }
+}
 </script>
 
 <template>
-  <form class="max-w-7xl mx-auto px-4 mt-4 mb-12 flex flex-col space-y-4">
+  <form ref="formRef" class="max-w-7xl mx-auto px-4 mt-4 mb-12 space-y-4" @submit.prevent="save">
     <h1 class="text-3xl">Add a reservation</h1>
-    <Entry
-      id="zone"
-      label="Zone"
-      required
-      :inline="false"
-      v-slot="{ id, required }"
-    >
-      <Select
-        :id="id"
-        :required="required"
-        v-model="zone"
-        @changed="zone = $event"
-      >
-        <option
-          v-for="z in store.zones"
-          :key="z.id"
-          :value="z"
-          :selected="z.id == zone?.id"
-        >
+    <section v-if="errors">
+      <Message color="red" variant="light" summary="Error saving reservation">
+        {{ errors.message }}
+      </Message>
+    </section>
+    <Entry id="zone" label="Zone" required :inline="false" v-slot="{ id, required }">
+      <Select :id="id" :required="required" v-model="zone" @changed="zone = $event">
+        <option v-for="z in store.zones" :key="z.id" :value="z" :selected="z.id == zone?.id">
           {{ z.label }}
         </option>
       </Select>
     </Entry>
-    <Entry
-      id="hotel"
-      label="Hotel"
-      required
-      :inline="false"
-      v-slot="{ id, required }"
-    >
+    <Entry id="hotel" label="Hotel" required :inline="false" v-slot="{ id, required }">
       <Select :id="id" :required="required" @changed="hotel = $event">
-        <option
-          v-for="h in store.users.filter(u => u.enabled)"
-          :key="h.id"
-          :value="h"
-          :selected="h.id == hotel?.id"
-        >
+        <option v-for="h in store.users.filter(u => u.enabled)" :key="h.id" :value="h" :selected="h.id == hotel?.id">
           {{ h.label }}
         </option>
       </Select>
     </Entry>
+    <Entry id="start" label="Start" required :inline="false" v-slot="{ id, required }">
+      <Input :id="id" :required="required" type="date" :modelValue="start.toISOString().slice(0, 10)"
+        @changed="start = toZonedTime($event, 'America/Los_Angeles')" />
+    </Entry>
+    <Entry id="end" label="End" required :inline="false" v-slot="{ id, required }">
+      <Input :id="id" :required="required" type="date" @changed="end = toZonedTime($event, 'America/Los_Angeles')" />
+    </Entry>
+    <Button label="Save" />
   </form>
 </template>
