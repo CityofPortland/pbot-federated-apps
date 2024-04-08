@@ -30,13 +30,22 @@ const store = useStore();
           <span>{{ user.label }}</span>
           <span>{{ user.email }}</span>
           <span>{{ user.enabled }}</span>
-          <router-link
-            :to="`/hotels/view/${user.id}`"
-            custom
-            v-slot="{ href, navigate }"
-          >
-            <Anchor :url="href" @click="navigate">View</Anchor>
-          </router-link>
+          <div class="flex gap-4">
+            <router-link
+              :to="`/hotels/${user.id}`"
+              custom
+              v-slot="{ href, navigate }"
+            >
+              <Anchor :url="href" @click="navigate">View</Anchor>
+            </router-link>
+            <router-link
+              :to="`/hotels/${user.id}/edit`"
+              custom
+              v-slot="{ href, navigate }"
+            >
+              <Anchor :url="href" @click="navigate">Edit</Anchor>
+            </router-link>
+          </div>
         </li>
       </ul>
     </main>

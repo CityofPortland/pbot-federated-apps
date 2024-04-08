@@ -84,27 +84,25 @@ export const useStore = defineStore('bus-reservation', () => {
     reservations.value.push(res);
   };
 
-  const disableUser = (u: User) => {
-    const user = users.value.find(x => x.id == u.id);
+  const editUser = async (u: User) => {
+    const store = useAuthStore();
+    const currentUser = await store.getUser();
+    if (!currentUser) throw new Error('Not login in.');
 
+    const user = users.value.find(x => x.id == u.id);
     if (!user) throw Error(`Cannot find user with id '${u.id}`);
 
-    user.enabled = false;
-  };
-
-  const enableUser = (u: User) => {
-    const user = users.value.find(x => x.id == u.id);
-
-    if (!user) throw Error(`Cannot find user with id '${u.id}`);
-
-    user.enabled = true;
+    user.label = u.label;
+    user.email = u.email;
+    user.enabled = u.enabled;
+    user.updater = currentUser.email;
+    user.updated = new Date();
   };
 
   const addUser = async (u: User) => {
     const store = useAuthStore();
 
     const currentUser = await store.getUser();
-    console.log(currentUser);
     if (!currentUser) throw new Error('Not login in.');
     u.id = uuid();
     u.creator = currentUser.email;
@@ -133,7 +131,6 @@ export const useStore = defineStore('bus-reservation', () => {
     // actions
     addReservation,
     addUser,
-    enableUser,
-    disableUser,
+    editUser,
   };
 });
