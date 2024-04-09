@@ -1,21 +1,29 @@
 <script setup lang="ts">
 import { Checkbox, Entry, Input, Button, Message } from '@pbotapps/components';
 import { onMounted, ref } from 'vue';
-import { User, Zone, useStore } from '../../store';
+import { User, useStore } from '../../store';
 import { useRouter } from 'vue-router';
 
-const store = useStore();
-const hotel = ref<User>();
-const formRef = ref<HTMLFormElement>();
 const errors = ref<Error>();
-const props = defineProps({ id: { type: String, required: true } });
+const formRef = ref<HTMLFormElement>();
+const hotel = ref<Partial<User>>();
+const props = defineProps({
+  id: { type: String, required: false },
+  title: { type: String, required: true },
+});
 const router = useRouter();
+const store = useStore();
 
 const save = async () => {
   if (formRef.value?.reportValidity()) {
     console.log('Saved: ', hotel.value);
+
     try {
-      await store.editUser(hotel.value as User);
+      if (props.id) {
+        await store.editUser(hotel.value as User);
+      } else {
+        await store.addUser(hotel.value as User);
+      }
       router.push({ path: '/hotels' });
     } catch (error) {
       errors.value = error as Error;
@@ -28,6 +36,8 @@ onMounted(() => {
     if (h) {
       hotel.value = { ...h };
     }
+  } else {
+    hotel.value = { enabled: true };
   }
 });
 </script>
@@ -39,7 +49,9 @@ onMounted(() => {
     class="max-w-7xl mx-auto px-4 mt-4 mb-12 space-y-4"
     @submit.prevent="save"
   >
-    <header><h1 class="text-3xl mb-4 font-bold">Edit Hotel</h1></header>
+    <header>
+      <h1 class="text-3xl mb-4 font-bold">{{ title }}</h1>
+    </header>
     <section v-if="errors">
       <Message color="red" variant="light" summary="Error saving hotel">
         {{ errors.message }}

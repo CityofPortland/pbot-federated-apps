@@ -3,8 +3,7 @@ import { authRoutes } from '@pbotapps/components';
 
 import Home from '../pages/home.vue';
 import Hotels from '../pages/hotels/list.vue';
-import HotelsAdd from '../pages/hotels/add.vue';
-import HotelsEdit from '../pages/hotels/edit.vue';
+import HotelsAddEdit from '../pages/hotels/addedit.vue';
 import HotelsView from '../pages/hotels/view.vue';
 import Reservations from '../pages/reservations/list.vue';
 import ReservationAdd from '../pages/reservations/add.vue';
@@ -14,7 +13,13 @@ const routes: RouteRecordRaw[] = [
   { path: '/reservations', component: Reservations },
   { path: '/reservations/add', component: ReservationAdd },
   { path: '/hotels', component: Hotels },
-  { path: '/hotels/add', component: HotelsAdd },
+  {
+    path: '/hotels/add',
+    component: HotelsAddEdit,
+    props: () => {
+      return { title: 'Add Hotel' };
+    },
+  },
   {
     path: '/hotels/:id',
     component: HotelsView,
@@ -25,10 +30,10 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/hotels/:id/edit',
-    component: HotelsEdit,
+    component: HotelsAddEdit,
     props: route => {
       const id = route.params.id.toString();
-      return { id };
+      return { title: 'Edit Hotel', id };
     },
   },
   ...authRoutes,
