@@ -1,33 +1,10 @@
 <script setup lang="ts">
-import {
-  Checkbox,
-  Entry,
-  Input,
-  Button,
-  Message,
-  Field,
-  FieldList,
-} from '@pbotapps/components';
+import { Field, FieldList } from '@pbotapps/components';
 import { onMounted, ref } from 'vue';
-import { User, Zone, useStore } from '../../store';
-import { useRouter } from 'vue-router';
+import { User, useStore } from '../../store';
 
-const errors = ref<Error>();
-const formRef = ref<HTMLFormElement>();
 const hotel = ref<User>();
-const router = useRouter();
 const props = defineProps({ id: { type: String, required: true } });
-const save = async () => {
-  if (formRef.value?.reportValidity()) {
-    console.log('Saved: ', hotel.value);
-    try {
-      await store.addUser(hotel.value as User);
-      router.push({ path: '/hotels' });
-    } catch (error) {
-      errors.value = error as Error;
-    }
-  }
-};
 const store = useStore();
 
 onMounted(() => {

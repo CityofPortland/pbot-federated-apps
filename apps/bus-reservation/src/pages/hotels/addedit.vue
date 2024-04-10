@@ -16,8 +16,6 @@ const store = useStore();
 
 const save = async () => {
   if (formRef.value?.reportValidity()) {
-    console.log('Saved: ', hotel.value);
-
     try {
       if (props.id) {
         await store.editUser(hotel.value as User);
@@ -73,7 +71,6 @@ onMounted(() => {
       >
       </Checkbox>
     </Entry>
-    <div>{{ hotel }}</div>
     <Button>Save</Button>
   </form>
 </template>

@@ -115,11 +115,6 @@ export const useStore = defineStore('bus-reservation', () => {
   const user = computed(
     () => (id: string) => users.value.find(x => x.id == id)
   );
-  //  => {
-  //   const user = users.value.find(x => x.id == u.id);
-
-  //   if (!user) throw Error(`Cannot find user with id '${u.id}`);
-  // };
 
   return {
     // state
