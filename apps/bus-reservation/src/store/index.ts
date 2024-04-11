@@ -30,7 +30,7 @@ export type Reservation = {
   creator: string;
   updated: Date;
   updater: string;
-}
+};
 
 export const useAuthStore = createAuthStore(
   import.meta.env.VITE_AZURE_CLIENT_ID,
@@ -64,53 +64,82 @@ export const useStore = defineStore('bus-reservation', () => {
     return user;
   };
 
-  const addReservation = async (res: Partial<Reservation>) => {
-    res.id = uuid();
-
-    const existing = reservations.reduce((acc, curr) => {
-      if (curr.zone.id == res.zone.id) {
-        acc.push(curr);
-      } return acc;
-    }, new Array<Reservation>()).reduce((acc, curr) => {
-      if ((res.start >= curr.start && res.start <= curr.end) || (res.end >= curr.start && res.end <= curr.end) || (res.start <= curr.start && res.end >= curr.end)) {
-        acc.push(curr);
-      } return acc;
-    }, new Array<Reservation>());
+  const addReservation = async (
+    res: Pick<Reservation, 'end' | 'start' | 'user' | 'zone'>
+  ) => {
+    const existing = reservations
+      .reduce((acc, curr) => {
+        if (curr.zone.id == res.zone.id) {
+          acc.push(curr);
+        }
+        return acc;
+      }, new Array<Reservation>())
+      .reduce((acc, curr) => {
+        if (
+          (res.start >= curr.start && res.start <= curr.end) ||
+          (res.end >= curr.start && res.end <= curr.end) ||
+          (res.start <= curr.start && res.end >= curr.end)
+        ) {
+          acc.push(curr);
+        }
+        return acc;
+      }, new Array<Reservation>());
     if (existing.length > 0) {
-      throw Error(`There is an existing reservation in ${res.zone.label} on the same dates`);
+      throw Error(
+        `There is an existing reservation in ${res.zone.label} on the same dates`
+      );
     }
     const store = useAuthStore();
 
     const currentUser = await store.getUser();
     if (!currentUser) throw new Error('Not logged in.');
-    res.creator = currentUser.email;
-    res.created = new Date();
-    res.updater = currentUser.email;
-    res.updated = new Date();
 
-    reservations.push(res);
+    const r = {
+      ...res,
+      id: uuid(),
+      created: new Date(),
+      creator: currentUser.email,
+      updated: new Date(),
+      updater: currentUser.email,
+    };
+
+    reservations.push(r);
   };
 
-  const editReservation = async (r: Partial<Reservation>) => {
+  const editReservation = async (
+    r: Pick<Reservation, 'end' | 'start' | 'zone' | 'user' | 'id'>
+  ) => {
     const store = useAuthStore();
     const currentUser = await store.getUser();
     if (!currentUser) throw new Error('Not logged in.');
 
-    const existing = reservations.reduce((acc, curr) => {
-      if (curr.id != r.id) {
-        acc.push(curr);
-      } return acc;
-    }, new Array<Reservation>()).reduce((acc, curr) => {
-      if (curr.zone.id == r.zone.id) {
-        acc.push(curr);
-      } return acc;
-    }, new Array<Reservation>()).reduce((acc, curr) => {
-      if ((r.start >= curr.start && r.start <= curr.end) || (r.end >= curr.start && r.end <= curr.end) || (r.start <= curr.start && r.end >= curr.end)) {
-        acc.push(curr);
-      } return acc;
-    }, new Array<Reservation>());
+    const existing = reservations
+      .reduce((acc, curr) => {
+        if (curr.id != r.id) {
+          acc.push(curr);
+        }
+        return acc;
+      }, new Array<Reservation>())
+      .reduce((acc, curr) => {
+        if (curr.zone.id == r.zone.id) {
+          acc.push(curr);
+        }
+        return acc;
+      }, new Array<Reservation>())
+      .reduce((acc, curr) => {
+        if (
+          (r.start >= curr.start && r.start <= curr.end) ||
+          (r.end >= curr.start && r.end <= curr.end) ||
+          (r.start <= curr.start && r.end >= curr.end)
+        ) {
+          acc.push(curr);
+        }
+        return acc;
+      }, new Array<Reservation>());
     if (existing.length > 0) {
-      throw Error(`There is an existing reservation in ${r.zone.label} on the same dates`);
+      throw Error(
+        `There is an existing reservation in ${r.zone.label} on the same dates`
+      );
     }
 
     const idx = reservations.findIndex(x => x.id == r.id);
@@ -123,7 +152,6 @@ export const useStore = defineStore('bus-reservation', () => {
       updater: currentUser.email,
     };
   };
-
 
   const editUser = async (u: User) => {
     const currentUser = await getCurrentUser();
@@ -159,9 +187,7 @@ export const useStore = defineStore('bus-reservation', () => {
     () => (id: string) => reservations.find(x => x.id == id)
   );
 
-  const zone = computed(
-    () => (id: string) => zones.find(x => x.id == id)
-  );
+  const zone = computed(() => (id: string) => zones.find(x => x.id == id));
 
   return {
     // state

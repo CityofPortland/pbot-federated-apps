@@ -34,7 +34,6 @@ const routes: RouteRecordRaw[] = [
     props: route => {
       const { id } = route.params;
       return { title: 'Edit Hotel', id };
-
     },
   },
   { path: '/reservations', component: Reservations },
@@ -45,7 +44,7 @@ const routes: RouteRecordRaw[] = [
     props: route => {
       const id = route.params.id.toString();
       return { id };
-    }
+    },
   },
   {
     path: '/reservations/:id/edit',
@@ -53,7 +52,7 @@ const routes: RouteRecordRaw[] = [
     props: route => {
       const id = route.params.id.toString();
       return { title: 'Edit Reservation', id };
-    }
+    },
   },
   ...authRoutes,
 ];
