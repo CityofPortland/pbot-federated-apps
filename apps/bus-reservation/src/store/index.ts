@@ -1,15 +1,15 @@
 import { createAuthStore } from '@pbotapps/authorization';
 import { defineStore } from 'pinia';
 import { v4 as uuid } from 'uuid';
-import { computed, ref } from 'vue';
+import { computed, reactive } from 'vue';
 
-export interface Zone {
+export type Zone = {
   id: string; //UUID
   geometry: object;
   label: string;
-}
+};
 
-export interface User {
+export type User = {
   id: string; //UUID
   email: string;
   enabled: boolean;
@@ -18,15 +18,15 @@ export interface User {
   creator: string;
   updated: Date;
   updater: string;
-}
+};
 
-export interface Reservation {
+export type Reservation = {
   id: string; //UUID
   user: User;
   zone: Zone;
   start: Date;
   end: Date;
-}
+};
 
 export const useAuthStore = createAuthStore(
   import.meta.env.VITE_AZURE_CLIENT_ID,
@@ -34,30 +34,9 @@ export const useAuthStore = createAuthStore(
 );
 
 export const useStore = defineStore('bus-reservation', () => {
-  const users = ref<Array<User>>([
-    {
-      id: uuid(),
-      email: 'anonymous@portlandoregon.gov',
-      enabled: true,
-      label: 'Hotel Enabled',
-      created: new Date(),
-      creator: 'sam.berhane@portlandoregon.gov',
-      updated: new Date(),
-      updater: 'sam.berhane@portlandoregon.gov',
-    },
-    {
-      id: uuid(),
-      email: 'anonymous@portlandoregon.gov',
-      enabled: false,
-      label: 'Hotel Disabled',
-      created: new Date(),
-      creator: 'sam.berhane@portlandoregon.gov',
-      updated: new Date(),
-      updater: 'sam.berhane@portlandoregon.gov',
-    },
-  ]);
+  const users = reactive<Array<User>>([]);
 
-  const zones = ref<Array<Zone>>(
+  const zones = reactive<Array<Zone>>(
     [...new Array(7).keys()].map(x => {
       return {
         id: uuid(),
@@ -70,51 +49,51 @@ export const useStore = defineStore('bus-reservation', () => {
     })
   );
 
-  const reservations = ref<Array<Reservation>>([
-    {
-      id: uuid(),
-      start: new Date(),
-      end: new Date(),
-      user: users.value[0],
-      zone: zones.value[0],
-    },
-  ]);
+  const reservations = reactive<Array<Reservation>>([]);
 
   const addReservation = (res: Reservation) => {
-    reservations.value.push(res);
+    reservations.push(res);
+  };
+
+  const getCurrentUser = async () => {
+    const store = useAuthStore();
+
+    const user = await store.getUser();
+    if (!user) throw new Error('You must be logged in to modify data.');
+
+    return user;
   };
 
   const editUser = async (u: User) => {
-    const store = useAuthStore();
-    const currentUser = await store.getUser();
-    if (!currentUser) throw new Error('Not login in.');
+    const currentUser = await getCurrentUser();
 
-    const user = users.value.find(x => x.id == u.id);
-    if (!user) throw Error(`Cannot find user with id '${u.id}`);
+    const idx = users.findIndex(x => x.id == u.id);
+    if (idx == -1) throw Error(`Cannot find user with id '${u.id}`);
 
-    user.label = u.label;
-    user.email = u.email;
-    user.enabled = u.enabled;
-    user.updater = currentUser.email;
-    user.updated = new Date();
+    users[idx] = {
+      ...users[idx],
+      ...u,
+      updated: new Date(),
+      updater: currentUser.email,
+    };
   };
 
   const addUser = async (u: User) => {
-    const store = useAuthStore();
+    const currentUser = await getCurrentUser();
 
-    const currentUser = await store.getUser();
-    if (!currentUser) throw new Error('Not login in.');
-    u.id = uuid();
-    u.creator = currentUser.email;
-    u.created = new Date();
-    u.updater = currentUser.email;
-    u.updated = new Date();
-    users.value.push(u);
+    const user = {
+      ...u,
+      id: uuid(),
+      created: new Date(),
+      creator: currentUser.email,
+      updated: new Date(),
+      updater: currentUser.email,
+    };
+
+    users.push(user);
   };
 
-  const user = computed(
-    () => (id: string) => users.value.find(x => x.id == id)
-  );
+  const user = computed(() => (id: string) => users.find(x => x.id == id));
 
   return {
     // state
