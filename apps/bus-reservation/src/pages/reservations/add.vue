@@ -11,7 +11,7 @@ const zone = ref<Zone>(store.zones[4]);
 
 <template>
   <form class="max-w-7xl mx-auto px-4 mt-4 mb-12 flex flex-col space-y-4">
-    <h1 class="text-3xl">Add a reservation</h1>
+    <h1 class="text-4xl font-bold">Add a reservation</h1>
     <Entry
       id="zone"
       label="Zone"

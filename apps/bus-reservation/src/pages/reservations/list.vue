@@ -9,7 +9,7 @@ const store = useStore();
 
 <template>
   <article class="max-w-7xl mx-auto px-4 mt-4 mb-12 flex flex-col space-y-4">
-    <h1 class="text-3xl">reservations</h1>
+    <h1 class="text-4xl font-bold">reservations</h1>
     <main>
       <header class="grid grid-cols-5 gap-2 mb-2">
         <span class="font-semibold">hotel</span>

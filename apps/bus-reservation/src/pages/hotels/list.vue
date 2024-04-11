@@ -1,0 +1,51 @@
+<script setup lang="ts">
+import { Anchor } from '@pbotapps/components';
+import { useStore } from '../../store';
+
+const store = useStore();
+</script>
+
+<template>
+  <article class="mx-auto max-w-7xl px-4 my-8 space-y-4">
+    <header class="flex mb-8">
+      <h1 class="text-4xl font-bold">Hotels</h1>
+      <RouterLink to="/hotels/add" custom v-slot="{ href, navigate }">
+        <Anchor :url="href" @click="navigate" class="ml-auto">Add</Anchor>
+      </RouterLink>
+    </header>
+    <main>
+      <header class="grid grid-cols-4 gap-2 mb-2">
+        <span class="font-semibold">Name</span>
+        <span class="font-semibold">Email</span>
+        <span class="font-semibold">Enabled</span>
+      </header>
+      <ul>
+        <li
+          v-for="user in store.users"
+          :key="user.id"
+          class="grid grid-cols-4 items-start gap-2 px-2 py-1 -mx-2 hover:bg-gray-100"
+        >
+          <span>{{ user.label }}</span>
+          <span>{{ user.email }}</span>
+          <span>{{ user.enabled }}</span>
+          <div class="flex gap-4">
+            <router-link
+              :to="`/hotels/${user.id}`"
+              custom
+              v-slot="{ href, navigate }"
+            >
+              <Anchor :url="href" @click="navigate">View</Anchor>
+            </router-link>
+            <router-link
+              :to="`/hotels/${user.id}/edit`"
+              custom
+              v-slot="{ href, navigate }"
+            >
+              <Anchor :url="href" @click="navigate">Edit</Anchor>
+            </router-link>
+          </div>
+        </li>
+      </ul>
+    </main>
+  </article>
+</template>
