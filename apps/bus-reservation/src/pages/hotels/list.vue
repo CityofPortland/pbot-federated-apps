@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { Anchor } from '@pbotapps/components';
-import { useRoute } from 'vue-router';
 import { useStore } from '../../store';
 
-const { path } = useRoute();
 const store = useStore();
 </script>
 
 <template>
-  <article class="mx-auto max-w-7xl px-4 mt-4 mb-12 flex flex-col space-y-4">
-    <header class="flex">
-      <h1 class="text-3xl">Hotels</h1>
+  <article class="mx-auto max-w-7xl px-4 my-8 space-y-4">
+    <header class="flex mb-8">
+      <h1 class="text-4xl font-bold">Hotels</h1>
       <RouterLink to="/hotels/add" custom v-slot="{ href, navigate }">
-        <Anchor :url="href" @click="navigate" class="ml-auto"> Add </Anchor>
+        <Anchor :url="href" @click="navigate" class="ml-auto">Add</Anchor>
       </RouterLink>
     </header>
     <main>

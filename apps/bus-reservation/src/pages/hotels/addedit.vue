@@ -4,13 +4,15 @@ import { onMounted, ref } from 'vue';
 import { User, useStore } from '../../store';
 import { useRouter } from 'vue-router';
 
-const errors = ref<Error>();
-const formRef = ref<HTMLFormElement>();
-const hotel = ref<Partial<User>>();
 const props = defineProps({
   id: { type: String, required: false },
   title: { type: String, required: true },
 });
+
+const errors = ref<Error>();
+const formRef = ref<HTMLFormElement>();
+const hotel = ref<Partial<User>>();
+
 const router = useRouter();
 const store = useStore();
 
@@ -28,6 +30,7 @@ const save = async () => {
     }
   }
 };
+
 onMounted(() => {
   if (props.id) {
     const h = store.user(props.id);
@@ -44,11 +47,11 @@ onMounted(() => {
   <form
     v-if="hotel"
     ref="formRef"
-    class="max-w-7xl mx-auto px-4 mt-4 mb-12 space-y-4"
+    class="max-w-7xl mx-auto px-4 my-8 space-y-4"
     @submit.prevent="save"
   >
-    <header>
-      <h1 class="text-3xl mb-4 font-bold">{{ title }}</h1>
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold">{{ title }}</h1>
     </header>
     <section v-if="errors">
       <Message color="red" variant="light" summary="Error saving hotel">
