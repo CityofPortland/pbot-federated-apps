@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
     path: '/hotels/:id',
     component: HotelsView,
     props: route => {
-      const id = route.params.id.toString();
+      const { id } = route.params;
       return { id };
     },
   },
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
     path: '/hotels/:id/edit',
     component: HotelsAddEdit,
     props: route => {
-      const id = route.params.id.toString();
+      const { id } = route.params;
       return { title: 'Edit Hotel', id };
     },
   },
