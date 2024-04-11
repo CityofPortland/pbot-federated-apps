@@ -14,11 +14,11 @@ import { useRouter } from 'vue-router';
 
 import { useAuthStore } from './store';
 
-const menuOpen = ref(false);
 const { getToken } = useAuthStore();
 const { currentRoute } = useRouter();
 
 const accessToken = ref<string>();
+const menuOpen = ref(false);
 
 const path = computed(() => currentRoute.value.path);
 
