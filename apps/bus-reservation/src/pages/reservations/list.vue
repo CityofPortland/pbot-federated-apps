@@ -23,22 +23,20 @@ const store = useStore();
         <span class="font-semibold">end</span>
       </header>
       <ul>
-        <li
-          v-for="res in store.reservations"
-          :key="res.id"
-          class="grid grid-cols-5 items-start gap-2 px-2 py-1 -mx-2 hover:bg-gray-100"
-        >
+        <li v-for="res in store.reservations" :key="res.id"
+          class="grid grid-cols-5 items-start gap-2 px-2 py-1 -mx-2 hover:bg-gray-100">
           <span>{{ res.user.label }}</span>
           <span>{{ res.zone.label }}</span>
           <span>{{ res.start.toLocaleDateString() }}</span>
           <span>{{ res.end.toLocaleDateString() }}</span>
-          <router-link
-            :to="`${path}/${res.id}`"
-            custom
-            v-slot="{ href, navigate }"
-          >
-            <Anchor :url="href" @click="navigate">View</Anchor>
-          </router-link>
+          <div class="flex gap-4">
+            <router-link :to="`/reservations/${res.id}`" custom v-slot="{ href, navigate }">
+              <Anchor :url="href" @click="navigate">View</Anchor>
+            </router-link>
+            <router-link :to="`/reservations/${res.id}/edit`" custom v-slot="{ href, navigate }">
+              <Anchor :url="href" @click="navigate">Edit</Anchor>
+            </router-link>
+          </div>
         </li>
       </ul>
     </main>

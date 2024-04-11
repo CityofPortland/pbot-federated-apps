@@ -8,15 +8,14 @@ import { useRouter } from 'vue-router';
 const store = useStore();
 
 const hotel = ref<User>(store.users[0]);
-const zone = ref<Zone>(store.zones[4]);
+const zone = ref<Zone | undefined>(store.zones[4]);
 const formRef = ref<HTMLFormElement>();
 const errors = ref<Error>();
 const router = useRouter();
 
-var date = new Date();
 const start = ref<Date>(new Date());
 const end = ref<Date>();
-const save = () => {
+const save = async () => {
   if (formRef.value?.reportValidity()) {
     try {
       store.addReservation({
@@ -34,86 +33,33 @@ const save = () => {
 </script>
 
 <template>
-  <form
-    ref="formRef"
-    class="max-w-7xl mx-auto px-4 mt-4 mb-12 space-y-4"
-    @submit.prevent="save"
-  >
+  <form ref="formRef" class="max-w-7xl mx-auto px-4 mt-4 mb-12 space-y-4" @submit.prevent="save">
     <h1 class="text-4xl font-bold">Add a reservation</h1>
     <section v-if="errors">
       <Message color="red" variant="light" summary="Error saving reservation">
         {{ errors.message }}
       </Message>
     </section>
-    <Entry
-      id="zone"
-      label="Zone"
-      required
-      :inline="false"
-      v-slot="{ id, required }"
-    >
-      <Select
-        :id="id"
-        :required="required"
-        v-model="zone"
-        @changed="zone = $event"
-      >
-        <option
-          v-for="z in store.zones"
-          :key="z.id"
-          :value="z"
-          :selected="z.id == zone?.id"
-        >
+    <Entry id="zone" label="Zone" required :inline="false" v-slot="{ id, required }">
+      <Select :id="id" :required="required" v-model="zone" @changed="zone = store.zone($event)">
+        <option v-for="z in store.zones" :key="z.id" :value="z.id" :selected="z.id == zone?.id">
           {{ z.label }}
         </option>
       </Select>
     </Entry>
-    <Entry
-      id="hotel"
-      label="Hotel"
-      required
-      :inline="false"
-      v-slot="{ id, required }"
-    >
+    <Entry id="hotel" label="Hotel" required :inline="false" v-slot="{ id, required }">
       <Select :id="id" :required="required" @changed="hotel = $event">
-        <option
-          v-for="h in store.users.filter(u => u.enabled)"
-          :key="h.id"
-          :value="h"
-          :selected="h.id == hotel?.id"
-        >
+        <option v-for="h in store.users.filter(u => u.enabled)" :key="h.id" :value="h" :selected="h.id == hotel?.id">
           {{ h.label }}
         </option>
       </Select>
     </Entry>
-    <Entry
-      id="start"
-      label="Start"
-      required
-      :inline="false"
-      v-slot="{ id, required }"
-    >
-      <Input
-        :id="id"
-        :required="required"
-        type="date"
-        :modelValue="start.toISOString().slice(0, 10)"
-        @changed="start = toZonedTime($event, 'America/Los_Angeles')"
-      />
+    <Entry id="start" label="Start" required :inline="false" v-slot="{ id, required }">
+      <Input :id="id" :required="required" type="date" :modelValue="start.toISOString().slice(0, 10)"
+        @changed="start = toZonedTime($event, 'America/Los_Angeles')" />
     </Entry>
-    <Entry
-      id="end"
-      label="End"
-      required
-      :inline="false"
-      v-slot="{ id, required }"
-    >
-      <Input
-        :id="id"
-        :required="required"
-        type="date"
-        @changed="end = toZonedTime($event, 'America/Los_Angeles')"
-      />
+    <Entry id="end" label="End" required :inline="false" v-slot="{ id, required }">
+      <Input :id="id" :required="required" type="date" @changed="end = toZonedTime($event, 'America/Los_Angeles')" />
     </Entry>
     <Button label="Save" />
   </form>
