@@ -67,6 +67,7 @@ export const useStore = defineStore('bus-reservation', () => {
   const addReservation = async (
     res: Pick<Reservation, 'end' | 'start' | 'user' | 'zone'>
   ) => {
+    if (res.end < res.start) throw Error(`End date is before start date`);
     const existing = reservations
       .reduce((acc, curr) => {
         if (curr.zone.id == res.zone.id) {
@@ -112,6 +113,8 @@ export const useStore = defineStore('bus-reservation', () => {
     const store = useAuthStore();
     const currentUser = await store.getUser();
     if (!currentUser) throw new Error('Not logged in.');
+
+    if (r.end < r.start) throw Error(`End date is before start date`);
 
     const existing = reservations
       .reduce((acc, curr) => {
