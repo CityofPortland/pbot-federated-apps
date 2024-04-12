@@ -1,39 +1,51 @@
 <script setup lang="ts">
-import { Entry, Select, Input, Button, Message } from '@pbotapps/components';
-import { ref } from 'vue';
-import { User, Zone, useStore } from '../../store';
-import { toZonedTime } from 'date-fns-tz';
+import { Entry, Input, Button, Message, Select } from '@pbotapps/components';
+import { onMounted, ref } from 'vue';
+import { User, Zone, Reservation, useStore } from '../../store';
 import { useRouter } from 'vue-router';
+import { toZonedTime } from 'date-fns-tz';
+import { format } from 'date-fns';
+import { userInfo } from 'os';
 
 const store = useStore();
-
-const hotel = ref<User>(store.users[0]);
-const zone = ref<Zone>(store.zones[0]);
 const formRef = ref<HTMLFormElement>();
 const errors = ref<Error>();
+const props = defineProps({ id: { type: String, required: true } });
 const router = useRouter();
+const hotel = ref<User>();
+const zone = ref<Zone>();
+const start = ref<Date>();
+const end = ref<Date>();
 
-const start = ref<Date>(new Date());
-const end = ref<Date>(new Date());
 const save = async () => {
   if (formRef.value?.reportValidity()) {
-    try {
-      store.addReservation({
-        zone: zone.value,
-        user: hotel.value,
-        start: start.value,
-        end: end.value,
-      });
-      router.push({ path: '/reservations' });
-    } catch (error) {
-      errors.value = error as Error;
+    if (zone.value && hotel.value && start.value && end.value) {
+      try {
+        await store.editReservation({
+          id: props.id,
+          zone: zone.value,
+          user: hotel.value,
+          start: start.value,
+          end: end.value,
+        });
+        router.push({ path: '/reservations' });
+      } catch (error) {
+        errors.value = error as Error;
+      }
     }
   }
 };
-const setZone = (id: string) => {
-  const z = store.zone(id);
-  if (z) zone.value = z;
-};
+onMounted(() => {
+  if (props.id) {
+    const r = store.reservation(props.id);
+    if (r) {
+      hotel.value = r.user;
+      zone.value = r.zone;
+      start.value = r.start;
+      end.value = r.end;
+    }
+  }
+});
 </script>
 
 <template>
@@ -42,12 +54,15 @@ const setZone = (id: string) => {
     class="max-w-7xl mx-auto px-4 mt-4 mb-12 space-y-4"
     @submit.prevent="save"
   >
-    <h1 class="text-4xl font-bold">Add a reservation</h1>
+    <header>
+      <h1 class="text-3xl mb-4 font-bold">Edit Reservation</h1>
+    </header>
     <section v-if="errors">
       <Message color="red" variant="light" summary="Error saving reservation">
         {{ errors.message }}
       </Message>
     </section>
+
     <Entry
       id="zone"
       label="Zone"
@@ -55,7 +70,12 @@ const setZone = (id: string) => {
       :inline="false"
       v-slot="{ id, required }"
     >
-      <Select :id="id" :required="required" v-model="zone" @changed="setZone">
+      <Select
+        :id="id"
+        :required="required"
+        :modelValue="zone"
+        @changed="zone = store.zone($event)"
+      >
         <option
           v-for="z in store.zones"
           :key="z.id"
@@ -73,7 +93,7 @@ const setZone = (id: string) => {
       :inline="false"
       v-slot="{ id, required }"
     >
-      <Select :id="id" :required="required" @changed="hotel = $event">
+      <Select :id="id" :required="required" :modelValue="hotel">
         <option
           v-for="h in store.users.filter(u => u.enabled)"
           :key="h.id"
@@ -85,6 +105,7 @@ const setZone = (id: string) => {
       </Select>
     </Entry>
     <Entry
+      v-if="start"
       id="start"
       label="Start"
       required
@@ -95,11 +116,12 @@ const setZone = (id: string) => {
         :id="id"
         :required="required"
         type="date"
-        :modelValue="start.toISOString().slice(0, 10)"
+        :modelValue="format(start, 'yyyy-MM-dd')"
         @changed="start = toZonedTime($event, 'America/Los_Angeles')"
       />
     </Entry>
     <Entry
+      v-if="end"
       id="end"
       label="End"
       required
@@ -110,9 +132,10 @@ const setZone = (id: string) => {
         :id="id"
         :required="required"
         type="date"
+        :modelValue="format(end, 'yyyy-MM-dd')"
         @changed="end = toZonedTime($event, 'America/Los_Angeles')"
       />
     </Entry>
-    <Button label="Save" />
+    <Button>Save</Button>
   </form>
 </template>
