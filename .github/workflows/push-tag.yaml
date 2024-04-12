@@ -13,6 +13,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - app: bus-reservation
+            directory: apps/bus-reservation
+            registry: pbotapps
+            repository: federation/app/bus-reservation
           - app: pudl
             directory: apps/pudl
             registry: pbotapps
