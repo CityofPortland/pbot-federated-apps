@@ -17,6 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - app: bus-reservation
+            directory: apps/bus-reservation
+            registry: pbotapps
+            repository: federation/app/bus-reservation
           - app: pudl
             directory: apps/pudl
             registry: pbotapps
@@ -41,7 +45,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./packages/actions/file-writer
-        if: matrix.files
         name: Create files
         with:
           input: |
@@ -84,6 +87,28 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - app: bus-reservation
+            directory: apps/bus-reservation
+            repository: federation/app/bus-reservation
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps-test
+            values: |
+              ingress:
+                enabled: true
+                annotations:
+                  nginx.ingress.kubernetes.io/rewrite-target: /$2
+                  nginx.ingress.kubernetes.io/server-snippet: |-
+                    add_header X-Robots-Tag "noindex, nofollow";
+                hosts:
+                  - host: pbotapps-test.portland.gov
+                    paths:
+                      - path: /bus-reservation(/|$)(.*)
+                        pathType: Prefix
+                tls:
+                  - secretName: pbotapps-test-portland-gov-tls
+                    hosts:
+                      - pbotapps-test.portland.gov
           - app: pudl
             directory: apps/pudl
             repository: federation/app/pudl
