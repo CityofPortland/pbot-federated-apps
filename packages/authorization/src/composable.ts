@@ -208,7 +208,6 @@ export function useAuth({
   watch(
     () => requests.value,
     async reqs => {
-      console.debug('watch requests', reqs);
       if (reqs.length > 0 && !reqs.find(req => req.initiated)) {
         redirect(reqs[0], async url => {
           window.location.assign(url);
