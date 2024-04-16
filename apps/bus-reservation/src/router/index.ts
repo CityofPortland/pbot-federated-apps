@@ -6,9 +6,8 @@ import Hotels from '../pages/hotels/list.vue';
 import HotelsAddEdit from '../pages/hotels/addedit.vue';
 import HotelsView from '../pages/hotels/view.vue';
 import Reservations from '../pages/reservations/list.vue';
-import ReservationAdd from '../pages/reservations/add.vue';
+import ReservationAddEdit from '../pages/reservations/addedit.vue';
 import ReservationsView from '../pages/reservations/view.vue';
-import ReservationsEdit from '../pages/reservations/edit.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: Home },
@@ -37,7 +36,13 @@ const routes: RouteRecordRaw[] = [
     },
   },
   { path: '/reservations', component: Reservations },
-  { path: '/reservations/add', component: ReservationAdd },
+  {
+    path: '/reservations/add',
+    component: ReservationAddEdit,
+    props: () => {
+      return { title: 'Add Reservation' };
+    },
+  },
   {
     path: '/reservations/:id',
     component: ReservationsView,
@@ -48,9 +53,9 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/reservations/:id/edit',
-    component: ReservationsEdit,
+    component: ReservationAddEdit,
     props: route => {
-      const id = route.params.id.toString();
+      const { id } = route.params;
       return { title: 'Edit Reservation', id };
     },
   },
