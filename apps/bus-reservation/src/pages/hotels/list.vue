@@ -13,7 +13,7 @@ const store = useStore();
         <Anchor :url="href" @click="navigate" class="ml-auto">Add</Anchor>
       </RouterLink>
     </header>
-    <table class="-ml-2 table-fixed w-full">
+    <table class="-ml-2 w-full table-fixed border-separate border-spacing-y-1">
       <thead class="text-left">
         <tr>
           <th class="font-semibold p-2">Name</th>
