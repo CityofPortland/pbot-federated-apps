@@ -74,6 +74,6 @@ onMounted(() => {
       >
       </Checkbox>
     </Entry>
-    <Button>Save</Button>
+    <Button label="Save" />
   </form>
 </template>
