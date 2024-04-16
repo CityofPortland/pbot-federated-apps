@@ -40,9 +40,7 @@ const now = toZonedTime(new Date(), tz);
               (a, b) => a.start.valueOf() - b.start.valueOf()
             )"
             :key="res.id"
-            :color="
-              res.start <= now && res.end >= now ? 'green' : 'transparent'
-            "
+            :color="res.start <= now && res.end >= now ? 'blue' : 'transparent'"
             variant="light"
           >
             <td class="p-2">
