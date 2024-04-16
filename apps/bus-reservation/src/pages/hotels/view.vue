@@ -16,7 +16,7 @@ const hotel = ref<User | undefined>(store.user(props.id));
       <h1 class="text-4xl font-bold">{{ hotel.label }}</h1>
     </header>
     <main class="flex flex-col md:flex-row gap-4">
-      <section class="md:w-3/4">
+      <section class="md:w-2/3">
         <FieldList class="flex flex-col gap-4">
           <Field name="Email" display="inline">
             {{ hotel.email }}
