@@ -21,7 +21,9 @@ const now = toZonedTime(new Date(), tz);
       </router-link>
     </header>
     <main>
-      <table class="-ml-2 w-full table-fixed">
+      <table
+        class="-ml-2 w-full table-fixed border-separate border-spacing-y-1"
+      >
         <thead class="pb-4">
           <tr class="text-left">
             <th class="font-semibold p-2">Hotel</th>
@@ -32,21 +34,19 @@ const now = toZonedTime(new Date(), tz);
           </tr>
         </thead>
         <tbody>
-          <tr
+          <Box
+            as="tr"
             v-for="res in store.reservations.sort(
               (a, b) => a.start.valueOf() - b.start.valueOf()
             )"
             :key="res.id"
-            class="hover:bg-gray-100"
+            :color="
+              res.start <= now && res.end >= now ? 'green' : 'transparent'
+            "
+            variant="light"
           >
-            <td class="flex items-center gap-1 p-2">
-              <span
-                v-if="res.start <= now && res.end >= now"
-                class="-ml-3 animate-pulse"
-              >
-                <Box color="green" class="rounded-full w-2 h-2"></Box>
-              </span>
-              <span>{{ res.user.label }}</span>
+            <td class="p-2">
+              {{ res.user.label }}
             </td>
             <td class="p-2">{{ res.zone.label }}</td>
             <td class="p-2">{{ res.start.toLocaleDateString() }}</td>
@@ -67,7 +67,7 @@ const now = toZonedTime(new Date(), tz);
                 <Anchor :url="href" @click="navigate">Edit</Anchor>
               </router-link>
             </td>
-          </tr>
+          </Box>
         </tbody>
       </table>
     </main>
