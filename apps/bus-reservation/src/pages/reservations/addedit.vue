@@ -2,6 +2,7 @@
 import { Entry, Select, Input, Button, Message } from '@pbotapps/components';
 import { onMounted, ref } from 'vue';
 import { User, Zone, useStore } from '../../store';
+import { endOfDay, startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useRouter } from 'vue-router';
 import { format } from 'date-fns';
@@ -11,16 +12,18 @@ const props = defineProps({
   title: { type: String, required: true },
 });
 
+const router = useRouter();
 const store = useStore();
 
-const hotel = ref<User>(store.users[0]);
-const zone = ref<Zone>(store.zones[0]);
-const formRef = ref<HTMLFormElement>();
-const errors = ref<Error>();
-const router = useRouter();
+const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const now = toZonedTime(new Date(), tz);
 
-const start = ref<Date>(new Date());
-const end = ref<Date>(new Date());
+const end = ref<Date>(endOfDay(now));
+const errors = ref<Error>();
+const formRef = ref<HTMLFormElement>();
+const hotel = ref<User>(store.users[0]);
+const start = ref<Date>(startOfDay(now));
+const zone = ref<Zone>(store.zones[0]);
 
 const save = async () => {
   if (formRef.value?.reportValidity()) {
@@ -77,10 +80,10 @@ const setHotel = (id: string) => {
 <template>
   <form
     ref="formRef"
-    class="max-w-7xl mx-auto px-4 mt-4 mb-12 space-y-4"
+    class="max-w-7xl mx-auto px-4 my-8 space-y-4"
     @submit.prevent="save"
   >
-    <h1 class="text-4xl font-bold">{{ title }}</h1>
+    <h1 class="text-4xl font-bold mb-8">{{ title }}</h1>
     <section v-if="errors">
       <Message color="red" variant="light" summary="Error saving reservation">
         {{ errors.message }}
@@ -133,8 +136,8 @@ const setHotel = (id: string) => {
         :id="id"
         :required="required"
         type="date"
-        :modelValue="start.toISOString().slice(0, 10)"
-        @changed="start = toZonedTime($event, 'America/Los_Angeles')"
+        :modelValue="format(toZonedTime(start, tz), 'yyyy-MM-dd')"
+        @changed="start = startOfDay(toZonedTime($event, tz))"
       />
     </Entry>
     <Entry
@@ -148,8 +151,8 @@ const setHotel = (id: string) => {
         :id="id"
         :required="required"
         type="date"
-        :modelValue="format(end, 'yyyy-MM-dd')"
-        @changed="end = toZonedTime($event, 'America/Los_Angeles')"
+        :modelValue="format(toZonedTime(end, tz), 'yyyy-MM-dd')"
+        @changed="end = endOfDay(toZonedTime($event, tz))"
       />
     </Entry>
     <Button label="Save" />

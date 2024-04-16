@@ -47,7 +47,7 @@ const routes: RouteRecordRaw[] = [
     path: '/reservations/:id',
     component: ReservationsView,
     props: route => {
-      const id = route.params.id.toString();
+      const { id } = route.params;
       return { id };
     },
   },

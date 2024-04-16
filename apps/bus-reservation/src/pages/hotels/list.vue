@@ -13,22 +13,21 @@ const store = useStore();
         <Anchor :url="href" @click="navigate" class="ml-auto">Add</Anchor>
       </RouterLink>
     </header>
-    <main>
-      <header class="grid grid-cols-4 gap-2 mb-2">
-        <span class="font-semibold">Name</span>
-        <span class="font-semibold">Email</span>
-        <span class="font-semibold">Enabled</span>
-      </header>
-      <ul>
-        <li
-          v-for="user in store.users"
-          :key="user.id"
-          class="grid grid-cols-4 items-start gap-2 px-2 py-1 -mx-2 hover:bg-gray-100"
-        >
-          <span>{{ user.label }}</span>
-          <span>{{ user.email }}</span>
-          <span>{{ user.enabled }}</span>
-          <div class="flex gap-4">
+    <table class="-ml-2 w-full table-fixed border-separate border-spacing-y-1">
+      <thead class="text-left">
+        <tr>
+          <th class="font-semibold p-2">Name</th>
+          <th class="font-semibold p-2">Email</th>
+          <th class="font-semibold p-2">Enabled</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="user in store.users" :key="user.id">
+          <td class="p-2">{{ user.label }}</td>
+          <td class="p-2">{{ user.email }}</td>
+          <td class="p-2">{{ user.enabled }}</td>
+          <td class="flex gap-4 p-2">
             <router-link
               :to="`/hotels/${user.id}`"
               custom
@@ -43,9 +42,9 @@ const store = useStore();
             >
               <Anchor :url="href" @click="navigate">Edit</Anchor>
             </router-link>
-          </div>
-        </li>
-      </ul>
-    </main>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </article>
 </template>
