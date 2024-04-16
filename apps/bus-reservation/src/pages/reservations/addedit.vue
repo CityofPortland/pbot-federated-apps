@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { Entry, Select, Input, Button, Message } from '@pbotapps/components';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { User, Zone, useStore } from '../../store';
 import { toZonedTime } from 'date-fns-tz';
 import { useRouter } from 'vue-router';
+import { format } from 'date-fns';
+
+const props = defineProps({
+  id: { type: String, required: false },
+  title: { type: String, required: true },
+});
 
 const store = useStore();
 
@@ -15,24 +21,56 @@ const router = useRouter();
 
 const start = ref<Date>(new Date());
 const end = ref<Date>(new Date());
+
 const save = async () => {
   if (formRef.value?.reportValidity()) {
     try {
-      store.addReservation({
-        zone: zone.value,
-        user: hotel.value,
-        start: start.value,
-        end: end.value,
-      });
-      router.push({ path: '/reservations' });
+      if (props.id) {
+        if (zone.value && hotel.value && start.value && end.value) {
+          await store.editReservation({
+            id: props.id,
+            zone: zone.value,
+            user: hotel.value,
+            start: start.value,
+            end: end.value,
+          });
+          router.push({ path: '/reservations' });
+        }
+      } else {
+        await store.addReservation({
+          zone: zone.value,
+          user: hotel.value,
+          start: start.value,
+          end: end.value,
+        });
+        router.push({ path: '/reservations' });
+      }
     } catch (error) {
       errors.value = error as Error;
     }
   }
 };
+
+onMounted(() => {
+  if (props.id) {
+    const r = store.reservation(props.id);
+    if (r) {
+      hotel.value = r.user;
+      zone.value = r.zone;
+      start.value = r.start;
+      end.value = r.end;
+    }
+  }
+});
+
 const setZone = (id: string) => {
   const z = store.zone(id);
   if (z) zone.value = z;
+};
+
+const setHotel = (id: string) => {
+  const h = store.user(id);
+  if (h) hotel.value = h;
 };
 </script>
 
@@ -42,7 +80,7 @@ const setZone = (id: string) => {
     class="max-w-7xl mx-auto px-4 mt-4 mb-12 space-y-4"
     @submit.prevent="save"
   >
-    <h1 class="text-4xl font-bold">Add a reservation</h1>
+    <h1 class="text-4xl font-bold">{{ title }}</h1>
     <section v-if="errors">
       <Message color="red" variant="light" summary="Error saving reservation">
         {{ errors.message }}
@@ -55,7 +93,7 @@ const setZone = (id: string) => {
       :inline="false"
       v-slot="{ id, required }"
     >
-      <Select :id="id" :required="required" v-model="zone" @changed="setZone">
+      <Select :id="id" :required="required" @changed="setZone">
         <option
           v-for="z in store.zones"
           :key="z.id"
@@ -73,11 +111,11 @@ const setZone = (id: string) => {
       :inline="false"
       v-slot="{ id, required }"
     >
-      <Select :id="id" :required="required" @changed="hotel = $event">
+      <Select :id="id" :required="required" @changed="setHotel">
         <option
           v-for="h in store.users.filter(u => u.enabled)"
           :key="h.id"
-          :value="h"
+          :value="h.id"
           :selected="h.id == hotel?.id"
         >
           {{ h.label }}
@@ -110,6 +148,7 @@ const setZone = (id: string) => {
         :id="id"
         :required="required"
         type="date"
+        :modelValue="format(end, 'yyyy-MM-dd')"
         @changed="end = toZonedTime($event, 'America/Los_Angeles')"
       />
     </Entry>
