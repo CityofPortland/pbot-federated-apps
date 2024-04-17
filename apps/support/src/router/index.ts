@@ -16,7 +16,6 @@ const router = createRouter({
 });
 
 router.beforeResolve(async to => {
-  console.debug('beforeResolve');
   // Always allow auth routes, avoids infinite redirect
   if (authRoutes.map(r => r.path).includes(to.path)) return true;
 
@@ -30,7 +29,6 @@ router.beforeResolve(async to => {
 
     // If the token is unexpired, then go through
     if (payload.exp && new Date(payload.exp * 1000) > new Date()) {
-      console.debug('beforeResolve', 'allowing navigation');
       return true;
     }
   }
