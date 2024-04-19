@@ -1,5 +1,6 @@
 import { User } from '@pbotapps/authorization';
 import { createRepository } from '@pbotapps/cosmos';
+import { Context } from '@pbotapps/graphql';
 import {
   GraphQLID,
   GraphQLList,
@@ -81,17 +82,25 @@ export const GraphQLReservationSchema = new GraphQLSchema({
           args: {
             payload: Pick<Reservation, 'hotelId' | 'zoneId' | 'start' | 'end'>;
           },
-          context: { user: User }
+          { user, rules }: Context
         ) {
-          if (!context.user) {
+          if (!user) {
             throw new Error('Must be logged in to add reservations');
           }
 
+          if (
+            !rules ||
+            !rules.some(rule => {
+              rule.subject == 'reservation' && ['write'].includes(rule.action);
+            })
+          )
+            throw new Error('Unauthorized to add reservations');
+
           const res: Partial<Reservation> = {
             created: new Date(),
-            creator: context.user.email,
+            creator: user._id,
             updated: new Date(),
-            updater: context.user.email,
+            updater: user._id,
             ...args.payload,
           };
 
@@ -114,17 +123,25 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             id: string;
             payload: Pick<Reservation, 'hotelId' | 'zoneId' | 'start' | 'end'>;
           },
-          context: { user: User }
+          { user, rules }: Context
         ) {
-          if (!context.user) {
+          if (!user) {
             throw new Error('Must be logged in to edit reservations');
           }
+
+          if (
+            !rules ||
+            !rules.some(rule => {
+              rule.subject == 'reservation' && ['write'].includes(rule.action);
+            })
+          )
+            throw new Error('Unauthorized to edit reservations');
 
           const repo = await repository();
 
           let res = {
             updated: new Date(),
-            updater: context.user.email,
+            updater: user._id,
             ...args.payload,
           };
 
