@@ -21,6 +21,37 @@ const schema = mergeSchemas({
 // where the GraphQL over HTTP express request handler is
 const app = express();
 
+app.use(
+  cors(),
+  json(),
+  handleToken({ fail: false }),
+  handleRules(
+    {
+      getRules: async ({ user, application }) => {
+        const rules = new Array<Partial<RuleType>>();
+
+        if (['Michael.McDonald@portlandoregon.gov'].includes(user._id)) {
+          rules.push(
+            {
+              action: 'write',
+              application,
+              subject: 'reservation',
+            },
+            {
+              action: 'write',
+              application,
+              subject: 'hotel',
+            }
+          );
+        }
+
+        return rules;
+      },
+    },
+    { _id: 'reservation' }
+  )
+);
+
 app.get('/probe', (_, res) => res.status(200).send('Success!'));
 
 if (process.env.NODE_ENV == 'development') {
@@ -34,25 +65,12 @@ if (process.env.NODE_ENV == 'development') {
       };
     };
 
-    app.get('/playground', graphqlPlayground({ endpoint: '/graphql' }));
+    app.get('/playground', graphqlPlayground({ endpoint: '/' }));
   });
 }
 
-app.use(
-  '/graphql',
-  cors(),
-  json(),
-  handleToken({ fail: false }),
-  handleRules(
-    {
-      getRules: async () => {
-        const rules = new Array<Partial<RuleType>>();
-
-        return rules;
-      },
-    },
-    { _id: 'reservation' }
-  ),
+app.all(
+  '/',
   createHandler({
     schema,
     context: async req => {
