@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { Anchor } from '@pbotapps/components';
 import { useStore } from '../../store';
+import { onMounted } from 'vue';
 
 const store = useStore();
+onMounted(() => {
+  store.getHotel();
+});
 </script>
 
 <template>

@@ -1,4 +1,5 @@
-import { createAuthStore } from '@pbotapps/authorization';
+import { RuleType, createAuthStore } from '@pbotapps/authorization';
+import { query } from '@pbotapps/components';
 import { defineStore } from 'pinia';
 import { v4 as uuid } from 'uuid';
 import { computed, reactive } from 'vue';
@@ -62,6 +63,95 @@ export const useStore = defineStore('bus-reservation', () => {
     if (!user) throw new Error('You must be logged in to modify data.');
 
     return user;
+  };
+
+  const addHotel = async (u: User) => {
+    const authStore = useAuthStore();
+    const token = await authStore.getToken();
+    if (!token) throw Error('User not log in');
+
+    const res = await query<{ addHotel: User }>({
+      operation: `
+      mutation addHotel($hotel: HotelAddInput!) {
+        addHotel(payload: $hotel)
+        { id  
+          creator
+          created
+          updater
+          updated
+          email
+          enabled
+          label
+        }
+      }`,
+      variables: { hotel: u },
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.data) {
+      users.push(res.data.addHotel);
+    }
+  };
+
+  const editHotel = async (u: User) => {
+    const authStore = useAuthStore();
+    const token = await authStore.getToken();
+    if (!token) throw Error('User not log in');
+
+    const res = await query<{ editHotel: User }>({
+      operation: `
+      mutation editHotel($id: ID!, $hotel: HotelEditInput!) {
+        editHotel(id: $id , payload: $hotel)
+        { id  
+          creator
+          created
+          updater
+          updated
+          email
+          enabled
+          label
+        }
+      }`,
+      variables: {
+        id: u.id,
+        hotel: { email: u.email, enabled: u.enabled, label: u.label },
+      },
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.data) {
+      const idx = users.findIndex(x => x.id == u.id);
+      if (idx == -1) throw Error(`Cannot find user with id '${u.id}`);
+      users[idx] = res.data.editHotel;
+    }
+  };
+
+  const getHotel = async () => {
+    const authStore = useAuthStore();
+    const token = await authStore.getToken();
+    if (!token) throw Error('User not log in');
+    const res = await query<{ hotels: User[] }>({
+      operation: `{hotels{ 
+        id
+        email
+        enabled
+        label
+        creator
+        created
+        updater
+        updated
+      }}`,
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.data) {
+      users.splice(0, users.length);
+      users.push(...res.data.hotels);
+    }
   };
 
   const addReservation = async (
@@ -156,40 +246,10 @@ export const useStore = defineStore('bus-reservation', () => {
     };
   };
 
-  const editUser = async (u: User) => {
-    const currentUser = await getCurrentUser();
-
-    const idx = users.findIndex(x => x.id == u.id);
-    if (idx == -1) throw Error(`Cannot find user with id '${u.id}`);
-
-    users[idx] = {
-      ...users[idx],
-      ...u,
-      updated: new Date(),
-      updater: currentUser.email,
-    };
-  };
-
-  const addUser = async (u: User) => {
-    const currentUser = await getCurrentUser();
-
-    const user = {
-      ...u,
-      id: uuid(),
-      created: new Date(),
-      creator: currentUser.email,
-      updated: new Date(),
-      updater: currentUser.email,
-    };
-
-    users.push(user);
-  };
-
   const user = computed(() => (id: string) => users.find(x => x.id == id));
   const reservation = computed(
     () => (id: string) => reservations.find(x => x.id == id)
   );
-
   const zone = computed(() => (id: string) => zones.find(x => x.id == id));
 
   return {
@@ -202,8 +262,9 @@ export const useStore = defineStore('bus-reservation', () => {
     reservation,
     zone,
     // actions
-    addUser,
-    editUser,
+    getHotel,
+    addHotel,
+    editHotel,
     addReservation,
     editReservation,
   };
