@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Field, FieldList } from '@pbotapps/components';
 import { ref } from 'vue';
-import { User, useStore } from '../../store';
+import { Hotel, useStore } from '../../store';
 
 const props = defineProps({ id: { type: String, required: true } });
 
 const store = useStore();
 
-const hotel = ref<User | undefined>(store.user(props.id));
+const hotel = ref<Hotel | undefined>(store.hotel(props.id));
 </script>
 
 <template>

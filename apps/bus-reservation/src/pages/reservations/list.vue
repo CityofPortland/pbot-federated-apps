@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { Anchor, Box } from '@pbotapps/components';
-import { startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useRoute } from 'vue-router';
 import { useStore } from '../../store';
+import { onMounted } from 'vue';
 
 const { path } = useRoute();
 const store = useStore();
 
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const now = toZonedTime(new Date(), tz);
+
+onMounted(() => {
+  store.getReservations();
+});
 </script>
 
 <template>
@@ -53,7 +57,7 @@ const now = toZonedTime(new Date(), tz);
             variant="light"
           >
             <td class="p-2">
-              {{ res.user.label }}
+              {{ res.hotel.label }}
             </td>
             <td class="p-2">{{ res.zone.label }}</td>
             <td class="p-2">{{ res.start.toLocaleDateString() }}</td>

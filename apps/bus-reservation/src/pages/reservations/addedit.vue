@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Entry, Select, Input, Button, Message } from '@pbotapps/components';
 import { onMounted, ref } from 'vue';
-import { User, Zone, useStore } from '../../store';
+import { Hotel, Zone, useStore } from '../../store';
 import { endOfDay, startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useRouter } from 'vue-router';
@@ -21,7 +21,7 @@ const now = toZonedTime(new Date(), tz);
 const end = ref<Date>(endOfDay(now));
 const errors = ref<Error>();
 const formRef = ref<HTMLFormElement>();
-const hotel = ref<User>(store.users[0]);
+const hotel = ref<Hotel>(store.hotels[0]);
 const start = ref<Date>(startOfDay(now));
 const zone = ref<Zone>(store.zones[0]);
 
@@ -33,7 +33,7 @@ const save = async () => {
           await store.editReservation({
             id: props.id,
             zone: zone.value,
-            user: hotel.value,
+            hotel: hotel.value,
             start: start.value,
             end: end.value,
           });
@@ -42,7 +42,7 @@ const save = async () => {
       } else {
         await store.addReservation({
           zone: zone.value,
-          user: hotel.value,
+          hotel: hotel.value,
           start: start.value,
           end: end.value,
         });
@@ -55,10 +55,12 @@ const save = async () => {
 };
 
 onMounted(() => {
+  store.getZones();
+  store.getHotel();
   if (props.id) {
     const r = store.reservation(props.id);
     if (r) {
-      hotel.value = r.user;
+      hotel.value = r.hotel;
       zone.value = r.zone;
       start.value = r.start;
       end.value = r.end;
@@ -72,7 +74,7 @@ const setZone = (id: string) => {
 };
 
 const setHotel = (id: string) => {
-  const h = store.user(id);
+  const h = store.hotel(id);
   if (h) hotel.value = h;
 };
 </script>
@@ -116,7 +118,7 @@ const setHotel = (id: string) => {
     >
       <Select :id="id" :required="required" @changed="setHotel">
         <option
-          v-for="h in store.users.filter(u => u.enabled)"
+          v-for="h in store.hotels.filter(u => u.enabled)"
           :key="h.id"
           :value="h.id"
           :selected="h.id == hotel?.id"

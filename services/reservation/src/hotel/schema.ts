@@ -1,7 +1,6 @@
 import { createRepository } from '@pbotapps/cosmos';
 import { Context } from '@pbotapps/graphql';
 import {
-  GraphQLBoolean,
   GraphQLID,
   GraphQLList,
   GraphQLNonNull,
@@ -23,10 +22,7 @@ export const GraphQLHotelSchema = new GraphQLSchema({
       return {
         hotels: {
           type: new GraphQLList(GraphQLHotelType),
-          args: {
-            enabled: { type: GraphQLBoolean },
-          },
-          async resolve(_, args: { enabled: boolean }, { rules }: Context) {
+          async resolve(_, _args, { rules }: Context) {
             if (
               !rules ||
               !rules.some(
@@ -38,12 +34,7 @@ export const GraphQLHotelSchema = new GraphQLSchema({
 
             const repo = await createRepository<Hotel>('reservations', 'hotel');
 
-            let hotels = await repo.getAll();
-
-            if (args.enabled != undefined) {
-              hotels = hotels.filter(h => h.enabled == args.enabled);
-            }
-
+            const hotels = await repo.getAll();
             return hotels;
           },
         },

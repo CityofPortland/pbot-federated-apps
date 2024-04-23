@@ -2,7 +2,6 @@
 import { Field, FieldList } from '@pbotapps/components';
 import { onMounted, ref } from 'vue';
 import { Reservation, useStore } from '../../store';
-import { useRouter } from 'vue-router';
 
 const reservation = ref<Reservation>();
 const props = defineProps({ id: { type: String, required: true } });
@@ -24,7 +23,7 @@ onMounted(() => {
       <section class="md:w-2/3">
         <FieldList class="flex flex-col gap-4">
           <Field name="Hotel" display="inline">
-            {{ reservation.user.label }}
+            {{ reservation.hotel.label }}
           </Field>
           <Field name="Zone" display="inline">
             {{ reservation.zone.label }}

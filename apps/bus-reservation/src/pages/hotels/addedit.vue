@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Checkbox, Entry, Input, Button, Message } from '@pbotapps/components';
 import { onMounted, ref } from 'vue';
-import { User, useStore } from '../../store';
+import { Hotel, useStore } from '../../store';
 import { useRouter } from 'vue-router';
 
 const props = defineProps({
@@ -11,7 +11,7 @@ const props = defineProps({
 
 const errors = ref<Error>();
 const formRef = ref<HTMLFormElement>();
-const hotel = ref<Partial<User>>();
+const hotel = ref<Partial<Hotel>>();
 
 const router = useRouter();
 const store = useStore();
@@ -20,9 +20,9 @@ const save = async () => {
   if (formRef.value?.reportValidity()) {
     try {
       if (props.id) {
-        await store.editHotel(hotel.value as User);
+        await store.editHotel(hotel.value as Hotel);
       } else {
-        await store.addHotel(hotel.value as User);
+        await store.addHotel(hotel.value as Hotel);
       }
       router.push({ path: '/hotels' });
     } catch (error) {
@@ -33,7 +33,7 @@ const save = async () => {
 
 onMounted(() => {
   if (props.id) {
-    const h = store.user(props.id);
+    const h = store.hotel(props.id);
     if (h) {
       hotel.value = { ...h };
     }
