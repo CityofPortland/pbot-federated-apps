@@ -7,6 +7,7 @@ import { createHandler } from 'graphql-http/lib/use/express';
 
 import { GraphQLHotelSchema } from './hotel/schema.js';
 import { GraphQLReservationSchema } from './reservation/schema.js';
+import { GraphQLRuleSchema } from './rules.js';
 import { GraphQLZoneSchema } from './zone/schema.js';
 
 if (process.env.NODE_ENV == 'development') {
@@ -14,7 +15,12 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 const schema = mergeSchemas({
-  schemas: [GraphQLHotelSchema, GraphQLReservationSchema, GraphQLZoneSchema],
+  schemas: [
+    GraphQLHotelSchema,
+    GraphQLReservationSchema,
+    GraphQLRuleSchema,
+    GraphQLZoneSchema,
+  ],
 });
 
 // Create a express instance serving all methods on `/graphql`
@@ -27,19 +33,17 @@ app.use(
   handleToken({ fail: false }),
   handleRules(
     {
-      getRules: async ({ user, application }) => {
+      getRules: async ({ user }) => {
         const rules = new Array<Partial<RuleType>>();
 
         if (['Michael.McDonald@portlandoregon.gov'].includes(user._id)) {
           rules.push(
             {
               action: 'write',
-              application,
               subject: 'reservation',
             },
             {
               action: 'write',
-              application,
               subject: 'hotel',
             }
           );
