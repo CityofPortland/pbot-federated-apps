@@ -8,15 +8,46 @@ import HotelsView from '../pages/hotels/view.vue';
 import Reservations from '../pages/reservations/list.vue';
 import ReservationAddEdit from '../pages/reservations/addedit.vue';
 import ReservationsView from '../pages/reservations/view.vue';
+import { useStore } from '../store/index.js';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: Home },
-  { path: '/hotels', component: Hotels },
+  {
+    path: '/hotels',
+    component: Hotels,
+    beforeEnter: async () => {
+      const store = useStore();
+
+      if (!store.rules) {
+        await store.getRules();
+      }
+
+      const rules = store.rules.find(
+        r => r.subject == 'hotel' && r.action == 'write'
+      );
+
+      // reject the navigation
+      return rules ? true : { path: '/' };
+    },
+  },
   {
     path: '/hotels/add',
     component: HotelsAddEdit,
     props: () => {
       return { title: 'Add Hotel' };
+    },
+    beforeEnter: async () => {
+      const store = useStore();
+
+      if (!store.rules) {
+        await store.getRules();
+      }
+
+      const rules = store.rules.find(
+        r => r.subject == 'hotel' && r.action == 'write'
+      );
+      // reject the navigation
+      return rules ? true : { path: '/' };
     },
   },
   {
@@ -34,6 +65,19 @@ const routes: RouteRecordRaw[] = [
       const { id } = route.params;
       return { title: 'Edit Hotel', id };
     },
+    beforeEnter: async () => {
+      const store = useStore();
+
+      if (!store.rules) {
+        await store.getRules();
+      }
+
+      const rules = store.rules.find(
+        r => r.subject == 'hotel' && r.action == 'write'
+      );
+      // reject the navigation
+      return rules ? true : { path: '/' };
+    },
   },
   { path: '/reservations', component: Reservations },
   {
@@ -41,6 +85,19 @@ const routes: RouteRecordRaw[] = [
     component: ReservationAddEdit,
     props: () => {
       return { title: 'Add Reservation' };
+    },
+    beforeEnter: async () => {
+      const store = useStore();
+
+      if (!store.rules) {
+        await store.getRules();
+      }
+
+      const rules = store.rules.find(
+        r => r.subject == 'reservation' && r.action == 'write'
+      );
+      // reject the navigation
+      return rules ? true : { path: '/reservations' };
     },
   },
   {
@@ -57,6 +114,19 @@ const routes: RouteRecordRaw[] = [
     props: route => {
       const { id } = route.params;
       return { title: 'Edit Reservation', id };
+    },
+    beforeEnter: async () => {
+      const store = useStore();
+
+      if (!store.rules) {
+        await store.getRules();
+      }
+
+      const rules = store.rules.find(
+        r => r.subject == 'reservation' && r.action == 'write'
+      );
+      // reject the navigation
+      return rules ? true : { path: '/reservations' };
     },
   },
   ...authRoutes,

@@ -12,10 +12,11 @@ import {
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useAuthStore } from './store';
+import { useAuthStore, useStore } from './store';
 
 const { getToken } = useAuthStore();
 const { currentRoute } = useRouter();
+const store = useStore();
 
 const accessToken = ref<string>();
 const menuOpen = ref(false);
@@ -24,6 +25,7 @@ const path = computed(() => currentRoute.value.path);
 
 onMounted(async () => {
   accessToken.value = await getToken();
+  store.getRules();
 });
 </script>
 
@@ -42,7 +44,7 @@ onMounted(async () => {
             <Anchor :url="href" @click="navigate">Reservations</Anchor>
           </RouterLink>
           <RouterLink
-            v-if="accessToken"
+            v-if="store.rules.find(r => r.subject == 'hotel')"
             to="/hotels"
             custom
             v-slot="{ href, navigate }"

@@ -16,7 +16,16 @@ const now = toZonedTime(new Date(), tz);
   <article class="max-w-7xl mx-auto px-4 my-8 space-y-4">
     <header class="flex mb-8">
       <h1 class="text-4xl font-bold">Reservations</h1>
-      <router-link :to="`${path}/add`" custom v-slot="{ href, navigate }">
+      <router-link
+        v-if="
+          store.rules.find(
+            r => r.subject == 'reservation' && r.action == 'write'
+          )
+        "
+        :to="`${path}/add`"
+        custom
+        v-slot="{ href, navigate }"
+      >
         <Anchor class="ml-auto" :url="href" @click="navigate">Add</Anchor>
       </router-link>
     </header>
@@ -58,6 +67,11 @@ const now = toZonedTime(new Date(), tz);
                 <Anchor :url="href" @click="navigate">View</Anchor>
               </router-link>
               <router-link
+                v-if="
+                  store.rules.find(
+                    r => r.subject == 'reservation' && r.action == 'write'
+                  )
+                "
                 :to="`/reservations/${res.id}/edit`"
                 custom
                 v-slot="{ href, navigate }"
