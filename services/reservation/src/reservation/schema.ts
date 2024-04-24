@@ -1,4 +1,3 @@
-import { User } from '@pbotapps/authorization';
 import { createRepository } from '@pbotapps/cosmos';
 import { Context } from '@pbotapps/graphql';
 import {
@@ -21,7 +20,7 @@ const repository = () =>
   createRepository<Partial<Reservation>>(
     'reservations',
     'reservation',
-    'zoneId'
+    '/zoneId'
   );
 
 export const GraphQLReservationSchema = new GraphQLSchema({
