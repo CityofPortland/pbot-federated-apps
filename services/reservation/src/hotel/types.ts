@@ -1,6 +1,7 @@
 import { Context } from '@pbotapps/graphql';
 import {
   GraphQLBoolean,
+  GraphQLID,
   GraphQLInputObjectType,
   GraphQLNonNull,
   GraphQLObjectType,
@@ -58,6 +59,15 @@ export const GraphQLHotelAddInputType = new GraphQLInputObjectType({
     },
     label: {
       type: new GraphQLNonNull(GraphQLString),
+    },
+  },
+});
+
+export const GraphQLHotelDeleteInputType = new GraphQLInputObjectType({
+  name: 'HotelDeleteInput',
+  fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
     },
   },
 });

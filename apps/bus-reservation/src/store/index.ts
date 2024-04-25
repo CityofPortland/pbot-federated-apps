@@ -64,8 +64,8 @@ export const useStore = defineStore('bus-reservation', () => {
       operation: `
       mutation addHotel($hotel: HotelAddInput!) {
         addHotel(payload: $hotel)
-        { 
-          id  
+        {
+          id
           creator
           created
           updater
@@ -94,8 +94,8 @@ export const useStore = defineStore('bus-reservation', () => {
       operation: `
       mutation editHotel($id: ID!, $hotel: HotelEditInput!) {
         editHotel(id: $id , payload: $hotel)
-        { 
-          id  
+        {
+          id
           creator
           created
           updater
@@ -120,21 +120,46 @@ export const useStore = defineStore('bus-reservation', () => {
     }
   };
 
-  const getHotel = async () => {
+  const deleteHotel = async (id: string) => {
+    const authStore = useAuthStore();
+    const token = await authStore.getToken();
+    if (!token) throw Error('User not loggged in');
+    await query<{ deleteHotel: boolean }>({
+      operation: `
+      mutation deleteHotel($hotel: HotelDeleteInput!) {
+        deleteHotel(payload: $hotel)
+      }`,
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+      variables: {
+        hotel: {
+          id,
+        },
+      },
+    });
+
+    getHotels();
+  };
+
+  const getHotels = async () => {
     const authStore = useAuthStore();
     const token = await authStore.getToken();
     if (!token) throw Error('User not log in');
     const res = await query<{ hotels: User[] }>({
-      operation: `{hotels{ 
-        id
-        email
-        enabled
-        label
-        creator
-        created
-        updater
-        updated
-      }}`,
+      operation: `
+      query getHotels {
+        hotels {
+          id
+          email
+          enabled
+          label
+          creator
+          created
+          updater
+          updated
+        }
+      }`,
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -284,9 +309,10 @@ export const useStore = defineStore('bus-reservation', () => {
     reservation,
     zone,
     // actions
-    getHotel,
+    getHotels,
     addHotel,
     editHotel,
+    deleteHotel,
     addReservation,
     editReservation,
     getRules,
