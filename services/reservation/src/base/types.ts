@@ -14,17 +14,25 @@ export const baseFields = () => {
   return {
     id: { type: new GraphQLNonNull(GraphQLID) },
     creator: {
-      type: new GraphQLNonNull(GraphQLString),
-      resolve: (parent: Base, _: unknown, context: Context) =>
-        context.user ? parent.creator : null,
+      type: GraphQLString,
+      resolve: (parent: Base, _: unknown, context: Context) => {
+        if (!context.user) {
+          return null;
+        }
+        return parent.creator;
+      },
     },
     created: {
       type: new GraphQLNonNull(GraphQLDateTime),
     },
     updater: {
-      type: new GraphQLNonNull(GraphQLString),
-      resolve: (parent: Base, _: unknown, context: Context) =>
-        context.user ? parent.updater : null,
+      type: GraphQLString,
+      resolve: (parent: Base, _: unknown, context: Context) => {
+        if (!context.user) {
+          return null;
+        }
+        return parent.updater;
+      },
     },
     updated: {
       type: new GraphQLNonNull(GraphQLDateTime),

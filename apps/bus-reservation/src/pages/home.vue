@@ -1,42 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { Anchor, Box, Button } from '@pbotapps/components';
-
-const now = new Date();
-
-function generateRandomDate(from: Date, to: Date) {
-  return new Date(
-    from.getTime() + Math.random() * (to.getTime() - from.getTime())
-  );
-}
-
-const data = ref(
-  [...Array(5).keys()].map(() => {
-    return {
-      timestamp: generateRandomDate(new Date(2020, 1, 1), now).toISOString(),
-      data: Math.random() * 2 ** 20,
-    };
-  })
-);
-
-const enriched = computed(() => {
-  return data.value
-    .map(d => {
-      return {
-        timestamp: new Date(d.timestamp),
-        data: d.data,
-      };
-    })
-    .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
-    .map(d => {
-      return {
-        year: d.timestamp.getFullYear(),
-        month: d.timestamp.getMonth() + 1,
-        timestamp: d.timestamp,
-        data: d.data,
-      };
-    });
-});
+import { Box } from '@pbotapps/components';
 </script>
 
 <template>

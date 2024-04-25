@@ -2,7 +2,7 @@ import { RuleType, createAuthStore } from '@pbotapps/authorization';
 import { query } from '@pbotapps/components';
 import { defineStore } from 'pinia';
 import { v4 as uuid } from 'uuid';
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 export type Zone = {
   id: string; //UUID
@@ -39,8 +39,9 @@ export const useAuthStore = createAuthStore(
 );
 
 export const useStore = defineStore('bus-reservation', () => {
+  const reservations = reactive<Array<Reservation>>([]);
+  const rules = ref<Array<RuleType>>([]);
   const users = reactive<Array<User>>([]);
-
   const zones = reactive<Array<Zone>>(
     [...new Array(7).keys()].map(x => {
       return {
@@ -54,17 +55,6 @@ export const useStore = defineStore('bus-reservation', () => {
     })
   );
 
-  const reservations = reactive<Array<Reservation>>([]);
-
-  const getCurrentUser = async () => {
-    const store = useAuthStore();
-
-    const user = await store.getUser();
-    if (!user) throw new Error('You must be logged in to modify data.');
-
-    return user;
-  };
-
   const addHotel = async (u: User) => {
     const authStore = useAuthStore();
     const token = await authStore.getToken();
@@ -74,7 +64,8 @@ export const useStore = defineStore('bus-reservation', () => {
       operation: `
       mutation addHotel($hotel: HotelAddInput!) {
         addHotel(payload: $hotel)
-        { id  
+        { 
+          id  
           creator
           created
           updater
@@ -103,7 +94,8 @@ export const useStore = defineStore('bus-reservation', () => {
       operation: `
       mutation editHotel($id: ID!, $hotel: HotelEditInput!) {
         editHotel(id: $id , payload: $hotel)
-        { id  
+        { 
+          id  
           creator
           created
           updater
@@ -152,6 +144,35 @@ export const useStore = defineStore('bus-reservation', () => {
       users.splice(0, users.length);
       users.push(...res.data.hotels);
     }
+  };
+
+  const getRules = async () => {
+    console.debug('getRules');
+    const store = useAuthStore();
+
+    const token = await store.getToken();
+
+    if (!token) throw new Error('Must be logged in to get rules!');
+
+    console.debug('query');
+
+    const res = await query<{ rules: RuleType[] }>({
+      operation: `
+      query getRules {
+        rules {
+          action
+          subject
+        }
+      }
+      `,
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    }).then(res => res.data?.rules);
+
+    if (res) rules.value = res;
+
+    return res;
   };
 
   const addReservation = async (
@@ -255,6 +276,7 @@ export const useStore = defineStore('bus-reservation', () => {
   return {
     // state
     reservations,
+    rules,
     users,
     zones,
     // getters
@@ -267,5 +289,6 @@ export const useStore = defineStore('bus-reservation', () => {
     editHotel,
     addReservation,
     editReservation,
+    getRules,
   };
 });

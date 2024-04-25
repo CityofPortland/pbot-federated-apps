@@ -1,3 +1,4 @@
+import { Context } from '@pbotapps/graphql';
 import {
   GraphQLBoolean,
   GraphQLInputObjectType,
@@ -23,6 +24,18 @@ export const GraphQLHotelType = new GraphQLObjectType<Hotel>({
       ...baseFields(),
       email: {
         type: new GraphQLNonNull(GraphQLEmailAddress),
+        resolve: (source, _args, { rules }: Context) => {
+          if (
+            !rules ||
+            !rules.some(rule => {
+              rule.subject == 'hotel' && ['write'].includes(rule.action);
+            })
+          ) {
+            return source.email;
+          }
+
+          return null;
+        },
       },
       enabled: {
         type: new GraphQLNonNull(GraphQLBoolean),
