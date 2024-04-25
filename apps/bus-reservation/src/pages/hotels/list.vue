@@ -9,7 +9,14 @@ const store = useStore();
   <article class="mx-auto max-w-7xl px-4 my-8 space-y-4">
     <header class="flex mb-8">
       <h1 class="text-4xl font-bold">Hotels</h1>
-      <RouterLink to="/hotels/add" custom v-slot="{ href, navigate }">
+      <RouterLink
+        v-if="
+          store.rules.find(r => r.subject == 'hotel' && r.action == 'write')
+        "
+        to="/hotels/add"
+        custom
+        v-slot="{ href, navigate }"
+      >
         <Anchor :url="href" @click="navigate" class="ml-auto">Add</Anchor>
       </RouterLink>
     </header>
@@ -36,6 +43,11 @@ const store = useStore();
               <Anchor :url="href" @click="navigate">View</Anchor>
             </router-link>
             <router-link
+              v-if="
+                store.rules.find(
+                  r => r.subject == 'hotel' && r.action == 'write'
+                )
+              "
               :to="`/hotels/${user.id}/edit`"
               custom
               v-slot="{ href, navigate }"

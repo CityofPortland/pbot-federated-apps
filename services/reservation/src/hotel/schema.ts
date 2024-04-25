@@ -1,5 +1,5 @@
-import { User } from '@pbotapps/authorization';
 import { createRepository } from '@pbotapps/cosmos';
+import { Context } from '@pbotapps/graphql';
 import {
   GraphQLBoolean,
   GraphQLID,
@@ -26,10 +26,24 @@ export const GraphQLHotelSchema = new GraphQLSchema({
           args: {
             enabled: { type: GraphQLBoolean },
           },
-          async resolve(_, args: { enabled: boolean }) {
+          async resolve(_, args: { enabled: boolean }, { rules }: Context) {
+            if (
+              !rules ||
+              !rules.some(rule => {
+                rule.subject == 'hotel' && ['write'].includes(rule.action);
+              })
+            )
+              throw new Error('Unauthorized to list hotels');
+
             const repo = await createRepository<Hotel>('reservations', 'hotel');
-            const hotels = await repo.getAll();
-            return hotels.filter(h => h.enabled == args.enabled);
+
+            let hotels = await repo.getAll();
+
+            if (args.enabled != undefined) {
+              hotels = hotels.filter(h => h.enabled == args.enabled);
+            }
+
+            return hotels;
           },
         },
       };
@@ -48,17 +62,25 @@ export const GraphQLHotelSchema = new GraphQLSchema({
         async resolve(
           _,
           args: { payload: Pick<Hotel, 'email' | 'enabled' | 'label'> },
-          context: { user: User }
+          { user, rules }: Context
         ) {
-          if (!context.user) {
+          if (!user) {
             throw new Error('Must be logged in to add hotels');
           }
 
+          if (
+            !rules ||
+            !rules.some(rule => {
+              rule.subject == 'hotel' && ['write'].includes(rule.action);
+            })
+          )
+            throw new Error('Unauthorized to add hotels');
+
           const hotel: Partial<Hotel> = {
             created: new Date(),
-            creator: context.user.email,
+            creator: user._id,
             updated: new Date(),
-            updater: context.user.email,
+            updater: user._id,
             ...args.payload,
           };
 
@@ -81,11 +103,19 @@ export const GraphQLHotelSchema = new GraphQLSchema({
             id: string;
             payload: Pick<Hotel, 'email' | 'enabled' | 'label'>;
           },
-          context: { user: User }
+          { user, rules }: Context
         ) {
-          if (!context.user) {
+          if (!user) {
             throw new Error('Must be logged in to edit hotels');
           }
+
+          if (
+            !rules ||
+            !rules.some(rule => {
+              rule.subject == 'hotel' && ['write'].includes(rule.action);
+            })
+          )
+            throw new Error('Unauthorized to edit hotels');
 
           const repo = await createRepository<Partial<Hotel>>(
             'reservations',
@@ -94,7 +124,7 @@ export const GraphQLHotelSchema = new GraphQLSchema({
 
           let hotel = {
             updated: new Date(),
-            updater: context.user.email,
+            updater: user._id,
             ...args.payload,
           };
 
