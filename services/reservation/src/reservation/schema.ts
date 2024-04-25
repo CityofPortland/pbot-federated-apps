@@ -89,9 +89,10 @@ export const GraphQLReservationSchema = new GraphQLSchema({
 
           if (
             !rules ||
-            !rules.some(rule => {
-              rule.subject == 'reservation' && ['write'].includes(rule.action);
-            })
+            !rules.some(
+              rule =>
+                rule.subject == 'reservation' && ['write'].includes(rule.action)
+            )
           )
             throw new Error('Unauthorized to add reservations');
 
@@ -130,9 +131,10 @@ export const GraphQLReservationSchema = new GraphQLSchema({
 
           if (
             !rules ||
-            !rules.some(rule => {
-              rule.subject == 'reservation' && ['write'].includes(rule.action);
-            })
+            !rules.some(
+              rule =>
+                rule.subject == 'reservation' && ['write'].includes(rule.action)
+            )
           )
             throw new Error('Unauthorized to edit reservations');
 

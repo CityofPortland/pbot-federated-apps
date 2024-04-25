@@ -29,9 +29,10 @@ export const GraphQLHotelSchema = new GraphQLSchema({
           async resolve(_, args: { enabled: boolean }, { rules }: Context) {
             if (
               !rules ||
-              !rules.some(rule => {
-                rule.subject == 'hotel' && ['write'].includes(rule.action);
-              })
+              !rules.some(
+                rule =>
+                  rule.subject == 'hotel' && ['write'].includes(rule.action)
+              )
             )
               throw new Error('Unauthorized to list hotels');
 
@@ -70,9 +71,9 @@ export const GraphQLHotelSchema = new GraphQLSchema({
 
           if (
             !rules ||
-            !rules.some(rule => {
-              rule.subject == 'hotel' && ['write'].includes(rule.action);
-            })
+            !rules.some(
+              rule => rule.subject == 'hotel' && ['write'].includes(rule.action)
+            )
           )
             throw new Error('Unauthorized to add hotels');
 
@@ -111,9 +112,9 @@ export const GraphQLHotelSchema = new GraphQLSchema({
 
           if (
             !rules ||
-            !rules.some(rule => {
-              rule.subject == 'hotel' && ['write'].includes(rule.action);
-            })
+            !rules.some(
+              rule => rule.subject == 'hotel' && ['write'].includes(rule.action)
+            )
           )
             throw new Error('Unauthorized to edit hotels');
 

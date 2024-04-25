@@ -23,18 +23,18 @@ export const GraphQLHotelType = new GraphQLObjectType<Hotel>({
     return {
       ...baseFields(),
       email: {
-        type: new GraphQLNonNull(GraphQLEmailAddress),
+        type: GraphQLEmailAddress,
         resolve: (source, _args, { rules }: Context) => {
           if (
             !rules ||
-            !rules.some(rule => {
-              rule.subject == 'hotel' && ['write'].includes(rule.action);
-            })
+            !rules.some(
+              rule => rule.subject == 'hotel' && ['write'].includes(rule.action)
+            )
           ) {
-            return source.email;
+            return null;
           }
 
-          return null;
+          return source.email;
         },
       },
       enabled: {
