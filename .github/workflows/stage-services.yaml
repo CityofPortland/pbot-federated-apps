@@ -25,6 +25,10 @@ jobs:
             directory: services/pudl
             registry: pbotapps
             repository: federation/service/pudl
+          - service: reservation
+            directory: services/reservation
+            registry: pbotapps
+            repository: federation/service/reservation
           - service: sign
             directory: services/sign
             registry: pbotapps
@@ -142,6 +146,50 @@ jobs:
                   value: "5432"
                 - name: PUDL_POSTGRES_USERNAME
                   value: hive_admin
+          - service: reservation
+            directory: services/reservation
+            repository: federation/service/reservation
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps-test
+            values: |
+              ingress:
+                enabled: true
+                hosts:
+                  - host: pbotapps-test.portland.gov
+                    paths:
+                      - path: /graphql/reservation
+                        pathType: Prefix
+                tls:
+                  - secretName: pbotapps-test-portland-gov-tls
+                    hosts:
+                      - pbotapps-test.portland.gov
+              extraEnv:
+                - name: AZURE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_ID
+                - name: AZURE_TENANT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_TENANT_ID
+                - name: AZURE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_SECRET
+                - name: AZURE_COSMOS_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_COSMOS_URL
+                - name: AZURE_COSMOS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_COSMOS_KEY
           - service: sign
             directory: services/sign
             repository: federation/service/sign
@@ -240,6 +288,10 @@ jobs:
               - ${{ secrets.AZURE_CLIENT_ID }}
             chart/.secret/AZURE_CLIENT_SECRET:
               - ${{ secrets.AZURE_CLIENT_SECRET }}
+            chart/.secret/AZURE_COSMOS_URL:
+              - ${{ secrets.TEST_COSMOS_URL }}
+            chart/.secret/AZURE_COSMOS_KEY:
+              - ${{ secrets.TEST_COSMOS_KEY }}
       - name: Create strategy secrets
         if: matrix.password
         uses: ./packages/actions/file-writer

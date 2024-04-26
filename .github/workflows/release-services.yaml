@@ -68,6 +68,50 @@ jobs:
                   value: "5432"
                 - name: PUDL_POSTGRES_USERNAME
                   value: hive_admin
+          - service: reservation
+            directory: services/reservation
+            repository: federation/service/reservation
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps
+            values: |
+              ingress:
+                enabled: true
+                hosts:
+                  - host: pbotapps.portland.gov
+                    paths:
+                      - path: /graphql/reservation
+                        pathType: Prefix
+                tls:
+                  - secretName: pbotapps-portland-gov-tls
+                    hosts:
+                      - pbotapps.portland.gov
+              extraEnv:
+                - name: AZURE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_ID
+                - name: AZURE_TENANT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_TENANT_ID
+                - name: AZURE_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_CLIENT_SECRET
+                - name: AZURE_COSMOS_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_COSMOS_URL
+                - name: AZURE_COSMOS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_COSMOS_KEY
           - service: sign
             directory: services/sign
             repository: federation/service/sign
@@ -165,6 +209,10 @@ jobs:
               - ${{ secrets.AZURE_CLIENT_ID }}
             chart/.secret/AZURE_CLIENT_SECRET:
               - ${{ secrets.AZURE_CLIENT_SECRET }}
+            chart/.secret/AZURE_COSMOS_URL:
+              - ${{ secrets.PROD_COSMOS_URL }}
+            chart/.secret/AZURE_COSMOS_KEY:
+              - ${{ secrets.PROD_COSMOS_KEY }}
       - name: Create values file
         uses: ./packages/actions/merge-values
         with:
