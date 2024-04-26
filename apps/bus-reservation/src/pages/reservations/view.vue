@@ -26,7 +26,10 @@ onMounted(() => {
             {{ reservation.hotel.label }}
           </Field>
           <Field name="Zone" display="inline">
-            {{ reservation.zone.label }}
+            {{ reservation.spot.zone }}
+          </Field>
+          <Field name="Spot" display="inline">
+            {{ reservation.spot.label }}
           </Field>
           <Field name="Start" display="inline">
             {{ reservation.start.toLocaleDateString() }}
