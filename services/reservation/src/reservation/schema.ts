@@ -1,6 +1,7 @@
 import { createRepository } from '@pbotapps/cosmos';
 import { Context } from '@pbotapps/graphql';
 import {
+  GraphQLBoolean,
   GraphQLID,
   GraphQLList,
   GraphQLNonNull,
@@ -33,8 +34,16 @@ export const GraphQLReservationSchema = new GraphQLSchema({
           args: {
             start: { type: GraphQLDateTime },
             end: { type: GraphQLDateTime },
+            active: { type: GraphQLBoolean },
           },
-          async resolve(_query, { start, end }: { start?: Date; end?: Date }) {
+          async resolve(
+            _query,
+            {
+              active,
+              start,
+              end,
+            }: { start?: Date; end?: Date; active: boolean }
+          ) {
             const now = new Date();
             const repo = await repository();
 
@@ -45,6 +54,7 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             const results = new Array<Reservation>();
 
             for await (let { resources } of iterable) {
+              // if not set, only get upcoming reservations
               if (!start && !end) {
                 resources = resources.filter(r => new Date(r.end) >= now);
               }
@@ -55,6 +65,10 @@ export const GraphQLReservationSchema = new GraphQLSchema({
 
               if (end) {
                 resources = resources.filter(r => new Date(r.start) <= end);
+              }
+
+              if (active != undefined) {
+                resources = resources.filter(r => r.active == active);
               }
 
               results.push(...resources);
@@ -101,6 +115,7 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             creator: user._id,
             updated: new Date(),
             updater: user._id,
+            active: true,
             ...args.payload,
           };
 
@@ -113,6 +128,10 @@ export const GraphQLReservationSchema = new GraphQLSchema({
         type: GraphQLReservationType,
         args: {
           id: { type: new GraphQLNonNull(GraphQLID) },
+          zoneId: {
+            type: new GraphQLNonNull(GraphQLID),
+            description: 'The previous zone id of the reservation to modify',
+          },
           payload: {
             type: new GraphQLNonNull(GraphQLReservationEditInputType),
           },
@@ -121,7 +140,11 @@ export const GraphQLReservationSchema = new GraphQLSchema({
           _,
           args: {
             id: string;
-            payload: Pick<Reservation, 'hotelId' | 'zoneId' | 'start' | 'end'>;
+            zoneId: string;
+            payload: Pick<
+              Reservation,
+              'active' | 'hotelId' | 'zoneId' | 'start' | 'end'
+            >;
           },
           { user, rules }: Context
         ) {
@@ -140,13 +163,19 @@ export const GraphQLReservationSchema = new GraphQLSchema({
 
           const repo = await repository();
 
+          const existing = await repo.get(args.id, args.zoneId);
+
+          if (!existing.active) {
+            throw new Error('Cannot modify cancelled reservation');
+          }
+
           let res = {
             updated: new Date(),
             updater: user._id,
             ...args.payload,
           };
 
-          res = await repo.edit(args.id, res);
+          res = await repo.edit(res, args.id, args.zoneId);
 
           return res;
         },

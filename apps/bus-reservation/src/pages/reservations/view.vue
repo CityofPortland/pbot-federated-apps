@@ -38,13 +38,13 @@ onMounted(() => {
       </section>
       <aside class="text-sm">
         <Fieldlist class="flex flex-col gap-4">
-          <Field name="Creator" display="above">
+          <Field v-if="reservation.creator" name="Creator" display="above">
             {{ reservation.creator }}
           </Field>
           <Field name="Created" display="above">
             {{ reservation.created.toLocaleString() }}
           </Field>
-          <Field name="Updater" display="above">
+          <Field v-if="reservation.updater" name="Updater" display="above">
             {{ reservation.updater }}
           </Field>
           <Field name="Updated" display="above">

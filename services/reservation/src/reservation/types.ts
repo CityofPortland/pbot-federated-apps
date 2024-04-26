@@ -1,4 +1,5 @@
 import {
+  GraphQLBoolean,
   GraphQLID,
   GraphQLInputObjectType,
   GraphQLNonNull,
@@ -16,6 +17,7 @@ export type Reservation = Base & {
   zoneId: string;
   start: Date;
   end: Date;
+  active: boolean;
 };
 
 export const GraphQLReservationType = new GraphQLObjectType<Reservation>({
@@ -40,6 +42,7 @@ export const GraphQLReservationType = new GraphQLObjectType<Reservation>({
       },
       start: { type: new GraphQLNonNull(GraphQLDateTime) },
       end: { type: new GraphQLNonNull(GraphQLDateTime) },
+      active: { type: new GraphQLNonNull(GraphQLBoolean) },
     };
   },
 });
@@ -61,5 +64,6 @@ export const GraphQLReservationEditInputType = new GraphQLInputObjectType({
     zoneId: { type: GraphQLID },
     start: { type: GraphQLDateTime },
     end: { type: GraphQLDateTime },
+    active: { type: GraphQLBoolean },
   },
 });

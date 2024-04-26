@@ -22,11 +22,12 @@ export type Hotel = {
 };
 
 export type Reservation = {
-  id: string; //UUID
+  id: string; //UUID=
   hotel: Hotel;
   zone: Zone;
   start: Date;
   end: Date;
+  active: boolean;
   created: Date;
   creator: string;
   updated: Date;
@@ -42,18 +43,7 @@ export const useStore = defineStore('bus-reservation', () => {
   const reservations = reactive<Array<Reservation>>([]);
   const rules = ref<Array<RuleType>>([]);
   const hotels = reactive<Array<Hotel>>([]);
-  const zones = reactive<Array<Zone>>(
-    [...new Array(7).keys()].map(x => {
-      return {
-        id: uuid(),
-        geometry: {
-          type: 'Polygon',
-          coordinates: [[]],
-        },
-        label: `Zone ${x}`,
-      };
-    })
-  );
+  const zones = reactive<Array<Zone>>([]);
 
   const addHotel = async (u: Hotel) => {
     const authStore = useAuthStore();
@@ -80,6 +70,11 @@ export const useStore = defineStore('bus-reservation', () => {
         authorization: `Bearer ${token}`,
       },
     });
+
+    if (res.errors) {
+      throw new Error(res.errors.map(e => e.message).join('\n'));
+    }
+
     if (res.data) {
       hotels.push(res.data.addHotel);
     }
@@ -113,33 +108,16 @@ export const useStore = defineStore('bus-reservation', () => {
         authorization: `Bearer ${token}`,
       },
     });
+
+    if (res.errors) {
+      throw new Error(res.errors.map(e => e.message).join('\n'));
+    }
+
     if (res.data) {
       const idx = hotels.findIndex(x => x.id == u.id);
       if (idx == -1) throw Error(`Cannot find user with id '${u.id}`);
       hotels[idx] = res.data.editHotel;
     }
-  };
-
-  const deleteHotel = async (id: string) => {
-    const authStore = useAuthStore();
-    const token = await authStore.getToken();
-    if (!token) throw Error('User not loggged in');
-    await query<{ deleteHotel: boolean }>({
-      operation: `
-      mutation deleteHotel($hotel: HotelDeleteInput!) {
-        deleteHotel(payload: $hotel)
-      }`,
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-      variables: {
-        hotel: {
-          id,
-        },
-      },
-    });
-
-    getHotels();
   };
 
   const getHotels = async () => {
@@ -165,6 +143,10 @@ export const useStore = defineStore('bus-reservation', () => {
       },
     });
 
+    if (res.errors) {
+      throw new Error(res.errors.map(e => e.message).join('\n'));
+    }
+
     if (res.data) {
       hotels.splice(0, hotels.length);
       hotels.push(...res.data.hotels);
@@ -176,14 +158,17 @@ export const useStore = defineStore('bus-reservation', () => {
     const token = await authStore.getToken();
     if (!token) throw Error('User not log in');
     const res = await query<{ zones: Zone[] }>({
-      operation: `{zones{ 
-        id
-        label
-        creator
-        created
-        updater
-        updated
-      }}`,
+      operation: `
+      {
+        zones {
+          id
+          label
+          creator
+          created
+          updater
+          updated
+        }
+      }`,
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -192,43 +177,6 @@ export const useStore = defineStore('bus-reservation', () => {
     if (res.data) {
       zones.splice(0, zones.length);
       zones.push(...res.data.zones);
-    }
-  };
-
-  const getReservations = async () => {
-    const authStore = useAuthStore();
-    const token = await authStore.getToken();
-    if (!token) throw Error('User not log in');
-    const res = await query<{ reservations: Reservation[] }>({
-      operation: `{reservations{ 
-        id
-        zone {
-          id
-          label
-        }
-        hotel {
-          id
-          label
-        }
-        start
-        end
-        creator
-        created
-        updater
-        updated
-      }}`,
-      headers: {
-        authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (res.data) {
-      reservations.splice(0, reservations.length);
-      reservations.push(
-        ...res.data.reservations.map(r => {
-          return { ...r, start: new Date(r.start), end: new Date(r.end) };
-        })
-      );
     }
   };
 
@@ -259,6 +207,51 @@ export const useStore = defineStore('bus-reservation', () => {
     if (res) rules.value = res;
 
     return res;
+  };
+
+  const getReservations = async () => {
+    const res = await query<{ reservations: Reservation[] }>({
+      operation: `
+      {
+        reservations(active:true) {
+          id
+          zone {
+            id
+            label
+          }
+          hotel {
+            id
+            label
+          }
+          start
+          end
+          active
+          creator
+          created
+          updater
+          updated
+        }
+      }`,
+    });
+
+    if (res.errors) {
+      throw new Error(res.errors.map(e => e.message).join('\n'));
+    }
+
+    if (res.data) {
+      reservations.splice(0, reservations.length);
+      reservations.push(
+        ...res.data.reservations.map(r => {
+          return {
+            ...r,
+            created: new Date(r.created),
+            updated: new Date(r.updated),
+            start: new Date(r.start),
+            end: new Date(r.end),
+          };
+        })
+      );
+    }
   };
 
   const addReservation = async (
@@ -326,62 +319,106 @@ export const useStore = defineStore('bus-reservation', () => {
         authorization: `Bearer ${token}`,
       },
     });
+
+    if (response.errors) {
+      throw new Error(response.errors.map(e => e.message).join('\n'));
+    }
+
     if (response.data) {
-      reservations.push({
-        ...response.data.addReservation,
-        start: new Date(response.data.addReservation.start),
-        end: new Date(response.data.addReservation.end),
-      });
+      getReservations();
     }
   };
 
   const editReservation = async (
-    r: Pick<Reservation, 'end' | 'start' | 'zone' | 'hotel' | 'id'>
+    id: string,
+    zoneId: string,
+    res: Pick<Reservation, 'active' | 'end' | 'start' | 'zone' | 'hotel'>
   ) => {
-    const store = useAuthStore();
-    const currentUser = await store.getUser();
-    if (!currentUser) throw new Error('Not logged in.');
+    // only check validity if this is going to be an active reservation
+    if (res.active) {
+      if (res.end < res.start) throw Error(`End date is before start date`);
 
-    if (r.end < r.start) throw Error(`End date is before start date`);
+      const existing = reservations
+        .reduce((acc, curr) => {
+          if (curr.id != id) {
+            acc.push(curr);
+          }
+          return acc;
+        }, new Array<Reservation>())
+        .reduce((acc, curr) => {
+          if (curr.zone.id == res.zone.id) {
+            acc.push(curr);
+          }
+          return acc;
+        }, new Array<Reservation>())
+        .reduce((acc, curr) => {
+          if (
+            (res.start >= curr.start && res.start <= curr.end) ||
+            (res.end >= curr.start && res.end <= curr.end) ||
+            (res.start <= curr.start && res.end >= curr.end)
+          ) {
+            acc.push(curr);
+          }
+          return acc;
+        }, new Array<Reservation>());
 
-    const existing = reservations
-      .reduce((acc, curr) => {
-        if (curr.id != r.id) {
-          acc.push(curr);
-        }
-        return acc;
-      }, new Array<Reservation>())
-      .reduce((acc, curr) => {
-        if (curr.zone.id == r.zone.id) {
-          acc.push(curr);
-        }
-        return acc;
-      }, new Array<Reservation>())
-      .reduce((acc, curr) => {
-        if (
-          (r.start >= curr.start && r.start <= curr.end) ||
-          (r.end >= curr.start && r.end <= curr.end) ||
-          (r.start <= curr.start && r.end >= curr.end)
-        ) {
-          acc.push(curr);
-        }
-        return acc;
-      }, new Array<Reservation>());
-    if (existing.length > 0) {
-      throw Error(
-        `There is an existing reservation in ${r.zone.label} on the same dates`
-      );
+      if (existing.length > 0) {
+        throw Error(
+          `There is an existing reservation in ${res.zone.label} on the same dates`
+        );
+      }
     }
 
-    const idx = reservations.findIndex(x => x.id == r.id);
-    if (idx == -1) throw Error(`Cannot find reservation with id '${r.id}`);
+    const authStore = useAuthStore();
+    const token = await authStore.getToken();
+    if (!token) throw Error('User not loggged in');
 
-    reservations[idx] = {
-      ...reservations[idx],
-      ...r,
-      updated: new Date(),
-      updater: currentUser.email,
-    };
+    const response = await query<{ editReservation: Reservation }>({
+      operation: `
+      mutation editReservation($id: ID!, $zoneId: ID!, $res: ReservationEditInput!) {
+        editReservation(id: $id, zoneId: $zoneId, payload: $res)
+        { 
+          id  
+          creator
+          created
+          updater
+          updated
+          start
+          end
+          active
+          zone {
+            id
+            label
+          }
+          hotel {
+            id
+            label
+          }
+        }
+      }`,
+      variables: {
+        id,
+        zoneId,
+        res: {
+          hotelId: res.hotel.id,
+          zoneId: res.zone.id,
+          start: res.start,
+          end: res.end,
+          active: res.active,
+        },
+      },
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.errors) {
+      throw new Error(response.errors.map(e => e.message).join('\n'));
+    }
+
+    if (response.data?.editReservation) {
+      getReservations();
+    }
   };
 
   const hotel = computed(() => (id: string) => hotels.find(x => x.id == id));
@@ -406,7 +443,6 @@ export const useStore = defineStore('bus-reservation', () => {
     getReservations,
     addHotel,
     editHotel,
-    deleteHotel,
     addReservation,
     editReservation,
     getRules,

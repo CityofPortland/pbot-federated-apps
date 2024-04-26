@@ -33,10 +33,14 @@ onMounted(() => {
         <Anchor class="ml-auto" :url="href" @click="navigate">Add</Anchor>
       </router-link>
     </header>
-    <main>
-      <table
-        class="-ml-2 w-full table-fixed border-separate border-spacing-y-1"
-      >
+    <main class="overflow-auto">
+      <p>
+        The table below lists all upcoming reservations. Past or cancelled
+        reservations are not shown. Reservations that are currently active are
+        <Box as="span" color="blue" variant="light">highlighted in blue</Box>.
+      </p>
+      <table class="-ml-2 w-full table-auto border-separate border-spacing-y-1">
+        <caption></caption>
         <thead class="pb-4">
           <tr class="text-left">
             <th class="font-semibold p-2">Hotel</th>
