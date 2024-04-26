@@ -20,9 +20,9 @@ const save = async () => {
   if (formRef.value?.reportValidity()) {
     try {
       if (props.id) {
-        await store.editUser(hotel.value as User);
+        await store.editHotel(hotel.value as User);
       } else {
-        await store.addUser(hotel.value as User);
+        await store.addHotel(hotel.value as User);
       }
       router.push({ path: '/hotels' });
     } catch (error) {

@@ -1,6 +1,7 @@
 import { Context } from '@pbotapps/graphql';
 import {
   GraphQLBoolean,
+  GraphQLID,
   GraphQLInputObjectType,
   GraphQLNonNull,
   GraphQLObjectType,
@@ -23,18 +24,18 @@ export const GraphQLHotelType = new GraphQLObjectType<Hotel>({
     return {
       ...baseFields(),
       email: {
-        type: new GraphQLNonNull(GraphQLEmailAddress),
+        type: GraphQLEmailAddress,
         resolve: (source, _args, { rules }: Context) => {
           if (
             !rules ||
-            !rules.some(rule => {
-              rule.subject == 'hotel' && ['write'].includes(rule.action);
-            })
+            !rules.some(
+              rule => rule.subject == 'hotel' && ['write'].includes(rule.action)
+            )
           ) {
-            return source.email;
+            return null;
           }
 
-          return null;
+          return source.email;
         },
       },
       enabled: {
@@ -58,6 +59,15 @@ export const GraphQLHotelAddInputType = new GraphQLInputObjectType({
     },
     label: {
       type: new GraphQLNonNull(GraphQLString),
+    },
+  },
+});
+
+export const GraphQLHotelDeleteInputType = new GraphQLInputObjectType({
+  name: 'HotelDeleteInput',
+  fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
     },
   },
 });
