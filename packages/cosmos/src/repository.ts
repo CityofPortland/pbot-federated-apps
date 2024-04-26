@@ -39,25 +39,25 @@ export async function createRepository<
       const { statusCode } = await container
         .item(id, partition || id)
         .delete<T>();
-      return statusCode == 200;
+      return statusCode == 204;
     },
-    async edit(id, item) {
-      const existing = await this.get(id);
-      await container.item(id).replace<T>({
+    async edit(item: T, id: string, partition?: string) {
+      const existing = await this.get(id, partition);
+      await container.item(id, partition || id).replace<T>({
         ...existing,
         ...item,
       });
-      const updated = await this.get(id);
+      const updated = await this.get(id, partition);
       return updated;
     },
-    async exists(id, partition?: string) {
+    async exists(id: string, partition?: string) {
       const { resource, statusCode } = await container
         .item(id, partition || id)
         .read<T>();
       if (resource) return true;
       return statusCode == 200;
     },
-    async get(id, partition?: string) {
+    async get(id: string, partition?: string) {
       const { resource: existing } = await container
         .item(id, partition || id)
         .read<T>();
