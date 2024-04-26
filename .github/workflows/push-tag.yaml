@@ -17,6 +17,9 @@ jobs:
             directory: apps/bus-reservation
             registry: pbotapps
             repository: federation/app/bus-reservation
+            files: |
+              packages/components/.env.production.local:
+                - VITE_GRAPHQL_URL=https://pbotapps.portland.gov/graphql/reservation
           - app: pudl
             directory: apps/pudl
             registry: pbotapps
