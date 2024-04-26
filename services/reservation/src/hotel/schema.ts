@@ -11,7 +11,6 @@ import {
 
 import {
   GraphQLHotelAddInputType,
-  GraphQLHotelDeleteInputType,
   GraphQLHotelEditInputType,
   GraphQLHotelType,
   Hotel,
@@ -130,42 +129,9 @@ export const GraphQLHotelSchema = new GraphQLSchema({
             ...args.payload,
           };
 
-          hotel = await repo.edit(args.id, hotel);
+          hotel = await repo.edit(hotel, args.id);
 
           return hotel;
-        },
-      },
-      deleteHotel: {
-        type: GraphQLBoolean,
-        args: {
-          payload: {
-            type: new GraphQLNonNull(GraphQLHotelDeleteInputType),
-          },
-        },
-        async resolve(
-          _,
-          args: {
-            payload: Pick<Hotel, 'id'>;
-          },
-          { user, rules }: Context
-        ) {
-          if (!user) {
-            throw new Error('Must be logged in to delete hotels');
-          }
-
-          if (
-            !rules ||
-            !rules.some(
-              rule => rule.subject == 'hotel' && ['write'].includes(rule.action)
-            )
-          )
-            throw new Error('Unauthorized to delete hotels');
-
-          const repo = await createRepository<Partial<Hotel>>(
-            'reservations',
-            'hotel'
-          );
-          return repo.delete(args.payload.id);
         },
       },
     },

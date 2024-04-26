@@ -65,14 +65,6 @@ onMounted(() => {
               >
                 <Anchor :url="href" @click="navigate">Edit</Anchor>
               </router-link>
-              <router-link :to="`/hotels`" custom v-slot="{ href }">
-                <Anchor
-                  :url="href"
-                  class="text-red-600"
-                  @click.prevent="store.deleteHotel(user.id)"
-                  >Delete</Anchor
-                >
-              </router-link>
             </td>
           </tr>
         </tbody>
