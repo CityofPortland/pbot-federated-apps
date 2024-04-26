@@ -1,4 +1,5 @@
 import {
+  GraphQLBoolean,
   GraphQLID,
   GraphQLInputObjectType,
   GraphQLNonNull,
@@ -6,21 +7,22 @@ import {
 } from 'graphql';
 
 import { Base, baseFields } from '../base/types.js';
-import { GraphQLZoneType, Zone } from '../zone/types.js';
+import { GraphQLSpotType, Spot } from '../spot/types.js';
 import { GraphQLHotelType, Hotel } from '../hotel/types.js';
 import { GraphQLDateTime } from 'graphql-scalars';
 import { createRepository } from '@pbotapps/cosmos';
 
 export type Reservation = Base & {
   hotelId: string;
-  zoneId: string;
+  spotId: string;
   start: Date;
   end: Date;
+  active: boolean;
 };
 
 export const GraphQLReservationType = new GraphQLObjectType<Reservation>({
   name: 'Reservation',
-  description: 'A Reservation for a bus parking zone',
+  description: 'A Reservation for a bus parking spot',
   fields() {
     return {
       ...baseFields(),
@@ -31,15 +33,16 @@ export const GraphQLReservationType = new GraphQLObjectType<Reservation>({
           return repo.get(res.hotelId);
         },
       },
-      zone: {
-        type: new GraphQLNonNull(GraphQLZoneType),
+      spot: {
+        type: new GraphQLNonNull(GraphQLSpotType),
         resolve: async res => {
-          const repo = await createRepository<Zone>('reservations', 'zone');
-          return repo.get(res.zoneId);
+          const repo = await createRepository<Spot>('reservations', 'spot');
+          return repo.get(res.spotId);
         },
       },
       start: { type: new GraphQLNonNull(GraphQLDateTime) },
       end: { type: new GraphQLNonNull(GraphQLDateTime) },
+      active: { type: new GraphQLNonNull(GraphQLBoolean) },
     };
   },
 });
@@ -48,7 +51,7 @@ export const GraphQLReservationAddInputType = new GraphQLInputObjectType({
   name: 'ReservationAddInput',
   fields: {
     hotelId: { type: new GraphQLNonNull(GraphQLID) },
-    zoneId: { type: new GraphQLNonNull(GraphQLID) },
+    spotId: { type: new GraphQLNonNull(GraphQLID) },
     start: { type: new GraphQLNonNull(GraphQLDateTime) },
     end: { type: new GraphQLNonNull(GraphQLDateTime) },
   },
@@ -58,8 +61,9 @@ export const GraphQLReservationEditInputType = new GraphQLInputObjectType({
   name: 'ReservationEditInput',
   fields: {
     hotelId: { type: GraphQLID },
-    zoneId: { type: GraphQLID },
+    spotId: { type: GraphQLID },
     start: { type: GraphQLDateTime },
     end: { type: GraphQLDateTime },
+    active: { type: GraphQLBoolean },
   },
 });

@@ -35,19 +35,19 @@ onMounted(() => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in store.users" :key="user.id">
+          <tr v-for="hotel in store.hotels" :key="hotel.id">
             <td class="p-2 truncate">
-              {{ user.label }}
+              {{ hotel.label }}
             </td>
             <td class="p-2 truncate">
-              {{ user.email }}
+              {{ hotel.email }}
             </td>
             <td class="p-2 truncate">
-              {{ user.enabled }}
+              {{ hotel.enabled }}
             </td>
             <td class="flex gap-4 p-2">
               <router-link
-                :to="`/hotels/${user.id}`"
+                :to="`/hotels/${hotel.id}`"
                 custom
                 v-slot="{ href, navigate }"
               >
@@ -59,7 +59,7 @@ onMounted(() => {
                     r => r.subject == 'hotel' && r.action == 'write'
                   )
                 "
-                :to="`/hotels/${user.id}/edit`"
+                :to="`/hotels/${hotel.id}/edit`"
                 custom
                 v-slot="{ href, navigate }"
               >

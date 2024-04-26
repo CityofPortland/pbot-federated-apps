@@ -2,7 +2,6 @@
 import { Field, FieldList } from '@pbotapps/components';
 import { onMounted, ref } from 'vue';
 import { Reservation, useStore } from '../../store';
-import { useRouter } from 'vue-router';
 
 const reservation = ref<Reservation>();
 const props = defineProps({ id: { type: String, required: true } });
@@ -24,7 +23,7 @@ onMounted(() => {
       <section class="md:w-2/3">
         <FieldList class="flex flex-col gap-4">
           <Field name="Hotel" display="inline">
-            {{ reservation.user.label }}
+            {{ reservation.hotel.label }}
           </Field>
           <Field name="Zone" display="inline">
             {{ reservation.zone.label }}
@@ -39,13 +38,13 @@ onMounted(() => {
       </section>
       <aside class="text-sm">
         <Fieldlist class="flex flex-col gap-4">
-          <Field name="Creator" display="above">
+          <Field v-if="reservation.creator" name="Creator" display="above">
             {{ reservation.creator }}
           </Field>
           <Field name="Created" display="above">
             {{ reservation.created.toLocaleString() }}
           </Field>
-          <Field name="Updater" display="above">
+          <Field v-if="reservation.updater" name="Updater" display="above">
             {{ reservation.updater }}
           </Field>
           <Field name="Updated" display="above">

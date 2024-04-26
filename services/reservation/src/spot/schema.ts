@@ -1,22 +1,22 @@
 import { GraphQLList, GraphQLObjectType, GraphQLSchema } from 'graphql';
 
-import { GraphQLZoneType, Zone } from './types.js';
+import { GraphQLSpotType, Spot } from './types.js';
 import { createRepository } from '@pbotapps/cosmos';
 
-export const GraphQLZoneSchema = new GraphQLSchema({
+export const GraphQLSpotSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
     fields() {
       return {
-        zones: {
-          type: new GraphQLList(GraphQLZoneType),
+        spots: {
+          type: new GraphQLList(GraphQLSpotType),
           async resolve() {
-            const repo = await createRepository<Zone>('reservations', 'zone');
+            const repo = await createRepository<Spot>('reservations', 'spot');
             return repo.getAll();
           },
         },
       };
     },
   }),
-  types: [GraphQLZoneType],
+  types: [GraphQLSpotType],
 });

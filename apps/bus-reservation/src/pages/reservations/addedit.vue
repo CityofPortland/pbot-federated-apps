@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { Entry, Select, Input, Button, Message } from '@pbotapps/components';
-import { onMounted, ref } from 'vue';
-import { User, Zone, useStore } from '../../store';
-import { endOfDay, startOfDay } from 'date-fns';
+import {
+  Button,
+  Checkbox,
+  Entry,
+  Input,
+  Message,
+  Select,
+} from '@pbotapps/components';
+import { endOfDay, format, startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { format } from 'date-fns';
+import { Hotel, Reservation, Spot, useStore } from '../../store';
 
 const props = defineProps({
   id: { type: String, required: false },
@@ -18,31 +24,33 @@ const store = useStore();
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const now = toZonedTime(new Date(), tz);
 
+const active = ref(true);
 const end = ref<Date>(endOfDay(now));
 const errors = ref<Error>();
+const existing = ref<Reservation>();
 const formRef = ref<HTMLFormElement>();
-const hotel = ref<User>(store.users[0]);
+const hotel = ref<Hotel>(store.hotels.filter(h => h.enabled)[0]);
 const start = ref<Date>(startOfDay(now));
-const zone = ref<Zone>(store.zones[0]);
+const spot = ref<Spot>(store.spots[0]);
 
 const save = async () => {
   if (formRef.value?.reportValidity()) {
     try {
-      if (props.id) {
-        if (zone.value && hotel.value && start.value && end.value) {
-          await store.editReservation({
-            id: props.id,
-            zone: zone.value,
-            user: hotel.value,
+      if (props.id && existing.value) {
+        if (spot.value && hotel.value && start.value && end.value) {
+          await store.editReservation(props.id, existing.value.spot.id, {
+            spot: spot.value,
+            hotel: hotel.value,
             start: start.value,
             end: end.value,
+            active: active.value,
           });
           router.push({ path: '/reservations' });
         }
       } else {
         await store.addReservation({
-          zone: zone.value,
-          user: hotel.value,
+          spot: spot.value,
+          hotel: hotel.value,
           start: start.value,
           end: end.value,
         });
@@ -54,25 +62,32 @@ const save = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await store.getSpots();
+  await store.getHotels();
+
+  hotel.value = store.hotels.filter(h => h.enabled)[0];
+  spot.value = store.spots[0];
+
   if (props.id) {
-    const r = store.reservation(props.id);
-    if (r) {
-      hotel.value = r.user;
-      zone.value = r.zone;
-      start.value = r.start;
-      end.value = r.end;
+    existing.value = store.reservation(props.id);
+    if (existing.value) {
+      active.value = existing.value.active;
+      hotel.value = existing.value.hotel;
+      spot.value = existing.value.spot;
+      start.value = existing.value.start;
+      end.value = existing.value.end;
     }
   }
 });
 
-const setZone = (id: string) => {
-  const z = store.zone(id);
-  if (z) zone.value = z;
+const setSpot = (id: string) => {
+  const z = store.spot(id);
+  if (z) spot.value = z;
 };
 
 const setHotel = (id: string) => {
-  const h = store.user(id);
+  const h = store.hotel(id);
   if (h) hotel.value = h;
 };
 </script>
@@ -90,21 +105,25 @@ const setHotel = (id: string) => {
       </Message>
     </section>
     <Entry
-      id="zone"
-      label="Zone"
+      id="spot"
+      label="Spot"
       required
       :inline="false"
       v-slot="{ id, required }"
     >
-      <Select :id="id" :required="required" @changed="setZone">
-        <option
-          v-for="z in store.zones"
-          :key="z.id"
-          :value="z.id"
-          :selected="z.id == zone?.id"
-        >
-          {{ z.label }}
-        </option>
+      <Select :id="id" :required="required" @changed="setSpot">
+        <optgroup v-for="zone in store.zones" :key="zone" :label="zone">
+          <option
+            v-for="s in store.spots
+              .filter(s => s.zone == zone)
+              .sort((a, b) => (a.label > b.label ? 1 : -1))"
+            :key="s.id"
+            :value="s.id"
+            :selected="s.id == spot?.id"
+          >
+            {{ s.label }}
+          </option>
+        </optgroup>
       </Select>
     </Entry>
     <Entry
@@ -116,7 +135,7 @@ const setHotel = (id: string) => {
     >
       <Select :id="id" :required="required" @changed="setHotel">
         <option
-          v-for="h in store.users.filter(u => u.enabled)"
+          v-for="h in store.hotels.filter(u => u.enabled)"
           :key="h.id"
           :value="h.id"
           :selected="h.id == hotel?.id"
@@ -154,6 +173,26 @@ const setHotel = (id: string) => {
         :modelValue="format(toZonedTime(end, tz), 'yyyy-MM-dd')"
         @changed="end = endOfDay(toZonedTime($event, tz))"
       />
+    </Entry>
+    <Entry
+      v-if="existing"
+      id="active"
+      label="Active"
+      :inline="false"
+      v-slot="{ id, required }"
+    >
+      <small>
+        Uncheck this to cancel the reservation. The reservation will no longer
+        be accessible from this application.
+      </small>
+      <Checkbox
+        :id="id"
+        :required="required"
+        :checked="active"
+        v-model="active"
+        @changed="active = !active"
+      >
+      </Checkbox>
     </Entry>
     <Button label="Save" />
   </form>

@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { Anchor, Box } from '@pbotapps/components';
-import { startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useRoute } from 'vue-router';
 import { useStore } from '../../store';
+import { onMounted } from 'vue';
 
 const { path } = useRoute();
 const store = useStore();
 
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const now = toZonedTime(new Date(), tz);
+
+onMounted(() => {
+  store.getReservations();
+});
 </script>
 
 <template>
@@ -29,14 +33,19 @@ const now = toZonedTime(new Date(), tz);
         <Anchor class="ml-auto" :url="href" @click="navigate">Add</Anchor>
       </router-link>
     </header>
-    <main>
-      <table
-        class="-ml-2 w-full table-fixed border-separate border-spacing-y-1"
-      >
+    <main class="overflow-auto">
+      <p>
+        The table below lists all upcoming reservations. Past or cancelled
+        reservations are not shown. Reservations that are currently active are
+        <Box as="span" color="blue" variant="light">highlighted in blue</Box>.
+      </p>
+      <table class="-ml-2 w-full table-auto border-separate border-spacing-y-1">
+        <caption></caption>
         <thead class="pb-4">
           <tr class="text-left">
             <th class="font-semibold p-2">Hotel</th>
             <th class="font-semibold p-2">Bus zone</th>
+            <th class="font-semibold p-2">Bus spot</th>
             <th class="font-semibold p-2">Start</th>
             <th class="font-semibold p-2">End</th>
             <th class="font-semibold p-2"></th>
@@ -53,9 +62,10 @@ const now = toZonedTime(new Date(), tz);
             variant="light"
           >
             <td class="p-2">
-              {{ res.user.label }}
+              {{ res.hotel.label }}
             </td>
-            <td class="p-2">{{ res.zone.label }}</td>
+            <td class="p-2">{{ res.spot.zone }}</td>
+            <td class="p-2">{{ res.spot.label }}</td>
             <td class="p-2">{{ res.start.toLocaleDateString() }}</td>
             <td class="p-2">{{ res.end.toLocaleDateString() }}</td>
             <td class="flex gap-4 p-2">
