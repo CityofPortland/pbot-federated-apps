@@ -27,7 +27,7 @@ const hotel = ref<User | undefined>(store.user(props.id));
         </FieldList>
       </section>
       <aside class="text-sm">
-        <Fieldlist class="flex flex-col gap-2">
+        <FieldList class="flex flex-col gap-2">
           <Field name="Creator" display="above">
             {{ hotel.creator }}
           </Field>
@@ -40,7 +40,7 @@ const hotel = ref<User | undefined>(store.user(props.id));
           <Field name="Updated" display="above">
             {{ hotel.updated.toLocaleString() }}
           </Field>
-        </Fieldlist>
+        </FieldList>
       </aside>
     </main>
   </article>
