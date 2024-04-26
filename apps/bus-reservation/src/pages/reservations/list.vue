@@ -45,6 +45,7 @@ onMounted(() => {
           <tr class="text-left">
             <th class="font-semibold p-2">Hotel</th>
             <th class="font-semibold p-2">Bus zone</th>
+            <th class="font-semibold p-2">Bus spot</th>
             <th class="font-semibold p-2">Start</th>
             <th class="font-semibold p-2">End</th>
             <th class="font-semibold p-2"></th>
@@ -63,7 +64,8 @@ onMounted(() => {
             <td class="p-2">
               {{ res.hotel.label }}
             </td>
-            <td class="p-2">{{ res.zone.label }}</td>
+            <td class="p-2">{{ res.spot.zone }}</td>
+            <td class="p-2">{{ res.spot.label }}</td>
             <td class="p-2">{{ res.start.toLocaleDateString() }}</td>
             <td class="p-2">{{ res.end.toLocaleDateString() }}</td>
             <td class="flex gap-4 p-2">

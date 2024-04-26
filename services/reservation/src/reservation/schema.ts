@@ -21,7 +21,7 @@ const repository = () =>
   createRepository<Partial<Reservation>>(
     'reservations',
     'reservation',
-    '/zoneId'
+    '/spotId'
   );
 
 export const GraphQLReservationSchema = new GraphQLSchema({
@@ -93,7 +93,7 @@ export const GraphQLReservationSchema = new GraphQLSchema({
         async resolve(
           _,
           args: {
-            payload: Pick<Reservation, 'hotelId' | 'zoneId' | 'start' | 'end'>;
+            payload: Pick<Reservation, 'hotelId' | 'spotId' | 'start' | 'end'>;
           },
           { user, rules }: Context
         ) {
@@ -128,9 +128,9 @@ export const GraphQLReservationSchema = new GraphQLSchema({
         type: GraphQLReservationType,
         args: {
           id: { type: new GraphQLNonNull(GraphQLID) },
-          zoneId: {
+          spotId: {
             type: new GraphQLNonNull(GraphQLID),
-            description: 'The previous zone id of the reservation to modify',
+            description: 'The previous spot id of the reservation to modify',
           },
           payload: {
             type: new GraphQLNonNull(GraphQLReservationEditInputType),
@@ -140,10 +140,10 @@ export const GraphQLReservationSchema = new GraphQLSchema({
           _,
           args: {
             id: string;
-            zoneId: string;
+            spotId: string;
             payload: Pick<
               Reservation,
-              'active' | 'hotelId' | 'zoneId' | 'start' | 'end'
+              'active' | 'hotelId' | 'spotId' | 'start' | 'end'
             >;
           },
           { user, rules }: Context
@@ -163,7 +163,7 @@ export const GraphQLReservationSchema = new GraphQLSchema({
 
           const repo = await repository();
 
-          const existing = await repo.get(args.id, args.zoneId);
+          const existing = await repo.get(args.id, args.spotId);
 
           if (!existing.active) {
             throw new Error('Cannot modify cancelled reservation');
@@ -175,7 +175,7 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             ...args.payload,
           };
 
-          res = await repo.edit(res, args.id, args.zoneId);
+          res = await repo.edit(res, args.id, args.spotId);
 
           return res;
         },

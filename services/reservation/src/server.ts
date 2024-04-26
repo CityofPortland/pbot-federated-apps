@@ -8,7 +8,7 @@ import { createHandler } from 'graphql-http/lib/use/express';
 import { GraphQLHotelSchema } from './hotel/schema.js';
 import { GraphQLReservationSchema } from './reservation/schema.js';
 import { GraphQLRuleSchema } from './rules.js';
-import { GraphQLZoneSchema } from './zone/schema.js';
+import { GraphQLSpotSchema } from './spot/schema.js';
 
 if (process.env.NODE_ENV == 'development') {
   config();
@@ -19,7 +19,7 @@ const schema = mergeSchemas({
     GraphQLHotelSchema,
     GraphQLReservationSchema,
     GraphQLRuleSchema,
-    GraphQLZoneSchema,
+    GraphQLSpotSchema,
   ],
 });
 

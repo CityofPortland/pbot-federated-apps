@@ -4,10 +4,10 @@ import { defineStore } from 'pinia';
 import { v4 as uuid } from 'uuid';
 import { computed, reactive, ref } from 'vue';
 
-export type Zone = {
+export type Spot = {
   id: string; //UUID
-  geometry: object;
   label: string;
+  zone: string;
 };
 
 export type Hotel = {
@@ -24,7 +24,7 @@ export type Hotel = {
 export type Reservation = {
   id: string; //UUID=
   hotel: Hotel;
-  zone: Zone;
+  spot: Spot;
   start: Date;
   end: Date;
   active: boolean;
@@ -43,7 +43,7 @@ export const useStore = defineStore('bus-reservation', () => {
   const reservations = reactive<Array<Reservation>>([]);
   const rules = ref<Array<RuleType>>([]);
   const hotels = reactive<Array<Hotel>>([]);
-  const zones = reactive<Array<Zone>>([]);
+  const spots = reactive<Array<Spot>>([]);
 
   const addHotel = async (u: Hotel) => {
     const authStore = useAuthStore();
@@ -153,16 +153,17 @@ export const useStore = defineStore('bus-reservation', () => {
     }
   };
 
-  const getZones = async () => {
+  const getSpots = async () => {
     const authStore = useAuthStore();
     const token = await authStore.getToken();
     if (!token) throw Error('User not log in');
-    const res = await query<{ zones: Zone[] }>({
+    const res = await query<{ spots: Spot[] }>({
       operation: `
       {
-        zones {
+        spots {
           id
           label
+          zone
           creator
           created
           updater
@@ -175,8 +176,8 @@ export const useStore = defineStore('bus-reservation', () => {
     });
 
     if (res.data) {
-      zones.splice(0, zones.length);
-      zones.push(...res.data.zones);
+      spots.splice(0, spots.length);
+      spots.push(...res.data.spots);
     }
   };
 
@@ -215,9 +216,10 @@ export const useStore = defineStore('bus-reservation', () => {
       {
         reservations(active:true) {
           id
-          zone {
+          spot {
             id
             label
+            zone
           }
           hotel {
             id
@@ -255,12 +257,12 @@ export const useStore = defineStore('bus-reservation', () => {
   };
 
   const addReservation = async (
-    res: Pick<Reservation, 'end' | 'start' | 'hotel' | 'zone'>
+    res: Pick<Reservation, 'end' | 'start' | 'hotel' | 'spot'>
   ) => {
     if (res.end < res.start) throw Error(`End date is before start date`);
     const existing = reservations
       .reduce((acc, curr) => {
-        if (curr.zone.id == res.zone.id) {
+        if (curr.spot.id == res.spot.id) {
           acc.push(curr);
         }
         return acc;
@@ -277,7 +279,7 @@ export const useStore = defineStore('bus-reservation', () => {
       }, new Array<Reservation>());
     if (existing.length > 0) {
       throw Error(
-        `There is an existing reservation in ${res.zone.label} on the same dates`
+        `There is an existing reservation in ${res.spot.label} on the same dates`
       );
     }
 
@@ -297,9 +299,10 @@ export const useStore = defineStore('bus-reservation', () => {
           updated
           start
           end
-          zone {
+          spot {
             id
             label
+            zone
           }
           hotel {
             id
@@ -310,7 +313,7 @@ export const useStore = defineStore('bus-reservation', () => {
       variables: {
         res: {
           hotelId: res.hotel.id,
-          zoneId: res.zone.id,
+          spotId: res.spot.id,
           start: res.start,
           end: res.end,
         },
@@ -331,8 +334,8 @@ export const useStore = defineStore('bus-reservation', () => {
 
   const editReservation = async (
     id: string,
-    zoneId: string,
-    res: Pick<Reservation, 'active' | 'end' | 'start' | 'zone' | 'hotel'>
+    spotId: string,
+    res: Pick<Reservation, 'active' | 'end' | 'start' | 'spot' | 'hotel'>
   ) => {
     // only check validity if this is going to be an active reservation
     if (res.active) {
@@ -346,7 +349,7 @@ export const useStore = defineStore('bus-reservation', () => {
           return acc;
         }, new Array<Reservation>())
         .reduce((acc, curr) => {
-          if (curr.zone.id == res.zone.id) {
+          if (curr.spot.id == res.spot.id) {
             acc.push(curr);
           }
           return acc;
@@ -364,7 +367,7 @@ export const useStore = defineStore('bus-reservation', () => {
 
       if (existing.length > 0) {
         throw Error(
-          `There is an existing reservation in ${res.zone.label} on the same dates`
+          `There is an existing reservation in ${res.spot.label} on the same dates`
         );
       }
     }
@@ -375,8 +378,8 @@ export const useStore = defineStore('bus-reservation', () => {
 
     const response = await query<{ editReservation: Reservation }>({
       operation: `
-      mutation editReservation($id: ID!, $zoneId: ID!, $res: ReservationEditInput!) {
-        editReservation(id: $id, zoneId: $zoneId, payload: $res)
+      mutation editReservation($id: ID!, $spotId: ID!, $res: ReservationEditInput!) {
+        editReservation(id: $id, spotId: $spotId, payload: $res)
         { 
           id  
           creator
@@ -386,9 +389,10 @@ export const useStore = defineStore('bus-reservation', () => {
           start
           end
           active
-          zone {
+          spot {
             id
             label
+            zone
           }
           hotel {
             id
@@ -398,10 +402,10 @@ export const useStore = defineStore('bus-reservation', () => {
       }`,
       variables: {
         id,
-        zoneId,
+        spotId,
         res: {
           hotelId: res.hotel.id,
-          zoneId: res.zone.id,
+          spotId: res.spot.id,
           start: res.start,
           end: res.end,
           active: res.active,
@@ -425,21 +429,28 @@ export const useStore = defineStore('bus-reservation', () => {
   const reservation = computed(
     () => (id: string) => reservations.find(x => x.id == id)
   );
-  const zone = computed(() => (id: string) => zones.find(x => x.id == id));
+  const spot = computed(() => (id: string) => spots.find(x => x.id == id));
+  const zones = computed(() =>
+    spots.reduce((acc, curr) => {
+      acc.add(curr.zone);
+      return acc;
+    }, new Set<string>())
+  );
 
   return {
     // state
     reservations,
     rules,
     hotels,
-    zones,
+    spots,
     // getters
     hotel,
     reservation,
-    zone,
+    spot,
+    zones,
     // actions
     getHotels,
-    getZones,
+    getSpots,
     getReservations,
     addHotel,
     editHotel,

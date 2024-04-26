@@ -11,7 +11,7 @@ import { endOfDay, format, startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { Hotel, Reservation, Zone, useStore } from '../../store';
+import { Hotel, Reservation, Spot, useStore } from '../../store';
 
 const props = defineProps({
   id: { type: String, required: false },
@@ -31,15 +31,15 @@ const existing = ref<Reservation>();
 const formRef = ref<HTMLFormElement>();
 const hotel = ref<Hotel>(store.hotels.filter(h => h.enabled)[0]);
 const start = ref<Date>(startOfDay(now));
-const zone = ref<Zone>(store.zones[0]);
+const spot = ref<Spot>(store.spots[0]);
 
 const save = async () => {
   if (formRef.value?.reportValidity()) {
     try {
       if (props.id && existing.value) {
-        if (zone.value && hotel.value && start.value && end.value) {
-          await store.editReservation(props.id, existing.value.zone.id, {
-            zone: zone.value,
+        if (spot.value && hotel.value && start.value && end.value) {
+          await store.editReservation(props.id, existing.value.spot.id, {
+            spot: spot.value,
             hotel: hotel.value,
             start: start.value,
             end: end.value,
@@ -49,7 +49,7 @@ const save = async () => {
         }
       } else {
         await store.addReservation({
-          zone: zone.value,
+          spot: spot.value,
           hotel: hotel.value,
           start: start.value,
           end: end.value,
@@ -63,27 +63,27 @@ const save = async () => {
 };
 
 onMounted(async () => {
-  await store.getZones();
+  await store.getSpots();
   await store.getHotels();
 
   hotel.value = store.hotels.filter(h => h.enabled)[0];
-  zone.value = store.zones[0];
+  spot.value = store.spots[0];
 
   if (props.id) {
     existing.value = store.reservation(props.id);
     if (existing.value) {
       active.value = existing.value.active;
       hotel.value = existing.value.hotel;
-      zone.value = existing.value.zone;
+      spot.value = existing.value.spot;
       start.value = existing.value.start;
       end.value = existing.value.end;
     }
   }
 });
 
-const setZone = (id: string) => {
-  const z = store.zone(id);
-  if (z) zone.value = z;
+const setSpot = (id: string) => {
+  const z = store.spot(id);
+  if (z) spot.value = z;
 };
 
 const setHotel = (id: string) => {
@@ -105,21 +105,25 @@ const setHotel = (id: string) => {
       </Message>
     </section>
     <Entry
-      id="zone"
-      label="Zone"
+      id="spot"
+      label="Spot"
       required
       :inline="false"
       v-slot="{ id, required }"
     >
-      <Select :id="id" :required="required" @changed="setZone">
-        <option
-          v-for="z in store.zones"
-          :key="z.id"
-          :value="z.id"
-          :selected="z.id == zone?.id"
-        >
-          {{ z.label }}
-        </option>
+      <Select :id="id" :required="required" @changed="setSpot">
+        <optgroup v-for="zone in store.zones" :key="zone" :label="zone">
+          <option
+            v-for="s in store.spots
+              .filter(s => s.zone == zone)
+              .sort((a, b) => (a.label > b.label ? 1 : -1))"
+            :key="s.id"
+            :value="s.id"
+            :selected="s.id == spot?.id"
+          >
+            {{ s.label }}
+          </option>
+        </optgroup>
       </Select>
     </Entry>
     <Entry
@@ -177,6 +181,10 @@ const setHotel = (id: string) => {
       :inline="false"
       v-slot="{ id, required }"
     >
+      <small>
+        Uncheck this to cancel the reservation. The reservation will no longer
+        be accessible from this application.
+      </small>
       <Checkbox
         :id="id"
         :required="required"
