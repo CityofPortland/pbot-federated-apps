@@ -17,10 +17,6 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - service: meta
-            directory: services/meta
-            registry: pbotapps
-            repository: federation/service/meta
           - service: pudl
             directory: services/pudl
             registry: pbotapps
@@ -59,41 +55,6 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - service: meta
-            directory: services/meta
-            repository: federation/service/meta
-            cluster-name: pbotapps-kube-1
-            cluster-rg: pbotapps-kube-rg
-            cluster-ns: pbotapps-test
-            values: |
-              ingress:
-                enabled: true
-                hosts:
-                  - host: pbotapps-test.portland.gov
-                    paths:
-                      - path: /graphql/meta
-                        pathType: Prefix
-                tls:
-                  - secretName: pbotapps-test-portland-gov-tls
-                    hosts:
-                      - pbotapps-test.portland.gov
-              extraEnv:
-                - name: ELASTICSEARCH_HOST
-                  value: https://pbotapps-es-http:9200
-                - name: ELASTICSEARCH_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: pbotapps-es-elastic-user
-                      key: elastic
-              volumes:
-                - name: elastic-cert
-                  secret:
-                    secretName: pbotapps-es-http-ca-internal
-              volumeMounts:
-                - mountPath: /home/node/services/meta/dist/elastic.crt
-                  name: elastic-cert
-                  subPath: tls.crt
-            password: META_DATASOURCE_PASSWORD
           - service: pudl
             directory: services/pudl
             repository: federation/service/pudl
