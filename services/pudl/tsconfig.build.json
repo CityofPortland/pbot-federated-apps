@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
     "declaration": true,
+    "moduleResolution": "nodenext",
     "outDir": "./dist",
     "rootDir": "./src"
   },

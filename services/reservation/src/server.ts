@@ -1,5 +1,6 @@
 import { mergeSchemas } from '@graphql-tools/schema';
-import { RuleType, handleRules, handleToken } from '@pbotapps/authorization';
+import { handleRules, handleToken } from '@pbotapps/authorization/middleware';
+import { RuleType } from '@pbotapps/authorization/rule';
 import cors from 'cors';
 import { config } from 'dotenv';
 import express, { Response, json } from 'express';

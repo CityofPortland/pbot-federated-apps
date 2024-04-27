@@ -8,6 +8,9 @@
   "exports": {
     ".": {
       "import": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/*.js"
     }
   },
   "files": [

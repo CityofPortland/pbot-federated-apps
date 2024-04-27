@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "declaration": true,
+    "moduleResolution": "nodenext",
     "outDir": "./dist",
     "rootDir": "./src"
   },
