@@ -1,6 +1,6 @@
 import { BaseUserChangeableType } from '@pbotapps/objects';
 import { DocumentNode } from 'graphql';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
 
 export enum SignColor {

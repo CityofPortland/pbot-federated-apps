@@ -11,7 +11,7 @@
     "experimentalDecorators": true,
     "maxNodeModuleJsDepth": 10,
     "module": "esnext",
-    "moduleResolution": "Node",
+    "moduleResolution": "nodenext",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

@@ -6,6 +6,14 @@
   "main": "dist/index.js",
   "module": "dist/index",
   "typings": "dist/index",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/*.js"
+    }
+  },
   "files": [
     "dist"
   ],

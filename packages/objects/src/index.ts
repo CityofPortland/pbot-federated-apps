@@ -1,3 +1,3 @@
-export * from './base';
-export * from './repository';
-export * from './user';
+export * from './base.js';
+export * from './repository.js';
+export * from './user.js';
