@@ -1,4 +1,4 @@
-import { computed, ComputedRef, Ref } from 'vue';
+import { computed, type ComputedRef, type Ref } from 'vue';
 
 export type TextInputType = 'email' | 'search' | 'text';
 

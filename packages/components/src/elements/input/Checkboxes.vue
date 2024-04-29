@@ -17,9 +17,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, toRefs } from 'vue';
-import Entry from '@/components/field/Entry.vue';
-import { useInput } from '@/composables/use-input';
-import Checkbox from '@/elements/input/Checkbox.vue';
+import Entry from '../../components/field/Entry.vue';
+import { useInput } from '../../composables/use-input';
+import Checkbox from './Checkbox.vue';
 
 type Option = { checked: boolean; id: string; label: string; value: string };
 
@@ -31,7 +31,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    label: { type: String },
+    label: { type: String, required: true },
     options: {
       type: Array<Option>,
       required: true,
@@ -57,7 +57,6 @@ export default defineComponent({
     return {
       classes,
       toggle: (option: Option) => {
-        option = options.find(o => o.id == option.id);
         option.checked = !option.checked;
         const value = options
           .filter(option => option.checked)

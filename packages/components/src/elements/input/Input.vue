@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
-import { TextInputType, useInput } from '@/composables/use-input';
+import { type TextInputType, useInput } from '../../composables/use-input';
 
 export default defineComponent({
   name: 'Input',

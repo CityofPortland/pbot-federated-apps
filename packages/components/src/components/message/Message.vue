@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import Box, { BoxColor, BoxColorVariant } from '@/elements/box/Box';
+import Box, { type BoxColor, type BoxColorVariant } from '@/elements/box/Box';
 import { defineComponent } from 'vue';
 import Icon from '@/elements/icon/Icon.vue';
 

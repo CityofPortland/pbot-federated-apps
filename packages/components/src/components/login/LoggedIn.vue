@@ -64,7 +64,7 @@ export default defineComponent({
   },
   inheritAttrs: false,
   setup() {
-    const user = ref(undefined);
+    const user = ref<any>(undefined);
 
     const { route, getToken } = useAuth({
       clientId: import.meta.env.VITE_AZURE_CLIENT_ID,

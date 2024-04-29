@@ -1,5 +1,5 @@
 import Anchor from './anchor/Anchor.vue';
-import Box from './box/Box';
+import Box from './box/Box.js';
 import Button from './button/Button.vue';
 import Checkbox from './input/Checkbox.vue';
 import Checkboxes from './input/Checkboxes.vue';
@@ -13,7 +13,7 @@ import Spinner from './icon/Spinner.vue';
 import Textarea from './input/Textarea.vue';
 import Toggle from './input/Toggle.vue';
 
-export * from './box/Box';
+export * from './box/Box.js';
 
 export {
   Anchor,

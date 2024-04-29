@@ -82,7 +82,7 @@
   </Box>
 </template>
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from 'vue';
+import { computed, defineComponent, type Ref, ref } from 'vue';
 
 import Box from '../../elements/box/Box';
 import Button from '../../elements/button/Button.vue';

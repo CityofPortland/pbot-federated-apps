@@ -1,16 +1,17 @@
-import typescript from '@rollup/plugin-typescript';
-import vue from '@vitejs/plugin-vue';
-import eslint from '@nabla/vite-plugin-eslint';
-import { fileURLToPath, URL } from 'url';
-import { defineConfig } from 'vite';
+import { fileURLToPath, URL } from 'node:url'
+
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
     lib: {
-      entry: './src/index.ts',
-      name: 'components',
-      formats: ['es', 'cjs'],
+      entry: 'src/index.ts',
+      fileName: 'components',
+      formats: ['es']
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
@@ -26,12 +27,16 @@ export default defineConfig({
           'vue-router': 'vue-router',
         },
       },
-    },
+    }
   },
-  plugins: [typescript(), vue(), eslint()],
+  plugins: [
+    dts(),
+    vue(),
+    vueJsx(),
+  ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
-});
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  }
+})

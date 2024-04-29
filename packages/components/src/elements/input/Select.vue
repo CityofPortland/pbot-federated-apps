@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
 
-import { useInput } from '@/composables/use-input';
+import { useInput } from '../../composables/use-input';
 
 export default defineComponent({
   name: 'Select',
@@ -55,10 +55,10 @@ export default defineComponent({
         ? []
         : undefined;
 
-      for (const option of target.options) {
+      for (const option of Array.from(target.options)) {
         if (option.selected) {
           if (props.multiple) {
-            value = [...value, option.value];
+            value = [...(value as string[]), option.value];
           } else {
             value = option.value;
           }

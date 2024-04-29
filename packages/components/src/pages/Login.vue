@@ -18,24 +18,10 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '@pbotapps/authorization';
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
 import SignIn from '../components/login/SignIn.vue';
-import { authRoutes } from '../composables/use-login';
 
-const { route } = useAuth({
-  clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
-  tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
-});
 
 const redirect = ref<{ path?: string }>({ path: '/' });
 
-if (
-  route.value &&
-  route.value.path &&
-  !authRoutes.map(r => r.path).some(p => p == useRoute().path)
-) {
-  redirect.value = { ...route.value };
-}
 </script>

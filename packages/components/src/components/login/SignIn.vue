@@ -47,9 +47,7 @@ export default defineComponent({
         route.value = props.redirect
           ? props.redirect
           : {
-              hash: currentRoute.value.hash,
-              path: currentRoute.value.path,
-              query: currentRoute.value.query,
+              ...currentRoute.value,
             };
         getToken(
           props.scopes,

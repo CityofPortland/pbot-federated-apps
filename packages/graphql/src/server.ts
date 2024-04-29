@@ -10,7 +10,7 @@ import { GraphQLSchema } from 'graphql';
 import { Server } from 'http';
 import { AddressInfo } from 'net';
 
-import { Context } from './context';
+import { Context } from './context.js';
 
 function createURL(httpServer: Server, subPath = '/') {
   const { address, port } = httpServer.address() as AddressInfo;

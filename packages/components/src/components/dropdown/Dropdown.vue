@@ -47,14 +47,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from 'vue';
+import { defineComponent, type Ref, ref } from 'vue';
 
 import { useWindowEvent } from '@/composables/useWindowEvent';
 
 import Button from '@/elements/button/Button.vue';
-import { ButtonSize } from '@/elements/button/Button.types';
+import { type ButtonSize } from '@/elements/button/Button.types';
 import Icon from '@/elements/icon/Icon.vue';
-import { BoxColor, BoxColorVariant } from '@/elements/box/Box';
+import { type BoxColor, type BoxColorVariant } from '@/elements/box/Box';
 
 export default defineComponent({
   name: 'DropDown',

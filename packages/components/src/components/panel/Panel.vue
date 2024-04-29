@@ -54,7 +54,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import Box, { BoxColor, BoxColorVariant } from '@/elements/box/Box';
+import Box, { type BoxColor, type BoxColorVariant } from '@/elements/box/Box';
 import Icon from '@/elements/icon/Icon.vue';
 
 export default defineComponent({
