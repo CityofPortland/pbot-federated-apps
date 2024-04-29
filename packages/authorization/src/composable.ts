@@ -1,6 +1,7 @@
 import { RemovableRef, StorageSerializers, useStorage } from '@vueuse/core';
 import axios from 'axios';
 import { watch } from 'vue';
+import type { RouteLocationPathRaw } from 'vue-router';
 
 import { AuthObject, AuthRequest } from './types.js';
 import {
@@ -14,7 +15,7 @@ export type AuthContext = {
   authority: string;
   clientId: string;
   requests: RemovableRef<Array<AuthRequest>>;
-  route: RemovableRef<Partial<{ path: string }>>;
+  route: RemovableRef<Partial<RouteLocationPathRaw>>;
   tokens: RemovableRef<Record<string, AuthObject>>;
   findRequest: (hash: string) => AuthRequest;
   getToken: (
