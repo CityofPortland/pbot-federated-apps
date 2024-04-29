@@ -35,4 +35,4 @@ WORKDIR /home/node/${WORKDIR}
 # install only the production dependencies
 RUN pnpm --filter "{.}..." install --prod
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/server.js"]
