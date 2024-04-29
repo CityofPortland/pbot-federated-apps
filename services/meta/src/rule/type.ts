@@ -1,5 +1,5 @@
 import { BaseUserChangeableType } from '@pbotapps/objects';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 export const typeDefs = gql(`
   type Rule @key(fields: "_id") {

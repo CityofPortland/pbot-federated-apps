@@ -3,7 +3,7 @@ import {
   BaseType,
   User as BaseUser,
 } from '@pbotapps/objects';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 export const typeDefs = gql(`
   type User @key(fields: "_id") {

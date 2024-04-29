@@ -1,10 +1,10 @@
 import { GraphQLSchemaModule } from '@apollo/subgraph/dist/schema-helper';
 import { buildSubgraphSchema } from '@apollo/subgraph';
-import { handleRules } from '@pbotapps/authorization/middleware';
+import { handleRules, handleUser } from '@pbotapps/authorization/middleware';
 import { createServer } from '@pbotapps/graphql';
 import { config as loadenv } from 'dotenv';
 import { DateTimeResolver } from 'graphql-scalars';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 import Application from './application/index.js';
 import { elasticsearchClient } from './client.js';

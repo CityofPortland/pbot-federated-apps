@@ -49,7 +49,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
     },
   },
   Mutation: {
-    createUser: async (_, input: UserInput, _context) => {
+    createUser: async (_, input: UserInput) => {
       const { email, ...rest } = input;
 
       ok(

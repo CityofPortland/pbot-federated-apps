@@ -1,5 +1,5 @@
 import { Client } from '@elastic/elasticsearch';
-import type { IndicesCreateRequest } from '@elastic/elasticsearch/lib/api/types';
+import type { IndicesCreateRequest } from '@elastic/elasticsearch/lib/api/types.js';
 import dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 import { dirname, resolve } from 'path';
