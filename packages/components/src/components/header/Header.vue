@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
 
-import Box, { BoxColor, BoxColorVariant } from '../../elements/box/Box';
+import Box, {
+  type BoxColor,
+  type BoxColorVariant,
+} from '../../elements/box/Box';
 
 const props = defineProps({
   open: {

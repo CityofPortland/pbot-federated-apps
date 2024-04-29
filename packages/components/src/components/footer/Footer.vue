@@ -63,7 +63,10 @@
 import { defineComponent } from 'vue';
 
 import Anchor from '../../elements/anchor/Anchor.vue';
-import Box, { BoxColor, BoxColorVariant } from '../../elements/box/Box';
+import Box, {
+  type BoxColor,
+  type BoxColorVariant,
+} from '../../elements/box/Box';
 import Copyright from '../copyright/Copyright.vue';
 import Nav from '../nav/Nav.vue';
 import NavItem from '../nav/NavItem.vue';

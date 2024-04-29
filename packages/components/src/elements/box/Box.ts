@@ -1,5 +1,5 @@
 import { defineComponent, h } from 'vue';
-import { useBox } from '../../composables/use-box';
+import { useBox } from '../../composables/use-box.js';
 
 export const boxColors = [
   'blue',

@@ -14,18 +14,18 @@
     "@vueuse/core": "^10.9.0",
     "idb": "^7.1.1",
     "pinia": "^2.1.7",
-    "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue": "^3.4.25",
+    "vue-router": "^4.3.2"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.12",
+    "@tailwindcss/typography": "^0.5.13",
     "@vitejs/plugin-vue": "^4.6.2",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "postcss-import": "^14.1.0",
     "tailwindcss": "^3.4.3",
-    "typescript": "^4.9.5",
-    "vite": "^4.5.3",
-    "vue-tsc": "^1.8.27"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vue-tsc": "^2.0.14"
   }
 }

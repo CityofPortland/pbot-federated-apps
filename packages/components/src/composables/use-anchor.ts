@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from 'vue';
+import { computed, type ComputedRef } from 'vue';
 
 export function useAnchor(border: boolean): {
   borderClasses: ComputedRef;

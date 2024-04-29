@@ -25,7 +25,7 @@
 <script lang="ts">
 import { useAuth } from '@pbotapps/authorization';
 import axios from 'axios';
-import { defineComponent, onMounted, ref, Ref } from 'vue';
+import { defineComponent, onMounted, ref, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import Message from '../components/message/Message.vue';
@@ -72,7 +72,7 @@ export default defineComponent({
       setToken(scope.split(' '), access_token, refresh_token);
 
       if (requests.value.length == 0) {
-        router.replace(route.value.path);
+        router.replace(route.value);
       }
     });
 

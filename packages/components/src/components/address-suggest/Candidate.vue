@@ -28,7 +28,7 @@ import { defineComponent } from 'vue';
 
 import Box from '@/elements/box/Box';
 
-import { Candidate } from './candidate';
+import { type Candidate } from './candidate';
 
 export default defineComponent({
   name: 'CandidateItem',

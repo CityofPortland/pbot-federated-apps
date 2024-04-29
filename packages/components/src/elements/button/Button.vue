@@ -15,9 +15,9 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 
-import { ButtonProps, ButtonSize } from './Button.types';
+import type { ButtonProps, ButtonSize } from './Button.types';
 
-import Box, { BoxColor, BoxColorVariant } from '@/elements/box/Box';
+import Box, { type BoxColor, type BoxColorVariant } from '@/elements/box/Box';
 
 export default defineComponent({
   name: 'pbot-button',

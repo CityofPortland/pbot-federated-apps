@@ -18,7 +18,7 @@
         </router-link>
       </li>
       <li>
-        <span>{{ crumbs.at(-1).split('/').pop() }}</span>
+        <span>{{ crumbs.at(-1)!.split('/').pop() }}</span>
       </li>
     </ol>
   </nav>

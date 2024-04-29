@@ -1,7 +1,6 @@
 import { RuleType, createAuthStore } from '@pbotapps/authorization';
 import { query } from '@pbotapps/components';
 import { defineStore } from 'pinia';
-import { v4 as uuid } from 'uuid';
 import { computed, reactive, ref } from 'vue';
 
 export type Spot = {

@@ -1,4 +1,4 @@
-import axios, { AxiosRequestHeaders } from 'axios';
+import axios, { type RawAxiosRequestHeaders } from 'axios';
 import sha256 from 'crypto-js/sha256';
 
 export type GraphQLError = {
@@ -8,7 +8,7 @@ export type GraphQLError = {
 
 export type GraphQLOptions = {
   operation: string;
-  headers?: AxiosRequestHeaders;
+  headers?: RawAxiosRequestHeaders;
   variables?: Record<string, unknown>;
   cache?: boolean;
 };

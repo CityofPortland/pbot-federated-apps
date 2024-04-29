@@ -18,22 +18,14 @@ import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { SignIn } from '../components';
-import { useLogin } from '../composables';
 
 export default defineComponent({
-  name: 'Logout',
+  name: 'LogoutPage',
   setup() {
-    const { accessToken, msal, route } = useLogin();
     const router = useRouter();
 
-    route.value = { path: '/' };
+    router.push({ path: '/'})
 
-    if (accessToken.value && accessToken.value !== '') {
-      accessToken.value = '';
-      msal.logoutRedirect({
-        postLogoutRedirectUri: router.resolve({ name: 'OAuthCallback' }).href,
-      });
-    }
   },
   components: { SignIn },
 });

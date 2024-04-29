@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "maxNodeModuleJsDepth": 10,
-    "module": "esnext",
+    "module": "nodenext",
     "moduleResolution": "nodenext",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
