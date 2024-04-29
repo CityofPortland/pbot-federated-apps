@@ -37,7 +37,21 @@ app.use(
       getRules: async ({ user }) => {
         const rules = new Array<Partial<RuleType>>();
 
-        if (['Michael.McDonald@portlandoregon.gov'].includes(user._id)) {
+        if (
+          [
+            'kristan.alldrin@portlandoregon.gov',
+            'lori.steen@portlandoregon.gov',
+            'michael.mcdonald@portlandoregon.gov',
+            'mark.williams@portlandoregon.gov',
+            'roddy.jasa@portlandoregon.gov',
+            'samuel.berhane@portlandoregon.gov',
+            'tim.pittman@portlandoregon.gov',
+            'travis.hardaker@portlandoregon.gov',
+          ].find(
+            u =>
+              u.localeCompare(user._id, undefined, { sensitivity: 'base' }) == 0
+          )
+        ) {
           rules.push(
             {
               action: 'write',
@@ -62,7 +76,7 @@ app.get('/probe', (_, res) => res.status(200).send('Success!'));
 if (process.env.NODE_ENV == 'development') {
   import('graphql-playground-html').then(graphqlPlaygroundHtml => {
     const graphqlPlayground = options => {
-      return function (_, res: Response) {
+      return function (_: unknown, res: Response) {
         res.setHeader('Content-Type', 'text/html');
         const playground = graphqlPlaygroundHtml.renderPlaygroundPage(options);
         res.write(playground);
