@@ -3,7 +3,7 @@ import { GraphQLSchemaModule } from '@apollo/subgraph/dist/schema-helper';
 import { createServer } from '@pbotapps/graphql';
 import { config as loadenv } from 'dotenv';
 import { DateTimeResolver } from 'graphql-scalars';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 import Zone from './zone/index.js';
 import Schema from './schema/index.js';

@@ -1,5 +1,5 @@
 import { DocumentNode } from 'graphql';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 import { Table } from '../table/types.js';
 

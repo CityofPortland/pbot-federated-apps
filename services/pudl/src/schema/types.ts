@@ -1,5 +1,5 @@
 import { DocumentNode } from 'graphql';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 import { Zone } from '../zone/types.js';
 

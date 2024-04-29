@@ -1,5 +1,5 @@
 import { Client, ClientOptions } from '@elastic/elasticsearch';
-import { SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import { SearchRequest } from '@elastic/elasticsearch/lib/api/types.js';
 import DataLoader from 'dataloader';
 
 export function createClient({
