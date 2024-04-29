@@ -117,7 +117,7 @@ jobs:
               ingress:
                 enabled: true
                 annotations:
-                  nginx.ingress.kubernetes.io/use-regex: true
+                  nginx.ingress.kubernetes.io/use-regex: "true"
                   nginx.ingress.kubernetes.io/rewrite-target: /
                 hosts:
                   - host: pbotapps-test.portland.gov
