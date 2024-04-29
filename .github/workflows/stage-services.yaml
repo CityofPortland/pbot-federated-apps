@@ -116,10 +116,13 @@ jobs:
             values: |
               ingress:
                 enabled: true
+                annotations:
+                  nginx.ingress.kubernetes.io/use-regex: true
+                  nginx.ingress.kubernetes.io/rewrite-target: /$2
                 hosts:
                   - host: pbotapps-test.portland.gov
                     paths:
-                      - path: /graphql/reservation
+                      - path: /(graphql/reservation)
                         pathType: Prefix
                 tls:
                   - secretName: pbotapps-test-portland-gov-tls
