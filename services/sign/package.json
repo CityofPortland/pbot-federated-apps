@@ -25,12 +25,12 @@
   },
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "dependencies": {
-    "@apollo/server": "^4.10.2",
-    "@apollo/subgraph": "^2.7.2",
+    "@apollo/server": "^4.10.4",
+    "@apollo/subgraph": "^2.7.4",
     "@azure/identity": "^3.4.2",
-    "@azure/logger": "^1.1.1",
+    "@azure/logger": "^1.1.2",
     "@azure/storage-blob": "^12.17.0",
-    "@elastic/elasticsearch": "^8.13.0",
+    "@elastic/elasticsearch": "^8.13.1",
     "@graphql-tools/resolvers-composition": "^6.5.18",
     "@graphql-tools/schema": "^9.0.19",
     "@graphql-tools/utils": "^9.2.1",
@@ -54,15 +54,15 @@
     "passport": "^0.5.3",
     "passport-anonymous": "^1.0.1",
     "passport-azure-ad": "^4.3.5",
-    "pg": "^8.11.3",
+    "pg": "^8.11.5",
     "reflect-metadata": "^0.1.14",
     "sharp": "^0.33.3"
   },
   "devDependencies": {
-    "@elastic/transport": "^8.4.1",
+    "@elastic/transport": "^8.5.1",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^8.5.9",
-    "@types/node": "^18.19.26",
+    "@types/node": "^20.12.7",
     "@types/passport-anonymous": "^1.0.5",
     "@types/passport-azure-ad": "^4.3.6",
     "@types/sharp": "^0.32.0",
@@ -72,6 +72,6 @@
     "nodemon": "^2.0.22",
     "open": "^9.1.0",
     "ts-node": "^10.9.2",
-    "typescript": "^4.9.5"
+    "typescript": "^5.4.5"
   }
 }
