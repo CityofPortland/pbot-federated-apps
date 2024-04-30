@@ -21,7 +21,7 @@
   ],
   "types": "dist/index.d",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build --watch",
     "build-full": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build": "vite build",
