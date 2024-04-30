@@ -66,20 +66,16 @@ export default defineComponent({
   setup() {
     const user = ref<any>(undefined);
 
-    const { route, getToken } = useAuth({
+    const { getToken } = useAuth({
       clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
       tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
     });
-    const { currentRoute, resolve } = useRouter();
+    const { resolve } = useRouter();
 
     onMounted(async () => {
       const token = await getToken([`User.Read`]);
 
       if (!token) {
-        route.value = {
-          path: currentRoute.value.path,
-        };
-
         await getToken(
           ['User.Read'],
           'none',
