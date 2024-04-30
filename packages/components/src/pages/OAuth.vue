@@ -71,9 +71,7 @@ export default defineComponent({
 
       setToken(scope.split(' '), access_token, refresh_token);
 
-      if (requests.value.length == 0) {
-        router.replace(route.value);
-      }
+      router.replace(route.value || { path: '/' });
     });
 
     return { error, loading };
