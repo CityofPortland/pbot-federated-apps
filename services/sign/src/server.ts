@@ -1,7 +1,7 @@
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { GraphQLSchemaModule } from '@apollo/subgraph/dist/schema-helper';
 import { handleRules } from '@pbotapps/authorization/middleware';
-import { RuleType } from '@pbotapps/authorization/rule';
+import type { RuleType } from '@pbotapps/authorization/rule';
 import { createServer } from '@pbotapps/graphql';
 import graphqlUpload from 'graphql-upload/graphqlUploadExpress.mjs';
 
