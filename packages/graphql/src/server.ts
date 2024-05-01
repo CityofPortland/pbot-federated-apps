@@ -1,7 +1,8 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { handleToken, RuleType } from '@pbotapps/authorization';
+import { handleToken } from '@pbotapps/authorization/middleware';
+import type { RuleType } from '@pbotapps/authorization/rule';
 import { User } from '@pbotapps/objects';
 import cors from 'cors';
 import DataLoader from 'dataloader';
