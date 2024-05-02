@@ -6,5 +6,5 @@
     "NODE_ENV": "development"
   },
   "ext": "ts",
-  "exec": "pnpm --filter=\"{.}...\" build && node dist/index.js"
+  "exec": "pnpm --filter=\"{.}...\" build && node dist/server.js"
 }
