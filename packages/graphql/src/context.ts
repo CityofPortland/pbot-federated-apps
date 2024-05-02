@@ -1,4 +1,4 @@
-import { RuleType } from '@pbotapps/authorization';
+import type { RuleType } from '@pbotapps/authorization/rule';
 import { User } from '@pbotapps/objects';
 import DataLoader from 'dataloader';
 

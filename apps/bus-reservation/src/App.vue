@@ -2,6 +2,7 @@
 import {
   Anchor,
   Breadcrumbs,
+  Box,
   Footer,
   Header,
   LoggedIn,
@@ -22,6 +23,8 @@ const accessToken = ref<string>();
 const menuOpen = ref(false);
 
 const path = computed(() => currentRoute.value.path);
+
+const dev = computed(() => import.meta.env.MODE != 'production');
 
 onMounted(async () => {
   accessToken.value = await getToken();
@@ -58,6 +61,14 @@ onMounted(async () => {
         </Nav>
       </template>
     </Header>
+    <section role="banner">
+      <Box
+        v-if="dev"
+        color="orange"
+        class="p-4 text-center text-xl font-semibold uppercase"
+        >Development version</Box
+      >
+    </section>
     <main class="flex-grow">
       <Breadcrumbs v-if="path != '/'" :path="path" class="mb-4 px-4" />
       <router-view />
