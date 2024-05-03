@@ -24,70 +24,87 @@ export async function createRepository<
     partitionKey: partitionKey,
   });
 
+  const add = async (item: T) => {
+    const { resource } = await container.items.create<T>({
+      id: item.id,
+      ...item,
+    });
+    return resource;
+  };
+
+  const deleteItem = async (id: string, partition?: string) => {
+    const { statusCode } = await container
+      .item(id, partition || id)
+      .delete<T>();
+    return statusCode == 204;
+  };
+
+  const edit = async (item: T, id: string, partition?: string) => {
+    const existing = await get(id, partition);
+
+    await deleteItem(id, partition || id);
+
+    const updated = await add({
+      ...existing,
+      ...item,
+    });
+
+    return updated;
+  };
+
+  const exists = async (id: string, partition?: string) => {
+    const { resource, statusCode } = await container
+      .item(id, partition || id)
+      .read<T>();
+    if (resource) return true;
+    return statusCode == 200;
+  };
+
+  const get = async (id: string, partition?: string) => {
+    const { resource: existing } = await container
+      .item(id, partition || id)
+      .read<T>();
+    return existing;
+  };
+
+  const getAll = async () => {
+    const results = new Array<T>();
+    const iter = container.items.readAll<T>().getAsyncIterator();
+
+    for await (const { resources } of iter) {
+      results.push(...resources);
+    }
+
+    return results;
+  };
+
+  const query = async (statement: string, parameters: Array<SqlParameter>) => {
+    const results = new Array<T>();
+
+    const iter = container.items
+      .query<T>({
+        query: statement,
+        parameters,
+      })
+      .getAsyncIterator();
+
+    for await (const { resources } of iter) {
+      results.push(...resources);
+    }
+
+    return results;
+  };
+
   return {
     client,
     container,
     database,
-    async add(item: T) {
-      const { resource } = await container.items.create<T>({
-        id: item.id,
-        ...item,
-      });
-      return resource;
-    },
-    async delete(id: string, partition?: string) {
-      const { statusCode } = await container
-        .item(id, partition || id)
-        .delete<T>();
-      return statusCode == 204;
-    },
-    async edit(item: T, id: string, partition?: string) {
-      const existing = await this.get(id, partition);
-      await container.item(id, partition || id).replace<T>({
-        ...existing,
-        ...item,
-      });
-      const updated = await this.get(id, partition);
-      return updated;
-    },
-    async exists(id: string, partition?: string) {
-      const { resource, statusCode } = await container
-        .item(id, partition || id)
-        .read<T>();
-      if (resource) return true;
-      return statusCode == 200;
-    },
-    async get(id: string, partition?: string) {
-      const { resource: existing } = await container
-        .item(id, partition || id)
-        .read<T>();
-      return existing;
-    },
-    async getAll() {
-      const results = new Array<T>();
-      const iter = container.items.readAll<T>().getAsyncIterator();
-
-      for await (const { resources } of iter) {
-        results.push(...resources);
-      }
-
-      return results;
-    },
-    async query(statement: string, parameters: Array<SqlParameter>) {
-      const results = new Array<T>();
-
-      const iter = container.items
-        .query<T>({
-          query: statement,
-          parameters,
-        })
-        .getAsyncIterator();
-
-      for await (const { resources } of iter) {
-        results.push(...resources);
-      }
-
-      return results;
-    },
+    add,
+    delete: deleteItem,
+    edit,
+    exists,
+    get,
+    getAll,
+    query,
   };
 }
