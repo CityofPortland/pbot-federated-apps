@@ -114,7 +114,7 @@ export const GraphQLHotelSchema = new GraphQLSchema({
             'hotel'
           );
 
-          let hotel = {
+          let hotel: Partial<Hotel> = {
             updated: new Date(),
             updater: user._id,
             ...args.payload,

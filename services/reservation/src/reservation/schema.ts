@@ -169,7 +169,7 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             throw new Error('Cannot modify cancelled reservation');
           }
 
-          let res = {
+          let res: Partial<Reservation> = {
             updated: new Date(),
             updater: user._id,
             ...args.payload,
