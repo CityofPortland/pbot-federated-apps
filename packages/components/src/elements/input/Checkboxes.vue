@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { computed, defineComponent, toRefs } from 'vue';
 import Entry from '../../components/field/Entry.vue';
 import { useInput } from '../../composables/use-input';
 import Checkbox from './Checkbox.vue';
@@ -24,7 +24,6 @@ import Checkbox from './Checkbox.vue';
 type Option = { checked: boolean; id: string; label: string; value: string };
 
 export default defineComponent({
-  name: 'Checkboxes',
   components: { Checkbox, Entry },
   props: {
     id: {
@@ -49,16 +48,16 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const { disabled } = toRefs(props);
-    const options = reactive(props.options);
-
+    const { disabled, options } = toRefs(props);
+    
     const { classes } = useInput(disabled);
 
     return {
       classes,
       toggle: (option: Option) => {
+        // const o = options.find(o => o.id == option.id)!;
         option.checked = !option.checked;
-        const value = options
+        const value = options.value
           .filter(option => option.checked)
           .map(option => option.value);
         emit('update:modelValue', value);
@@ -67,7 +66,7 @@ export default defineComponent({
       invalid: computed(() => {
         if (!props.required) return false;
 
-        return options.find(o => o.checked) ? false : true;
+        return options.value.find(o => o.checked) ? false : true;
       }),
     };
   },
