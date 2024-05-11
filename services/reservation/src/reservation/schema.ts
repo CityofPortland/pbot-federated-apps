@@ -24,6 +24,36 @@ const repository = () =>
     '/spotId'
   );
 
+const checkExisting = async (spotId: string, start: Date, end: Date) => {
+  const existing = await repository()
+    .then(repo =>
+      repo.container.items
+        .query<Reservation>({
+          query: `select * from reservation c where c.spotId = "${spotId}"`,
+        })
+        .fetchAll()
+        .then(res => res.resources)
+    )
+    .then(reservations =>
+      reservations.filter(res => {
+        const s = new Date(res.start);
+        const e = new Date(res.end);
+
+        return (
+          (s >= start && s <= end) ||
+          (e >= start && e <= end) ||
+          (s <= start && e >= end)
+        );
+      })
+    );
+
+  if (existing.length) {
+    throw new Error(
+      `There is an existing reservation for this spot on the same dates`
+    );
+  }
+};
+
 export const GraphQLReservationSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
@@ -119,6 +149,12 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             ...args.payload,
           };
 
+          await checkExisting(
+            args.payload.spotId,
+            args.payload.start,
+            args.payload.end
+          );
+
           return repository()
             .then(repo => repo.add(res))
             .then(Reservation => Reservation);
@@ -163,11 +199,19 @@ export const GraphQLReservationSchema = new GraphQLSchema({
 
           const repo = await repository();
 
-          const existing = await repo.get(args.id, args.spotId);
+          const active = await repo
+            .get(args.id, args.spotId)
+            .then(res => res.active);
 
-          if (!existing.active) {
+          if (active) {
             throw new Error('Cannot modify cancelled reservation');
           }
+
+          await checkExisting(
+            args.payload.spotId,
+            args.payload.start,
+            args.payload.end
+          );
 
           let res: Partial<Reservation> = {
             updated: new Date(),

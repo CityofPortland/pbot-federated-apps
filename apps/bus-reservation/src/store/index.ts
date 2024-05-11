@@ -181,14 +181,11 @@ export const useStore = defineStore('bus-reservation', () => {
   };
 
   const getRules = async () => {
-    console.debug('getRules');
     const store = useAuthStore();
 
     const token = await store.getToken();
 
     if (!token) throw new Error('Must be logged in to get rules!');
-
-    console.debug('query');
 
     const res = await query<{ rules: RuleType[] }>({
       operation: `
