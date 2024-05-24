@@ -13,31 +13,31 @@ const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const now = toZonedTime(new Date(), tz);
 const end = ref<Date>(endOfDay(addDays(now, 30)));
 const start = ref<Date>(startOfDay(now));
+
 const reservations = computed(() => {
-  return store.reservations.filter(res => {
-    if (res.start <= end.value && res.end >= start.value) return true;
-  });
+  return store.reservations.filter(
+    res => res.start <= end.value && res.end >= start.value
+  );
 });
+
 const validateStart = (startDt: string) => {
   start.value = startOfDay(toZonedTime(startDt, tz));
   errors.value = undefined;
-  if (start.value < startOfDay(toZonedTime(new Date(), tz)))
+  if (start.value < startOfDay(now))
     errors.value = Error(`Start date is before today.`);
   else if (start.value > end.value)
     errors.value = Error(`Start date is after end date.`);
 };
+
 const validateEnd = (endDt: string) => {
   end.value = endOfDay(toZonedTime(endDt, tz));
   errors.value = undefined;
-  if (end.value < new Date()) {
+  if (end.value < now) {
     errors.value = Error(`End date is before today.`);
   } else if (end.value < start.value)
     errors.value = Error(`End date is before start date.`);
 };
 
-// const validateEnd = () => {
-//   if (end.value < start.value) throw Error(`End date is before start date`);
-// };
 onMounted(() => {
   store.getReservations();
 });
@@ -62,9 +62,9 @@ onMounted(() => {
     </header>
     <main class="overflow-auto">
       <p>
-        The table below lists reservations filtered by start and end dates shown
-        below. Past or cancelled reservations are not shown. Reservations that
-        are currently active are
+        The table below lists reservations filtered by the start and end dates
+        shown below. Past or cancelled reservations are not shown. Reservations
+        that are currently active are
         <Box as="span" color="blue" variant="light">highlighted in blue</Box>.
         You can refine this list by changing the start and end dates.
       </p>
