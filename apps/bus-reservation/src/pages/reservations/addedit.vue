@@ -63,29 +63,28 @@ const save = async () => {
 };
 
 const spots = computed(() => {
-  console.debug("Spots", end.value, start.value);
   const existing = (spot: Spot) =>
-    store.reservations.filter((res) => !(props.id && props.id == res.id))
-      .reduce((acc, curr) => {
-        if (curr.spot.id == spot.id) {
-          acc.push(curr);
-        }
-        return acc;
-      }, new Array<Reservation>())
-      .reduce((acc, curr) => {
-        if (
-          (start.value >= curr.start && start.value <= curr.end) ||
-          (end.value >= curr.start && end.value <= curr.end) ||
-          (start.value <= curr.start && end.value >= curr.end)
-        ) {
-          acc.push(curr);
-          console.debug("Second reduce", curr.spot);
-        }
-        return acc;
-      }, new Array<Reservation>());
+    store.reservations
+      .filter(res => !(props.id && props.id == res.id))
+      .filter(res => res.spot.id == spot.id)
+      .filter(
+        res =>
+          (start.value >= res.start && start.value <= res.end) ||
+          (end.value >= res.start && end.value <= res.end) ||
+          (start.value <= res.start && end.value >= res.end)
+      );
 
-  return store.spots.filter((spot: Spot) => !(existing(spot).length > 0))
-})
+  const spots = new Array<Spot>();
+  for (const zone of store.zones) {
+    spots.push(
+      ...store.spots
+        .filter(spot => spot.zone == zone)
+        .sort((a, b) => (a.label > b.label ? 1 : -1))
+    );
+  }
+
+  return spots.filter((spot: Spot) => !(existing(spot).length > 0));
+});
 
 onMounted(async () => {
   await store.getSpots();
@@ -118,47 +117,106 @@ const setHotel = (id: string) => {
 </script>
 
 <template>
-  <form ref="formRef" class="max-w-7xl mx-auto px-4 my-8 space-y-4" @submit.prevent="save">
+  <form
+    ref="formRef"
+    class="max-w-7xl mx-auto px-4 my-8 space-y-4"
+    @submit.prevent="save"
+  >
     <h1 class="text-4xl font-bold mb-8">{{ title }}</h1>
     <section v-if="errors">
       <Message color="red" variant="light" summary="Error saving reservation">
         {{ errors.message }}
       </Message>
     </section>
-    <Entry id="start" label="Start" required :inline="false" v-slot="{ id, required }">
-      <Input :id="id" :required="required" type="date" :modelValue="format(toZonedTime(start, tz), 'yyyy-MM-dd')"
-        @changed="start = startOfDay(toZonedTime($event, tz))" />
+    <Entry
+      id="start"
+      label="Start"
+      required
+      :inline="false"
+      v-slot="{ id, required }"
+    >
+      <Input
+        :id="id"
+        :required="required"
+        type="date"
+        :modelValue="format(toZonedTime(start, tz), 'yyyy-MM-dd')"
+        @changed="start = startOfDay(toZonedTime($event, tz))"
+      />
     </Entry>
-    <Entry id="end" label="End" required :inline="false" v-slot="{ id, required }">
-      <Input :id="id" :required="required" type="date" :modelValue="format(toZonedTime(end, tz), 'yyyy-MM-dd')"
-        @changed="end = endOfDay(toZonedTime($event, tz))" />
+    <Entry
+      id="end"
+      label="End"
+      required
+      :inline="false"
+      v-slot="{ id, required }"
+    >
+      <Input
+        :id="id"
+        :required="required"
+        type="date"
+        :modelValue="format(toZonedTime(end, tz), 'yyyy-MM-dd')"
+        @changed="end = endOfDay(toZonedTime($event, tz))"
+      />
     </Entry>
-    <Entry id="spot" label="Spot" required :inline="false" v-slot="{ id, required }">
+    <Entry
+      id="spot"
+      label="Spot"
+      required
+      :inline="false"
+      v-slot="{ id, required }"
+    >
       <Select :id="id" :required="required" @changed="setSpot">
         <optgroup v-for="zone in store.zones" :key="zone" :label="zone">
-          <option v-for="s in spots
-    .filter(s => s.zone == zone)
-    .sort((a, b) => (a.label > b.label ? 1 : -1))" :key="s.id" :value="s.id" :selected="s.id == spot?.id">
+          <option
+            v-for="s in spots
+              .filter(s => s.zone == zone)
+              .sort((a, b) => (a.label > b.label ? 1 : -1))"
+            :key="s.id"
+            :value="s.id"
+            :selected="s.id == spot?.id"
+          >
             {{ s.label }}
           </option>
         </optgroup>
       </Select>
     </Entry>
-    <Entry id="hotel" label="Hotel" required :inline="false" v-slot="{ id, required }">
+    <Entry
+      id="hotel"
+      label="Hotel"
+      required
+      :inline="false"
+      v-slot="{ id, required }"
+    >
       <Select :id="id" :required="required" @changed="setHotel">
-        <option v-for="h in store.hotels.filter(u => u.enabled)" :key="h.id" :value="h.id"
-          :selected="h.id == hotel?.id">
+        <option
+          v-for="h in store.hotels.filter(u => u.enabled)"
+          :key="h.id"
+          :value="h.id"
+          :selected="h.id == hotel?.id"
+        >
           {{ h.label }}
         </option>
       </Select>
     </Entry>
 
-    <Entry v-if="existing" id="active" label="Active" :inline="false" v-slot="{ id, required }">
+    <Entry
+      v-if="existing"
+      id="active"
+      label="Active"
+      :inline="false"
+      v-slot="{ id, required }"
+    >
       <small>
         Uncheck this to cancel the reservation. The reservation will no longer
         be accessible from this application.
       </small>
-      <Checkbox :id="id" :required="required" :checked="active" v-model="active" @changed="active = !active">
+      <Checkbox
+        :id="id"
+        :required="required"
+        :checked="active"
+        v-model="active"
+        @changed="active = !active"
+      >
       </Checkbox>
     </Entry>
     <Button label="Save" />
