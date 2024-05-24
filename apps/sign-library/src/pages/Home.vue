@@ -135,14 +135,18 @@ const pageLength = computed(() => [
   ...Array(Math.floor(signs.value.length / pageSize.value + 1)).keys(),
 ]);
 
-const page = computed(() => {
-  let s = signs.value.slice(
-    pageIndex.value * pageSize.value,
-    (pageIndex.value + 1) * pageSize.value
-  );
+const getPage = () => {
+  let start = pageIndex.value * pageSize.value;
+  let end = (pageIndex.value + 1) * pageSize.value;
+
+  if (start >= signs.value.length) {
+    changeQuery({ page: 1 });
+  }
+
+  let s = signs.value.slice(start, end);
 
   return s;
-});
+};
 
 const sort = computed<keyof Sign>(() => route.query.sort as keyof Sign);
 
@@ -435,7 +439,7 @@ const fieldValues = computed(() => {
             {{ signs.length }} signs
           </p>
           <ul class="list-none flex flex-col divide-y divide-current">
-            <li v-for="sign in page" :key="sign.code" class="py-8">
+            <li v-for="sign in getPage()" :key="sign.code" class="py-8">
               <article class="flex flex-col sm:flex-row items-start gap-4">
                 <figure>
                   <MissingImage
