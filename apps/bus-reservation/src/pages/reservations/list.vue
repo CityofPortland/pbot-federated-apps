@@ -109,8 +109,9 @@ onMounted(() => {
           />
         </Entry>
       </section>
-
-      <table class="-ml-2 w-full table-auto border-separate border-spacing-y-1">
+      <table
+        class="-ml-2 p-2 w-full table-auto border-separate border-spacing-y-1"
+      >
         <caption></caption>
         <thead class="pb-4">
           <tr class="text-left">
