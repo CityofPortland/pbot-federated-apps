@@ -207,11 +207,13 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             throw new Error('Cannot modify cancelled reservation');
           }
 
-          await checkExisting(
-            args.payload.spotId,
-            args.payload.start,
-            args.payload.end
-          );
+          if (args.payload.active) {
+            await checkExisting(
+              args.payload.spotId,
+              args.payload.start,
+              args.payload.end
+            );
+          }
 
           let res: Partial<Reservation> = {
             updated: new Date(),
