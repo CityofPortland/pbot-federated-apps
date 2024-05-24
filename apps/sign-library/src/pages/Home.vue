@@ -140,7 +140,7 @@ const getPage = () => {
   let end = (pageIndex.value + 1) * pageSize.value;
 
   if (start >= signs.value.length) {
-    changeQuery({ page: 1 });
+    changeQuery({ page: ['1'] });
   }
 
   let s = signs.value.slice(start, end);
