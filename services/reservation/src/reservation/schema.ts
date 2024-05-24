@@ -203,7 +203,7 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             .get(args.id, args.spotId)
             .then(res => res.active);
 
-          if (active) {
+          if (!active) {
             throw new Error('Cannot modify cancelled reservation');
           }
 

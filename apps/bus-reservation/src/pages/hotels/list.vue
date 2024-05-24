@@ -25,7 +25,9 @@ onMounted(() => {
       </RouterLink>
     </header>
     <main class="overflow-auto">
-      <table class="-ml-2 w-full table-auto border-separate border-spacing-y-1">
+      <table
+        class="-ml-2 p-2 w-full table-auto border-separate border-spacing-y-1"
+      >
         <thead class="text-left">
           <tr>
             <th class="font-semibold p-2">Name</th>
