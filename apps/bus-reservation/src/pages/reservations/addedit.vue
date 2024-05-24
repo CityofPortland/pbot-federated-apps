@@ -9,7 +9,7 @@ import {
 } from '@pbotapps/components';
 import { endOfDay, format, startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Hotel, Reservation, Spot, useStore } from '../../store';
 
@@ -62,12 +62,36 @@ const save = async () => {
   }
 };
 
+const spots = computed(() => {
+  const existing = (spot: Spot) =>
+    store.reservations
+      .filter(res => !(props.id && props.id == res.id))
+      .filter(res => res.spot.id == spot.id)
+      .filter(
+        res =>
+          (start.value >= res.start && start.value <= res.end) ||
+          (end.value >= res.start && end.value <= res.end) ||
+          (start.value <= res.start && end.value >= res.end)
+      );
+
+  const spots = new Array<Spot>();
+  for (const zone of store.zones) {
+    spots.push(
+      ...store.spots
+        .filter(spot => spot.zone == zone)
+        .sort((a, b) => (a.label > b.label ? 1 : -1))
+    );
+  }
+
+  return spots.filter((spot: Spot) => !(existing(spot).length > 0));
+});
+
 onMounted(async () => {
   await store.getSpots();
   await store.getHotels();
 
   hotel.value = store.hotels.filter(h => h.enabled)[0];
-  spot.value = store.spots[0];
+  spot.value = spots.value[0];
 
   if (props.id) {
     existing.value = store.reservation(props.id);
@@ -105,46 +129,6 @@ const setHotel = (id: string) => {
       </Message>
     </section>
     <Entry
-      id="spot"
-      label="Spot"
-      required
-      :inline="false"
-      v-slot="{ id, required }"
-    >
-      <Select :id="id" :required="required" @changed="setSpot">
-        <optgroup v-for="zone in store.zones" :key="zone" :label="zone">
-          <option
-            v-for="s in store.spots
-              .filter(s => s.zone == zone)
-              .sort((a, b) => (a.label > b.label ? 1 : -1))"
-            :key="s.id"
-            :value="s.id"
-            :selected="s.id == spot?.id"
-          >
-            {{ s.label }}
-          </option>
-        </optgroup>
-      </Select>
-    </Entry>
-    <Entry
-      id="hotel"
-      label="Hotel"
-      required
-      :inline="false"
-      v-slot="{ id, required }"
-    >
-      <Select :id="id" :required="required" @changed="setHotel">
-        <option
-          v-for="h in store.hotels.filter(u => u.enabled)"
-          :key="h.id"
-          :value="h.id"
-          :selected="h.id == hotel?.id"
-        >
-          {{ h.label }}
-        </option>
-      </Select>
-    </Entry>
-    <Entry
       id="start"
       label="Start"
       required
@@ -174,6 +158,47 @@ const setHotel = (id: string) => {
         @changed="end = endOfDay(toZonedTime($event, tz))"
       />
     </Entry>
+    <Entry
+      id="spot"
+      label="Spot"
+      required
+      :inline="false"
+      v-slot="{ id, required }"
+    >
+      <Select :id="id" :required="required" @changed="setSpot">
+        <optgroup v-for="zone in store.zones" :key="zone" :label="zone">
+          <option
+            v-for="s in spots
+              .filter(s => s.zone == zone)
+              .sort((a, b) => (a.label > b.label ? 1 : -1))"
+            :key="s.id"
+            :value="s.id"
+            :selected="s.id == spot?.id"
+          >
+            {{ s.label }}
+          </option>
+        </optgroup>
+      </Select>
+    </Entry>
+    <Entry
+      id="hotel"
+      label="Hotel"
+      required
+      :inline="false"
+      v-slot="{ id, required }"
+    >
+      <Select :id="id" :required="required" @changed="setHotel">
+        <option
+          v-for="h in store.hotels.filter(u => u.enabled)"
+          :key="h.id"
+          :value="h.id"
+          :selected="h.id == hotel?.id"
+        >
+          {{ h.label }}
+        </option>
+      </Select>
+    </Entry>
+
     <Entry
       v-if="existing"
       id="active"
