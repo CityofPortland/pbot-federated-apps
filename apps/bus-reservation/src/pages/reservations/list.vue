@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { Anchor, Box, Entry, Input, Message } from '@pbotapps/components';
+import {
+  Anchor,
+  Box,
+  Entry,
+  Input,
+  Message,
+  Panel,
+} from '@pbotapps/components';
 import { addDays, endOfDay, format, startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { useRoute } from 'vue-router';
@@ -8,11 +15,15 @@ import { computed, onMounted, ref } from 'vue';
 
 const { path } = useRoute();
 const store = useStore();
-const errors = ref<Error>();
+
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const now = toZonedTime(new Date(), tz);
+const publicPath = import.meta.env.BASE_URL;
+
 const end = ref<Date>(endOfDay(addDays(now, 30)));
+const errors = ref<Error>();
 const start = ref<Date>(startOfDay(now));
+const showImages = ref(false);
 
 const reservations = computed(() => {
   return store.reservations.filter(
@@ -60,7 +71,7 @@ onMounted(() => {
         <Anchor class="ml-auto" :url="href" @click="navigate">Add</Anchor>
       </router-link>
     </header>
-    <main class="overflow-auto">
+    <main class="grid grid-cols-1 gap-8">
       <p>
         The table below lists reservations filtered by the start and end dates
         shown below. Past or cancelled reservations are not shown. Reservations
@@ -68,7 +79,7 @@ onMounted(() => {
         <Box as="span" color="blue" variant="light">highlighted in blue</Box>.
         You can refine this list by changing the start and end dates.
       </p>
-      <section class="gap-4 my-8" v-if="errors">
+      <section class="gap-4" v-if="errors">
         <Message
           color="orange"
           variant="light"
@@ -77,7 +88,7 @@ onMounted(() => {
           {{ errors.message }}
         </Message>
       </section>
-      <section class="flex gap-4 my-8">
+      <section class="flex gap-4">
         <Entry
           id="start"
           label="Start"
@@ -109,61 +120,127 @@ onMounted(() => {
           />
         </Entry>
       </section>
-      <table
-        class="-ml-2 p-2 w-full table-auto border-separate border-spacing-y-1"
+      <section
+        class="-ml-2 p-2 overflow-auto flex flex-col md:flex-row items-start"
       >
-        <caption></caption>
-        <thead class="pb-4">
-          <tr class="text-left">
-            <th class="font-semibold p-2">Hotel</th>
-            <th class="font-semibold p-2">Bus zone</th>
-            <th class="font-semibold p-2">Bus spot</th>
-            <th class="font-semibold p-2">Start</th>
-            <th class="font-semibold p-2">End</th>
-            <th class="font-semibold p-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <Box
-            as="tr"
-            v-for="res in reservations.sort(
-              (a, b) => a.start.valueOf() - b.start.valueOf()
-            )"
-            :key="res.id"
-            :color="res.start <= now && res.end >= now ? 'blue' : 'transparent'"
-            variant="light"
-          >
-            <td class="p-2">
-              {{ res.hotel.label }}
-            </td>
-            <td class="p-2">{{ res.spot.zone }}</td>
-            <td class="p-2">{{ res.spot.label }}</td>
-            <td class="p-2">{{ res.start.toLocaleDateString() }}</td>
-            <td class="p-2">{{ res.end.toLocaleDateString() }}</td>
-            <td class="flex gap-4 p-2">
-              <router-link
-                :to="`/reservations/${res.id}`"
-                custom
-                v-slot="{ href, navigate }"
-              >
-                <Anchor :url="href" @click="navigate">View</Anchor>
-              </router-link>
-              <router-link
-                v-if="
-                  store.rules.find(
-                    r => r.subject == 'reservation' && r.action == 'write'
-                  )
-                "
-                :to="`/reservations/${res.id}/edit`"
-                custom
-                v-slot="{ href, navigate }"
-              >
-                <Anchor :url="href" @click="navigate">Edit</Anchor>
-              </router-link>
-            </td>
+        <table
+          class="flex-none md:w-2/3 self-start table-auto border-separate border-spacing-y-1"
+        >
+          <caption></caption>
+          <thead class="pb-4">
+            <tr class="text-left">
+              <th class="font-semibold p-2">Hotel</th>
+              <th class="font-semibold p-2">Bus zone</th>
+              <th class="font-semibold p-2">Bus spot</th>
+              <th class="font-semibold p-2">Start</th>
+              <th class="font-semibold p-2">End</th>
+              <th class="font-semibold p-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <Box
+              as="tr"
+              v-for="res in reservations.sort(
+                (a, b) => a.start.valueOf() - b.start.valueOf()
+              )"
+              :key="res.id"
+              :color="
+                res.start <= now && res.end >= now ? 'blue' : 'transparent'
+              "
+              variant="light"
+            >
+              <td class="p-2">
+                {{ res.hotel.label }}
+              </td>
+              <td class="p-2">{{ res.spot.zone }}</td>
+              <td class="p-2">{{ res.spot.label }}</td>
+              <td class="p-2">{{ res.start.toLocaleDateString() }}</td>
+              <td class="p-2">{{ res.end.toLocaleDateString() }}</td>
+              <td class="flex gap-4 p-2">
+                <router-link
+                  :to="`/reservations/${res.id}`"
+                  custom
+                  v-slot="{ href, navigate }"
+                >
+                  <Anchor :url="href" @click="navigate">View</Anchor>
+                </router-link>
+                <router-link
+                  v-if="
+                    store.rules.find(
+                      r => r.subject == 'reservation' && r.action == 'write'
+                    )
+                  "
+                  :to="`/reservations/${res.id}/edit`"
+                  custom
+                  v-slot="{ href, navigate }"
+                >
+                  <Anchor :url="href" @click="navigate">Edit</Anchor>
+                </router-link>
+              </td>
+            </Box>
+          </tbody>
+        </table>
+        <Panel
+          as="section"
+          color="transparent"
+          class="flex-1 w-full"
+          :open="showImages"
+          @toggle="showImages = !showImages"
+        >
+          <template v-slot:header>
+            <div class="flex flex-col gap-1 items-start text-left">
+              <span>Bus spot images</span>
+              <small>
+                Expand to view images and descriptions of the bus spot locations
+              </small>
+            </div>
+          </template>
+          <Box class="grid grid-cols-1 divide-y divide-current rounded-b-md">
+            <figure class="p-2">
+              <a :href="`${publicPath}public/location_2.jpg`">
+                <img
+                  class="border border-current"
+                  src="/public/location_2.jpg"
+                  alt="Three red rectangles with numbers within them labelling them 1, 2, and 3. The rectangles encompass a space on the southern blockface of Southwest Harvey Milk Street between Southwest 6th Avenue and Southwest Broadway Street"
+                />
+              </a>
+              <figcaption class="text-sm italic">
+                Spots 1, 2, and 3 on Southwest Harvey Milk Street are located on
+                the southern side of the street between Southwest 6th Avenue and
+                Southwest Broadway Street
+              </figcaption>
+            </figure>
+            <figure class="p-2">
+              <a :href="`${publicPath}public/location_1.jpg`">
+                <img
+                  class="border border-current"
+                  src="/public/location_1.jpg"
+                  alt="One red rectangle with the number 4 within it. The rectangle encompasses a space on the southern blockface of Southwest Harvey Milk Street Southwest Broadway Street and Southwest Park Avenue"
+                />
+              </a>
+              <figcaption class="text-sm italic">
+                Spot 4 on Southwest Harvey Milk Street is located on the
+                southern side of the street between Southwest Broadway Street
+                and Southwest Park Avenue
+              </figcaption>
+            </figure>
+            <figure class="p-2">
+              <a :href="`${publicPath}public/location_3.jpg`">
+                <img
+                  class="border border-current"
+                  src="/public/location_3.jpg"
+                  alt="One red rectangle with the number 1 within it. The rectangle encompasses a space on the norther blockface of Southeast Ankeny Street between Southeast 8th Avenue and Southeast 9th Avenue"
+                />
+              </a>
+              <figcaption class="text-sm italic">
+                Spot 1 on Southeast Ankeny is located on the northern side of
+                the street Street between Southeast 8th Avenue and Southeast 9th
+                Avenue
+              </figcaption>
+            </figure>
           </Box>
-        </tbody>
-      </table>
+        </Panel>
+      </section>
     </main>
   </article>
 </template>
