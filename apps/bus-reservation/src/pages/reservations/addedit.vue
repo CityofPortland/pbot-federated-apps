@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {
   Button,
-  Box,
   Checkbox,
   Entry,
   Input,
   Message,
-  Panel,
   Select,
 } from '@pbotapps/components';
 import { endOfDay, format, startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 import { Hotel, Reservation, Spot, useStore } from '../../store';
+import Images from './images.vue';
 
 const props = defineProps({
   id: { type: String, required: false },
@@ -234,68 +234,7 @@ const setHotel = (id: string) => {
         <Button label="Save" />
       </form>
       <aside class="flex-1">
-        <Panel
-          as="section"
-          color="transparent"
-          class="flex-1 w-full"
-          :open="showImages"
-          @toggle="showImages = !showImages"
-        >
-          <template v-slot:header>
-            <div class="flex flex-col gap-1 items-start text-left">
-              <span>Bus spot images</span>
-              <small>
-                Expand to view images and descriptions of the bus spot locations
-              </small>
-            </div>
-          </template>
-          <Box
-            class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-current rounded-b-md"
-          >
-            <figure class="p-2">
-              <a :href="`${publicPath}public/location_2.jpg`">
-                <img
-                  class="border border-current"
-                  src="/public/location_2.jpg"
-                  alt="Three red rectangles with numbers within them labelling them 1, 2, and 3. The rectangles encompass a space on the southern blockface of Southwest Harvey Milk Street between Southwest 6th Avenue and Southwest Broadway Street"
-                />
-              </a>
-              <figcaption class="text-sm italic">
-                Spots 1, 2, and 3 on Southwest Harvey Milk Street are located on
-                the southern side of the street between Southwest 6th Avenue and
-                Southwest Broadway Street
-              </figcaption>
-            </figure>
-            <figure class="p-2">
-              <a :href="`${publicPath}public/location_1.jpg`">
-                <img
-                  class="border border-current"
-                  src="/public/location_1.jpg"
-                  alt="One red rectangle with the number 4 within it. The rectangle encompasses a space on the southern blockface of Southwest Harvey Milk Street Southwest Broadway Street and Southwest Park Avenue"
-                />
-              </a>
-              <figcaption class="text-sm italic">
-                Spot 4 on Southwest Harvey Milk Street is located on the
-                southern side of the street between Southwest Broadway Street
-                and Southwest Park Avenue
-              </figcaption>
-            </figure>
-            <figure class="p-2">
-              <a :href="`${publicPath}public/location_3.jpg`">
-                <img
-                  class="border border-current"
-                  src="/public/location_3.jpg"
-                  alt="One red rectangle with the number 1 within it. The rectangle encompasses a space on the norther blockface of Southeast Ankeny Street between Southeast 8th Avenue and Southeast 9th Avenue"
-                />
-              </a>
-              <figcaption class="text-sm italic">
-                Spot 1 on Southeast Ankeny is located on the northern side of
-                the street Street between Southeast 8th Avenue and Southeast 9th
-                Avenue
-              </figcaption>
-            </figure>
-          </Box>
-        </Panel>
+        <Images as="section" color="transparent" orientation="horizontal" />
       </aside>
     </main>
   </section>
