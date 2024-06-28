@@ -43,6 +43,7 @@ app.use(
             'lori.steen@portlandoregon.gov',
             'michael.mcdonald@portlandoregon.gov',
             'mark.williams@portlandoregon.gov',
+            'nicole.powell@portlandoregon.gov',
             'roddy.jasa@portlandoregon.gov',
             'samuel.berhane@portlandoregon.gov',
             'tim.pittman@portlandoregon.gov',
