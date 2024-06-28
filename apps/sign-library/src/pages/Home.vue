@@ -31,7 +31,7 @@ const { refreshSigns } = useStore();
 const field = ref(route.query.field as string);
 const query = ref(route.query.query as string);
 
-const changeQuery = (query: Record<string, string[]>) => {
+const changeQuery = (query: Record<string, string | string[]>) => {
   changeRoute({
     query: {
       ...route.query,
@@ -139,8 +139,8 @@ const getPage = () => {
   let start = pageIndex.value * pageSize.value;
   let end = (pageIndex.value + 1) * pageSize.value;
 
-  if (start >= signs.value.length) {
-    changeQuery({ page: ['1'] });
+  if (start >= signs.value.length && route.query.page != '1') {
+    changeQuery({ page: '1' });
   }
 
   let s = signs.value.slice(start, end);
@@ -153,11 +153,6 @@ const sort = computed<keyof Sign>(() => route.query.sort as keyof Sign);
 const sortOrder = computed<'asc' | 'desc'>(
   () => route.query.sortOrder as 'asc' | 'desc'
 );
-// watchEffect(() => {
-//   if (pageLength.value.length < pageIndex.value) {
-//     pageIndex.value = pageLength.value.length - 1;
-//   }
-// });
 
 const colors = computed(() => {
   const [unique, counts] = signs.value.reduce(
