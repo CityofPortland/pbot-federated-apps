@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/elasticsearch",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Things for using an Elasticsearch database",
   "type": "module",
   "main": "dist/index.js",
