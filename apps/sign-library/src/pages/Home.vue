@@ -18,6 +18,7 @@ import {
   RouteLocationOptions,
 } from 'vue-router';
 
+import Attribute from '../components/Attribute.vue';
 import MissingImage from '../components/MissingImage.vue';
 import Status from '../components/Status.vue';
 import { useStore } from '../store';
@@ -457,15 +458,9 @@ const fieldValues = computed(() => {
                     <Status :status="sign.status" />
                   </header>
                   <p class="text-lg">{{ sign.legend }}</p>
-                  <section class="flex flex-wrap gap-2">
-                    <Box
-                      class="inline-flex items-center gap-2 border border-current rounded-md"
-                    >
-                      <Box
-                        color="gray"
-                        variant="light"
-                        class="flex justify-center items-center border-r border-current rounded-l-md h-full px-2"
-                      >
+                  <section class="flex flex-wrap gap-4">
+                    <Attribute name="Type">
+                      <template v-slot:icon>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -485,22 +480,11 @@ const fieldValues = computed(() => {
                             d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                           />
                         </svg>
-                      </Box>
-                      <div class="px-2 py-1 text-sm leading-tight">
-                        <label class="font-semibold text-sm">Type</label>
-                        <p>
-                          {{ sign.type }}
-                        </p>
-                      </div>
-                    </Box>
-                    <Box
-                      class="inline-flex items-center gap-2 border border-current rounded-md"
-                    >
-                      <Box
-                        color="gray"
-                        variant="light"
-                        class="flex justify-center items-center border-r border-current rounded-l-md h-full px-2"
-                      >
+                      </template>
+                      {{ sign.type }}
+                    </Attribute>
+                    <Attribute name="Shape">
+                      <template v-slot:icon>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -515,22 +499,11 @@ const fieldValues = computed(() => {
                             d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z"
                           />
                         </svg>
-                      </Box>
-                      <div class="px-2 py-1 text-sm leading-tight">
-                        <label class="font-semibold text-sm">Shape</label>
-                        <p>
-                          {{ sign.shape }}
-                        </p>
-                      </div>
-                    </Box>
-                    <Box
-                      class="inline-flex items-center gap-2 border border-current rounded-md"
-                    >
-                      <Box
-                        color="gray"
-                        variant="light"
-                        class="flex justify-center items-center border-r border-current rounded-l-md h-full px-2"
-                      >
+                      </template>
+                      {{ sign.shape }}
+                    </Attribute>
+                    <Attribute name="Color">
+                      <template v-slot:icon>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -545,22 +518,11 @@ const fieldValues = computed(() => {
                             d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88M6.75 17.25h.008v.008H6.75v-.008Z"
                           />
                         </svg>
-                      </Box>
-                      <div class="px-2 py-1 text-sm leading-tight">
-                        <label class="font-semibold text-sm">Color</label>
-                        <p>
-                          {{ sign.color }}
-                        </p>
-                      </div>
-                    </Box>
-                    <Box
-                      class="inline-flex items-center gap-2 border border-current rounded-md"
-                    >
-                      <Box
-                        color="gray"
-                        variant="light"
-                        class="flex justify-center items-center border-r border-current rounded-l-md h-full px-2"
-                      >
+                      </template>
+                      {{ sign.color }}
+                    </Attribute>
+                    <Attribute name="Size">
+                      <template v-slot:icon>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -575,14 +537,9 @@ const fieldValues = computed(() => {
                             d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"
                           />
                         </svg>
-                      </Box>
-                      <div class="px-2 py-1 text-sm leading-tight">
-                        <label class="font-semibold text-sm">Size</label>
-                        <p>
-                          {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
-                        </p>
-                      </div>
-                    </Box>
+                      </template>
+                      {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
+                    </Attribute>
                   </section>
                 </main>
                 <aside class="flex gap-4">
