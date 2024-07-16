@@ -15,9 +15,7 @@ const props = defineProps({
 
 const { code } = toRefs(props);
 
-const sign = ref<Partial<Sign> | undefined>(store.sign(code.value));
-
-//const sign = computed(() => await store.getSign(code.value));
+const sign = ref<Partial<Sign> | undefined>();
 
 onMounted(async () => {
   sign.value = { ...(await store.getSign(code.value)) };

@@ -208,11 +208,9 @@ export const useStore = defineStore('sign-library', {
         if (res) {
           this.data.signs.splice(
             this.data.signs.findIndex(s => s.code == code),
-            1,
-            {
-              ...res,
-            }
+            1
           );
+          this.data.signs.push({ ...res });
           const db = await getDb();
           db.put('signs', { ...res });
         }
