@@ -45,6 +45,8 @@ const checkExisting = async (spotId: string, start: Date, end: Date) => {
           (s <= start && e >= end)
         );
       })
+    ).then(reservations => 
+      reservations.filter(res => res.active)
     );
 
   if (existing.length) {
