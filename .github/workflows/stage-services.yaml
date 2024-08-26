@@ -163,6 +163,8 @@ jobs:
             values: |
               ingress:
                 enabled: true
+                annotations:
+                  nginx.ingress.kubernetes.io/proxy-body-size: 8m
                 hosts:
                   - host: pbotapps-test.portland.gov
                     paths:
