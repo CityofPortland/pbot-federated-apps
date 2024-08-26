@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/objects",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Very low-level objects shared by more than one service or app",
   "type": "module",
   "main": "dist/index.js",

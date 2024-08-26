@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/actions",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Common classes and utilities used throughout the monorepo",
   "type": "module",
   "files": [
