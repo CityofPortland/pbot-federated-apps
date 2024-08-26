@@ -2,7 +2,7 @@
   "name": "@pbotapps/support",
   "description": "Frontend app for displaying technical support documents",
   "private": true,
-  "version": "1.4.5",
+  "version": "1.4.6",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
