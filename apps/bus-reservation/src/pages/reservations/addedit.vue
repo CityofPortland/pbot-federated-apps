@@ -9,7 +9,7 @@ import {
 } from '@pbotapps/components';
 import { endOfDay, format, startOfDay } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Hotel, Reservation, Spot, useStore } from '../../store';
@@ -87,7 +87,16 @@ const spots = computed(() => {
     );
   }
 
-  return spots.filter((spot: Spot) => !(existing(spot).length > 0));
+  return spots.filter((spot: Spot) => existing(spot).length == 0);
+});
+
+watch(spots, newSpots => {
+  // Check if "selected" spot is in the list
+  // If so, do nothing
+  // If not, update "selection" to the earliest spot available
+  if (!newSpots.find(s => s.id == spot.value.id)) {
+    spot.value = { ...newSpots[0] };
+  }
 });
 
 onMounted(async () => {
