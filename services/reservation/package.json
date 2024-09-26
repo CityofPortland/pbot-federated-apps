@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/reservation",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "Application for managing parking spot reservations",
   "main": "dist/index.js",
   "module": "dist/index",
