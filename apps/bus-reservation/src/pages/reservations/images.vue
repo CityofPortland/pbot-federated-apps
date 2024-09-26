@@ -66,10 +66,10 @@ const innerClasses = computed(() => {
           Spots 1, 2, and 3 on Southwest Harvey Milk Street are located on the
           southern side of the street between Southwest 6th Avenue and Southwest
           Broadway Street.
-        </figcaption>
-        <figcaption class="text-sm italic font-bold">
-          Maximum length per space is 65 ft. Vehicles over 65 ft will need to
-          reserve two spaces.
+          <b
+            >Maximum length per space is 65 ft. Vehicles over 65 ft will need to
+            reserve two spaces.</b
+          >
         </figcaption>
       </figure>
       <figure class="p-2">
@@ -84,9 +84,7 @@ const innerClasses = computed(() => {
           Spot 4 on Southwest Harvey Milk Street is located on the southern side
           of the street between Southwest Broadway Street and Southwest Park
           Avenue.
-        </figcaption>
-        <figcaption class="text-sm italic font-bold">
-          Maximum length is 80 feet.
+          <b>Maximum length is 80 feet.</b>
         </figcaption>
       </figure>
       <figure class="p-2">
@@ -100,9 +98,7 @@ const innerClasses = computed(() => {
         <figcaption class="text-sm italic">
           Spot 1 on Southeast Ankeny is located on the northern side of the
           street Street between Southeast 8th Avenue and Southeast 9th Avenue.
-        </figcaption>
-        <figcaption class="text-sm italic font-bold">
-          Maximum length is 80 feet.
+          <b>Maximum length is 80 feet.</b>
         </figcaption>
       </figure>
     </Box>
