@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/misc",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "Miscellanious functions",
   "type": "module",
   "main": "dist/index.js",
