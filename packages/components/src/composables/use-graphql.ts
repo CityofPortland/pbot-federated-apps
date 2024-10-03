@@ -91,12 +91,14 @@ export async function formData<T>(
 
   const headers = options && options.headers;
 
+  const mapObj: Record<string, Array<string>> = {}
+  for (const entry of map.entries()) {
+    mapObj[entry[1]] = [entry[0]]
+  }
+
   body.append(
     'map',
-    `{${[...map].map(
-      (e, i, a) =>
-        '"' + e[1] + '":["' + e[0] + '"]' + (a.length - 1 == i ? '' : ',')
-    )}}`
+    JSON.stringify(mapObj)
   );
 
   let index = 0;
