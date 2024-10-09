@@ -25,7 +25,6 @@ const store = useStore();
 
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const now = toZonedTime(new Date(), tz);
-const publicPath = import.meta.env.BASE_URL;
 
 const active = ref(true);
 const end = ref<Date>(endOfDay(now));
@@ -33,7 +32,6 @@ const errors = ref<Error>();
 const existing = ref<Reservation>();
 const formRef = ref<HTMLFormElement>();
 const hotel = ref<Hotel>(store.hotels.filter(h => h.enabled)[0]);
-const showImages = ref(false);
 const start = ref<Date>(startOfDay(now));
 const spot = ref<Spot>(store.spots[0]);
 
@@ -90,7 +88,9 @@ const spots = computed(() => {
   return spots.filter((spot: Spot) => existing(spot).length == 0);
 });
 
-watch(spots, newSpots => {
+watch(spots, (newSpots, oldSpots) => {
+  // if previous spots was empty, do nothing
+  if (!oldSpots.length) return;
   // Check if "selected" spot is in the list
   // If so, do nothing
   // If not, update "selection" to the earliest spot available

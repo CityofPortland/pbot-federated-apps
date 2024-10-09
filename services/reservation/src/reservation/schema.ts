@@ -24,7 +24,7 @@ const repository = () =>
     '/spotId'
   );
 
-const checkExisting = async (spotId: string, start: Date, end: Date) => {
+const findExisting = async (spotId: string, start: Date, end: Date) => {
   const existing = await repository()
     .then(repo =>
       repo.container.items
@@ -45,15 +45,10 @@ const checkExisting = async (spotId: string, start: Date, end: Date) => {
           (s <= start && e >= end)
         );
       })
-    ).then(reservations => 
-      reservations.filter(res => res.active)
-    );
+    )
+    .then(reservations => reservations.filter(res => res.active));
 
-  if (existing.length) {
-    throw new Error(
-      `There is an existing reservation for this spot on the same dates`
-    );
-  }
+  return existing;
 };
 
 export const GraphQLReservationSchema = new GraphQLSchema({
@@ -151,11 +146,17 @@ export const GraphQLReservationSchema = new GraphQLSchema({
             ...args.payload,
           };
 
-          await checkExisting(
+          const existing = await findExisting(
             args.payload.spotId,
             args.payload.start,
             args.payload.end
           );
+
+          if (existing.length) {
+            throw new Error(
+              `There is an existing reservation for this spot on the same dates`
+            );
+          }
 
           return repository()
             .then(repo => repo.add(res))
@@ -210,11 +211,17 @@ export const GraphQLReservationSchema = new GraphQLSchema({
           }
 
           if (args.payload.active) {
-            await checkExisting(
+            const existing = await findExisting(
               args.payload.spotId,
               args.payload.start,
               args.payload.end
             );
+
+            if (existing.filter(res => res.id != args.id).length > 0) {
+              throw new Error(
+                `There is an existing reservation for this spot on the same dates`
+              );
+            }
           }
 
           let res: Partial<Reservation> = {
