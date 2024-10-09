@@ -1,7 +1,7 @@
 {
   "name": "parking-permit-lookup",
   "private": true,
-  "version": "1.4.9",
+  "version": "1.4.10",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
