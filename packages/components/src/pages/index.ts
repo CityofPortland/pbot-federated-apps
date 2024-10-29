@@ -16,6 +16,11 @@ export const authRoutes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'Login',
     component: Login,
+    props(to) {
+        return {
+          redirect: to.query.returnTo
+        }
+    },
   },
   {
     path: '/logout',

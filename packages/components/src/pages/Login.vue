@@ -18,10 +18,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import SignIn from '../components/login/SignIn.vue';
 
-
-const redirect = ref<{ path?: string }>({ path: '/' });
+defineProps({
+  redirect: {
+    type: String,
+    required: false,
+    default: () => '/'
+  }
+})
 
 </script>
