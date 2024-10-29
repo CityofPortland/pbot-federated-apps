@@ -28,7 +28,7 @@ export default defineComponent({
       type: Array as () => Array<string>,
       default: () => [`${import.meta.env.VITE_AZURE_CLIENT_ID}/.default`],
     },
-    redirect: { type: Object as () => { path?: string } },
+    redirect: { type: String},
   },
   setup(props) {
     const { route, getToken } = useAuth({
@@ -45,7 +45,7 @@ export default defineComponent({
       signIn: () => {
         clicked.value = true;
         route.value = props.redirect
-          ? props.redirect
+          ? { path: props.redirect }
           : {
               ...currentRoute.value,
             };
