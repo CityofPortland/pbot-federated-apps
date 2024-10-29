@@ -34,9 +34,7 @@ router.beforeResolve(async to => {
   }
 
   // Save the attempted route before moving on to login
-  // auth.route.value = { hash: to.hash, path: to.path, query: to.query };
-
-  return { name: 'Login' };
+  return { name: 'Login', query: { returnTo: to.fullPath } };
 });
 
 export default router;
