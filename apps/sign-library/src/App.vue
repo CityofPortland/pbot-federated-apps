@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 import {
   Box,
@@ -16,6 +17,7 @@ const menuOpen = ref(false);
 
 const { getToken } = useAuthStore();
 const store = useStore();
+const { currentRoute } = useRouter();
 
 const accessToken = ref<string>();
 
@@ -42,7 +44,7 @@ const dev = computed(() => import.meta.env.MODE != 'production');
       </template>
       <template #menu>
         <span class="mt-3 md:mt-0 md:ml-auto">
-          <SignIn v-if="!accessToken" />
+          <SignIn v-if="!accessToken" :redirect="currentRoute.fullPath" />
           <LoggedIn v-else />
         </span>
       </template>

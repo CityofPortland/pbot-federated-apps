@@ -45,6 +45,7 @@ watch(currentRoute, async () => {
               !accessToken &&
               !authRoutes.map(r => r.name).includes(route.name || 'NONE')
             "
+            :redirect="currentRoute.fullPath"
           />
           <LoggedIn v-if="accessToken" />
         </Nav>

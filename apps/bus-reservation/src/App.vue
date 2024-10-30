@@ -56,7 +56,7 @@ onMounted(async () => {
           </RouterLink>
         </div>
         <Nav class="mt-3 md:mt-0 md:ml-auto">
-          <SignIn v-if="!accessToken" />
+          <SignIn v-if="!accessToken" :redirect="currentRoute.fullPath" />
           <LoggedIn v-else />
         </Nav>
       </template>

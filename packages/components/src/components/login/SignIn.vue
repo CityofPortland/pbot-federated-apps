@@ -1,16 +1,16 @@
 <template>
-  <Button
+  <PBOTButton
     label="Sign in"
-    size="small"
+    :size="size"
     color="gray"
     variant="light"
-    class="inline-flex justify-center"
+    class="inline-flex justify-center min-w-16"
     @click="signIn"
     v-slot="{ label }"
   >
-    <Spinner v-if="clicked" class="w-6 h-6" />
+    <Spinner v-if="clicked" :class="{ 'w-8 h-8': size == 'large', 'w-6 h-6': size == 'medium', 'w-5 h-5': size == 'small' }" />
     <span v-else>{{ label }}</span>
-  </Button>
+  </PBOTButton>
 </template>
 
 <script lang="ts">
@@ -18,17 +18,22 @@ import { useAuth } from '@pbotapps/authorization';
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import Button from '../../elements/button/Button.vue';
+import PBOTButton from '../../elements/button/Button.vue';
 import Spinner from '../../elements/icon/Spinner.vue';
+import type { ButtonSize } from '../../elements/button/Button.types';
 
 export default defineComponent({
-  components: { Button, Spinner },
+  components: { PBOTButton, Spinner },
   props: {
+    redirect: { type: String},
     scopes: {
       type: Array as () => Array<string>,
       default: () => [`${import.meta.env.VITE_AZURE_CLIENT_ID}/.default`],
     },
-    redirect: { type: String},
+    size: {
+      type: String as () => ButtonSize,
+      default: () => 'small'
+    }
   },
   setup(props) {
     const { route, getToken } = useAuth({
@@ -47,7 +52,7 @@ export default defineComponent({
         route.value = props.redirect
           ? { path: props.redirect }
           : {
-              ...currentRoute.value,
+              path: currentRoute.value.fullPath
             };
         getToken(
           props.scopes,
