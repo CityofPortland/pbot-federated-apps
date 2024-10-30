@@ -1,5 +1,5 @@
 import { config as loadenv } from 'dotenv';
-import { knex, Knex } from 'knex';
+import knex, { type Knex } from 'knex';
 
 if (process.env.NODE_ENV !== 'production') {
   const out = loadenv();
@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-export const AirflowMetastore = knex({
+export const AirflowMetastore = knex.knex({
   client: 'postgres',
   connection: {
     host: process.env.PUDL_POSTGRES_HOST,
@@ -21,7 +21,7 @@ export const AirflowMetastore = knex({
   searchPath: ['public'],
 }) as Knex;
 
-export const RawMetastore = knex({
+export const RawMetastore = knex.knex({
   client: 'postgres',
   connection: {
     host: process.env.PUDL_POSTGRES_HOST,
@@ -34,7 +34,7 @@ export const RawMetastore = knex({
   searchPath: ['public'],
 }) as Knex;
 
-export const EnrichedMetastore = knex({
+export const EnrichedMetastore = knex.knex({
   client: 'postgres',
   connection: {
     host: process.env.PUDL_POSTGRES_HOST,
