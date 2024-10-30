@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/composables",
-  "version": "1.4.10",
+  "version": "1.4.11",
   "description": "Composables for use within components",
   "type": "module",
   "main": "dist/index.js",
