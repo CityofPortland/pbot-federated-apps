@@ -1,6 +1,6 @@
 {
   "name": "pbotapps-federated-apps",
-  "version": "1.4.10",
+  "version": "1.4.11",
   "description": "PBOT applications relying on federated graphs",
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "license": "MIT",
