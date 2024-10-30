@@ -38,7 +38,7 @@ export default defineComponent({
     const loading = ref(true),
       error: Ref<unknown | undefined> = ref(undefined);
 
-    const { authority, clientId, requests, route, findRequest, setToken } =
+    const { authority, clientId, route, findRequest, setToken } =
       useAuth({
         clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
         tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
