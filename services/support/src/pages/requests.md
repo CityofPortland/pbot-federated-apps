@@ -2,14 +2,24 @@
 title: Request submission
 scripts:
   - src: https://pbotapps.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/6i46lu/b/8/c95134bc67d3a521bb3f4331beb9b804/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=1cdfc169
+  - src: https://pbotapps.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/g2slup/b/1/c95134bc67d3a521bb3f4331beb9b804/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=78907d7b
   - body: |
       window.ATL_JQ_PAGE_PROPS =  {
-          "triggerFunction": function(showCollectorDialog) {
-              //Requires that jQuery is available! 
-              jQuery(".feedback-button").click(function(e) {
-                  e.preventDefault();
-                  showCollectorDialog();
-              });
+          "1cdfc169": {
+              "triggerFunction": function(showCollectorDialog) {
+                jQuery(".general-support").click(function(e) {
+                    e.preventDefault();
+                    showCollectorDialog();
+                });
+              }
+          },
+          "78907d7b": {
+              "triggerFunction": function(showCollectorDialog) {
+                jQuery(".gis-support").click(function(e) {
+                    e.preventDefault();
+                    showCollectorDialog();
+                });
+              }
           }
       };
 ---
@@ -32,7 +42,7 @@ The PBOT Strategy, Data, and Performance Division and the PBOT Technology Servic
 
 _If you aren’t sure where to start with submitting your request, use the form below and we will help route it to the right place._
 
-<a href="#" class="feedback-button inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
+<a href="#" class="general-support inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
 
 #### Data Issue
 
@@ -64,6 +74,8 @@ Is something not looking as expected with a web map, GIS dataset, or GIS applica
 
 PBOT GIS Help Email: [pbotgissupport@portlandoregon.gov](mailto:pbotgissupport@portlandoregon.gov)
 
+<a href="#" class="gis-support inline-flex rounded-md border border-tangerine-800 px-4 py-2 font-semibold text-tangerine-800 hover:bg-tangerine-800 hover:text-tangerine-100">Submit your request</a>
+
 </div>
 
 <div class="border-l-4 border-green-500 pl-4" markdown="1">
@@ -78,6 +90,6 @@ PBOT GIS Help Email: [pbotgissupport@portlandoregon.gov](mailto:pbotgissupport@p
 
 [QuickHelp (Office365 Trainings)](https://app.quickhelp.com/PortlandOregon/)
 
-Other type of training needed? <a href="#" class="feedback-button inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
+Other type of training needed? <a href="#" class="general-support inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit your request</a>
 
 </div>
