@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { Anchor, FieldList, Field, Box } from '@pbotapps/components';
 import { onMounted, ref, toRefs } from 'vue';
-
-import MissingImage from '../components/MissingImage.vue';
-import { useStore } from '../store';
-import { Sign } from '../types';
 import { onBeforeRouteUpdate } from 'vue-router';
 
-const store = useStore();
+import MissingImage from '../components/MissingImage.vue';
+import { useRuleStore, useSignStore } from '../store';
+import { Sign } from '../types';
+
+const rules = useRuleStore();
+const signs = useSignStore();
 
 const props = defineProps({
   code: { type: String, required: true },
@@ -15,13 +16,21 @@ const props = defineProps({
 
 const { code } = toRefs(props);
 
-const sign = ref<Partial<Sign> | undefined>();
+const sign = ref<Partial<Sign> | undefined>(signs.sign(code.value));
+
+const get = async (code: string) => {
+  const s = await signs.sign(code);
+
+  if (s) {
+    sign.value = { ...s };
+  }
+};
 
 onMounted(async () => {
-  sign.value = { ...(await store.getSign(code.value)) };
+  get(code.value);
 });
 onBeforeRouteUpdate(async to => {
-  sign.value = { ...(await store.getSign(to.params.code as string)) };
+  get(to.params.code as string);
   return true;
 });
 </script>
@@ -31,7 +40,7 @@ onBeforeRouteUpdate(async to => {
     <header class="prose prose-lg max-w-none flex">
       <h1 class="flex-1">{{ sign.code }}</h1>
       <router-link
-        v-if="store.hasRule('edit', 'sign')"
+        v-if="rules.has('edit', 'sign')"
         :to="`/${sign.code}/edit`"
         custom
         v-slot="{ href, navigate }"

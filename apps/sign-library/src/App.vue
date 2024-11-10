@@ -8,27 +8,35 @@ import {
   Header,
   LoggedIn,
   Logo,
+  Message,
   SignIn,
 } from '@pbotapps/components';
 
-import { useAuthStore, useStore } from './store';
+import {
+  useAuthStore,
+  useErrorStore,
+  useRuleStore,
+  useSignStore,
+} from './store';
 
 const menuOpen = ref(false);
 
 const { getToken } = useAuthStore();
-const store = useStore();
+const { errors } = useErrorStore();
+const rulesStore = useRuleStore();
+const signStore = useSignStore();
 const { currentRoute } = useRouter();
 
 const accessToken = ref<string>();
 
-store.getSigns();
-store.refreshRules();
+signStore.init();
+rulesStore.get();
 
 onMounted(async () => {
   accessToken.value = await getToken();
 });
 
-watch(accessToken, () => store.refreshRules());
+watch(accessToken, () => rulesStore.get());
 
 const dev = computed(() => import.meta.env.MODE != 'production');
 </script>
@@ -56,6 +64,24 @@ const dev = computed(() => import.meta.env.MODE != 'production');
         class="p-4 text-center text-xl font-semibold uppercase"
         >Development version</Box
       >
+    </section>
+    <section
+      role="notification"
+      v-if="errors.size > 0"
+      class="flex-grow max-w-7xl w-full mx-auto px-4 my-4"
+    >
+      <ul class="grid grid-cols-1 gap-2">
+        <Message
+          v-for="error in errors.values()"
+          :key="error.message"
+          as="li"
+          color="red"
+          variant="light"
+          :summary="error.message"
+        >
+          <div>{{ error.cause }}</div>
+        </Message>
+      </ul>
     </section>
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 my-4">
       <router-view />

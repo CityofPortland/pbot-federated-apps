@@ -9,35 +9,56 @@ import {
   Select,
   Textarea,
 } from '@pbotapps/components';
-import { computed, ref, toRef } from 'vue';
+import { computed, onMounted, ref, toRef, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useStore } from '../store';
+import { useSignStore } from '../store/index';
 import { COLORS, SHAPES, Sign, SignInput, STATUSES, TYPES } from '../types';
 
 const router = useRouter();
-const store = useStore();
+const store = useSignStore();
 
 const props = defineProps({
   code: String,
 });
 
 const formRef = ref<HTMLFormElement>();
-
 const code = toRef(props.code);
-
-const sign = computed(() => {
-  let s = {
-    _changed: new Date(),
-    _created: new Date(),
-  } as Partial<Sign>;
-
-  if (code.value) {
-    s = store.sign(code.value) || s;
-  }
-
-  return s;
+const sign = ref<Partial<Sign>>({
+  _changed: new Date(),
+  _created: new Date(),
 });
+
+watch(code, async newCode => {
+  if (newCode) {
+    sign.value = store.sign(newCode) || {
+      _changed: new Date(),
+      _created: new Date(),
+    };
+  }
+});
+
+onMounted(async () => {
+  if (code.value) {
+    sign.value = (await store.getSign(code.value)) || {
+      _changed: new Date(),
+      _created: new Date(),
+    };
+  }
+});
+
+// const sign = computed(() => {
+//   let s = {
+//     _changed: new Date(),
+//     _created: new Date(),
+//   } as Partial<Sign>;
+
+//   if (code.value) {
+//     s = store.sign(code.value) || s;
+//   }
+
+//   return s;
+// });
 
 type Option = {
   id: string;
@@ -93,6 +114,7 @@ const payload = ref({} as Record<keyof SignInput, any>);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const change = (key: keyof SignInput, value: any) => {
+  console.debug('change', key, value);
   payload.value[key] = value;
 };
 

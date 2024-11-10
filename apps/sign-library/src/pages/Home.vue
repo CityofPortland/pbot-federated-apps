@@ -9,7 +9,7 @@ import {
   Pager,
   Select,
 } from '@pbotapps/components';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import {
   useRouter,
   useRoute,
@@ -21,16 +21,18 @@ import {
 import Attribute from '../components/Attribute.vue';
 import MissingImage from '../components/MissingImage.vue';
 import Status from '../components/Status.vue';
-import { useStore } from '../store';
+import { useRuleStore, useSignStore } from '../store';
 import { SHAPES, STATUSES, Sign, TYPES } from '../types';
 
 const route = useRoute();
 const router = useRouter();
-const store = useStore();
-const { refreshSigns } = useStore();
+const rules = useRuleStore();
+const store = useSignStore();
 
 const field = ref(route.query.field as string);
 const query = ref(route.query.query as string);
+
+onMounted(() => store.refresh().catch());
 
 const changeQuery = (query: Record<string, string | string[]>) => {
   changeRoute({
@@ -63,12 +65,15 @@ const includes = computed(() =>
 );
 
 const signs = computed(() => {
-  let results = store.data.signs;
+  let results = store.signs;
 
   if (route.query.query) {
     const r = new RegExp(route.query.query as string, 'i');
     results = results.filter(
-      s => r.test(s.code) || r.test(s.legend) || r.test(s.mutcdCode)
+      s =>
+        r.test(s.code ?? '') ||
+        r.test(s.legend ?? '') ||
+        r.test(s.mutcdCode ?? '')
     );
   }
 
@@ -181,7 +186,9 @@ const colors = computed(() => {
 
 const shapes = computed(() => {
   const counts = signs.value.reduce((acc, curr) => {
-    acc.set(curr.shape, (acc.get(curr.shape) || 0) + 1);
+    if (curr.shape) {
+      acc.set(curr.shape, (acc.get(curr.shape) ?? 0) + 1);
+    }
     return acc;
   }, new Map<string, number>());
 
@@ -198,7 +205,9 @@ const shapes = computed(() => {
 
 const statuses = computed(() => {
   const counts = signs.value.reduce((acc, curr) => {
-    acc.set(curr.status, (acc.get(curr.status) || 0) + 1);
+    if (curr.status) {
+      acc.set(curr.status, (acc.get(curr.status) ?? 0) + 1);
+    }
     return acc;
   }, new Map<string, number>());
 
@@ -273,7 +282,7 @@ const fieldValues = computed(() => {
       <h1>Search</h1>
       <nav class="flex gap-4">
         <router-link
-          v-if="store.hasRule('create', 'sign')"
+          v-if="rules.has('create', 'sign')"
           to="/add"
           custom
           v-slot="{ href, navigate }"
@@ -285,7 +294,7 @@ const fieldValues = computed(() => {
         <router-link to="/" custom v-slot="{ href }">
           <Anchor
             :url="href"
-            @click.prevent="refreshSigns"
+            @click.prevent="store.refresh()"
             class="no-underline"
           >
             Refresh signs
@@ -377,7 +386,7 @@ const fieldValues = computed(() => {
       </aside>
       <section class="md:col-span-3">
         <Message
-          v-if="!store.data.signs || !store.data.signs.length"
+          v-if="!store.signs || !store.signs.length"
           color="blue"
           variant="light"
         >
@@ -553,7 +562,7 @@ const fieldValues = computed(() => {
                     </Anchor>
                   </router-link>
                   <router-link
-                    v-if="store.hasRule('edit', 'sign')"
+                    v-if="rules.has('edit', 'sign')"
                     :to="`/${sign.code}/edit`"
                     custom
                     v-slot="{ href, navigate }"

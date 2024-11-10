@@ -38,6 +38,7 @@ app.use(
         const rules = new Array<Partial<RuleType>>();
 
         if (
+          process.env.NODE_ENV == 'developement' ||
           [
             'kristan.alldrin@portlandoregon.gov',
             'lori.steen@portlandoregon.gov',

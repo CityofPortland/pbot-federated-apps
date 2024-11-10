@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { FieldList, Field } from '@pbotapps/components';
 import { computed } from 'vue';
-import { useStore } from '../store';
+import { useSignStore } from '../store';
 
-const store = useStore();
+const store = useSignStore();
 
 const props = defineProps({
   code: { type: String, required: true },

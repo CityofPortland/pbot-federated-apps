@@ -1,18 +1,18 @@
 version: '3'
 
 services:
-  app:
+  dev:
     # Using a Dockerfile is optional, but included for completeness.
     build:
       context: .
       dockerfile: Dockerfile
       # [Optional] You can use build args to set options. e.g. 'VARIANT' below affects the image in the Dockerfile
       args:
-        VARIANT: 20-bookworm
+        VARIANT: 22-bookworm
 
     volumes:
       # This is where VS Code should expect to find your project's source code and the value of "workspaceFolder" in .devcontainer/devcontainer.json
-      - ..:/workspace/pbotapps-federated-graph:cached
+      - ..:/workspace:cached
 
       # Uncomment the next line to use Docker from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker-compose for details.
       # - /var/run/docker.sock:/var/run/docker.sock
@@ -21,7 +21,7 @@ services:
     command: /bin/sh -c "while sleep 1000; do :; done"
 
     # Runs app on the same network as the service container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:db
+    network_mode: host
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
@@ -36,22 +36,10 @@ services:
     #   - seccomp:unconfined
 
   # You can include other services not opened by VS Code as well
-  db:
-    image: cockroachdb/cockroach
-    command:
-      - start-single-node
-      - --insecure
+  cosmos:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
     ports:
-      - '8080:8080'
-      - '26257:26257'
-    volumes:
-      - 'db:/cockroach/cockroach-data'
-
-  es-master:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+      - 8081:8081
+      - 10250-10255:10250-10255
     environment:
-      - ES_JAVA_OPTS="-Xms1g -Xmx1g"
-    ports:
-      - 9200:9200
-volumes:
-  db:
+      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
