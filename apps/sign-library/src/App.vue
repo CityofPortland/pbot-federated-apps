@@ -14,7 +14,7 @@ import {
 
 import {
   useAuthStore,
-  useErrorStore,
+  useMessageStore,
   useRuleStore,
   useSignStore,
 } from './store';
@@ -22,7 +22,7 @@ import {
 const menuOpen = ref(false);
 
 const { getToken } = useAuthStore();
-const { errors } = useErrorStore();
+const messages = useMessageStore();
 const rulesStore = useRuleStore();
 const signStore = useSignStore();
 const { currentRoute } = useRouter();
@@ -34,6 +34,7 @@ rulesStore.get();
 
 onMounted(async () => {
   accessToken.value = await getToken();
+  signStore.refresh();
 });
 
 watch(accessToken, () => rulesStore.get());
@@ -57,9 +58,8 @@ const dev = computed(() => import.meta.env.MODE != 'production');
         </span>
       </template>
     </Header>
-    <section role="banner">
+    <section v-if="dev" role="banner">
       <Box
-        v-if="dev"
         color="orange"
         class="p-4 text-center text-xl font-semibold uppercase"
         >Development version</Box
@@ -67,19 +67,26 @@ const dev = computed(() => import.meta.env.MODE != 'production');
     </section>
     <section
       role="notification"
-      v-if="errors.size > 0"
+      v-if="messages.messages.size > 0"
       class="flex-grow max-w-7xl w-full mx-auto px-4 my-4"
     >
       <ul class="grid grid-cols-1 gap-2">
         <Message
-          v-for="error in errors.values()"
-          :key="error.message"
+          v-for="message in messages.messages"
+          :key="message[0]"
           as="li"
-          color="red"
+          :color="
+            {
+              error: 'red',
+              info: 'blue',
+              warning: 'tangerine',
+            }[message[1][0]]
+          "
           variant="light"
-          :summary="error.message"
+          :summary="message[1][1].message"
+          @close="messages.remove(message[0])"
         >
-          <div>{{ error.cause }}</div>
+          {{ message[1][1].cause }}
         </Message>
       </ul>
     </section>

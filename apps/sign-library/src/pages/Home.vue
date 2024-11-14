@@ -32,7 +32,7 @@ const store = useSignStore();
 const field = ref(route.query.field as string);
 const query = ref(route.query.query as string);
 
-onMounted(() => store.refresh().catch());
+// onMounted(() => store.refresh().catch());
 
 const changeQuery = (query: Record<string, string | string[]>) => {
   changeRoute({
@@ -385,12 +385,15 @@ const fieldValues = computed(() => {
         </form>
       </aside>
       <section class="md:col-span-3">
+        <Message v-if="store.signs == undefined" color="blue" variant="light">
+          Loading signs..
+        </Message>
         <Message
-          v-if="!store.signs || !store.signs.length"
-          color="blue"
+          v-else-if="store.signs.length == 0"
+          color="tangerine"
           variant="light"
         >
-          Loading signs..
+          No signs retrieved!
         </Message>
         <div v-else class="grid grid-cols-1 gap-4">
           <div class="flex flex-wrap gap-4">
@@ -413,11 +416,11 @@ const fieldValues = computed(() => {
                 @changed="changeQuery({ sort: $event })"
                 class="px-2 py-1"
               >
-                <option value="_id" :selected="sort == '_id'">code</option>
-                <option value="_changed" :selected="sort == '_changed'">
+                <option value="id" :selected="sort == 'id'">code</option>
+                <option value="updated" :selected="sort == 'updated'">
                   date changed
                 </option>
-                <option value="_created" :selected="sort == '_created'">
+                <option value="created" :selected="sort == 'created'">
                   date created
                 </option>
               </Select>

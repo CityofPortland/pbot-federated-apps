@@ -4,13 +4,13 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 import { useAuthStore } from './auth';
-import { useErrorStore } from './errors';
+import { useMessageStore } from './messages';
 import { Sign } from '../types';
 
 export const useRuleStore = defineStore('rules', () => {
   const rules = ref<Array<RuleType>>([]);
 
-  const { add: addError } = useErrorStore();
+  const { add: addMessage } = useMessageStore();
 
   const get = async () => {
     const { getToken } = useAuthStore();
@@ -20,7 +20,6 @@ export const useRuleStore = defineStore('rules', () => {
       operation: `
         query refreshRules {
           rules {
-            _id
             action
             subject
           }
@@ -39,10 +38,24 @@ export const useRuleStore = defineStore('rules', () => {
       })
       .then(data => data?.rules)
       .catch(reason => {
-        addError(
-          'rules:get',
-          new Error('Error retrieving rules!', { cause: reason })
-        );
+        console.error(reason, reason.response, reason.response.status);
+        if (reason.response && reason.response.status == 401) {
+          addMessage(
+            'rules:get',
+            'warning',
+            new Error('Error retrieving rules', {
+              cause:
+                'You are not logged in. You will be unable to modify the sign library until you log in.',
+            })
+          );
+        } else {
+          addMessage(
+            'rules:get',
+            'error',
+            new Error('Error retrieving rules', { cause: reason })
+          );
+        }
+
         return new Array<RuleType>();
       });
 

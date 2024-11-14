@@ -16,10 +16,14 @@ const props = defineProps({
 
 const { code } = toRefs(props);
 
-const sign = ref<Partial<Sign> | undefined>(signs.sign(code.value));
+const sign = ref<Sign>();
+
+onMounted(async () => {
+  sign.value = await signs.get(code.value);
+});
 
 const get = async (code: string) => {
-  const s = await signs.sign(code);
+  const s = signs.sign(code);
 
   if (s) {
     sign.value = { ...s };
@@ -48,9 +52,9 @@ onBeforeRouteUpdate(async to => {
         <Anchor :url="href" @click="navigate" class="no-underline">Edit</Anchor>
       </router-link>
     </header>
-    <main class="mt-8 space-y-8">
-      <header class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <figure class="justify-self-center">
+    <main class="mt-8 flex flex-col sm:flex-row gap-4">
+      <section class="sm:w-1/2">
+        <figure class="justify-self-start mb-8">
           <MissingImage
             v-if="!sign.image || !sign.image.full"
             class="w-64 h-64"
@@ -61,6 +65,72 @@ onBeforeRouteUpdate(async to => {
             :src="sign.image.full"
           />
         </figure>
+        <section>
+          <FieldList class="grid grid-cols-1 gap-4">
+            <section class="grid grid-cols-2 gap-4">
+              <Field
+                v-if="
+                  sign.image &&
+                  (sign.image.design || sign.image.full || sign.image.thumbnail)
+                "
+                name="Image"
+                display="above"
+                class="not-prose"
+              >
+                <ul class="flex gap-1 list-none">
+                  <li v-if="sign.image.thumbnail">
+                    <Anchor :url="sign.image.thumbnail" class="no-underline">
+                      Thumbnail
+                    </Anchor>
+                  </li>
+                  <li v-if="sign.image.full">
+                    <Anchor :url="sign.image.full" class="no-underline">
+                      Full
+                    </Anchor>
+                  </li>
+                  <li>
+                    <Anchor
+                      v-if="sign.image.design"
+                      :url="sign.image.design"
+                      class="no-underline"
+                    >
+                      Design file
+                    </Anchor>
+                  </li>
+                </ul>
+              </Field>
+              <Field name="Type" display="above">
+                {{ sign.type || 'NULL' }}
+              </Field>
+              <Field v-if="sign.mutcdCode" name="MUTCD code" display="above">
+                {{ sign.mutcdCode }}
+              </Field>
+              <Field v-if="sign.odotCode" name="ODOT code" display="above">
+                {{ sign.odotCode }}
+              </Field>
+              <Field name="Shape" display="above">
+                {{ sign.shape || 'NULL' }}
+              </Field>
+              <Field name="Color" display="above">
+                {{ sign.color || 'NULL' }}
+              </Field>
+              <Field name="Size" display="above">
+                {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
+              </Field>
+            </section>
+            <Field name="Legend" display="above">
+              {{ sign.legend || 'NULL' }}
+            </Field>
+            <Field v-if="sign.source" name="Source" display="above">
+              {{ sign.source }}
+            </Field>
+            <Field v-if="sign.comment" name="Comments" display="above">
+              {{ sign.comment || 'NULL' }}
+            </Field>
+          </FieldList>
+        </section>
+      </section>
+      <aside class="grid grid-cols-1 gap-4">
         <FieldList class="justify-self-start space-y-2 md:text-sm">
           <Box
             :color="sign.status == 'obsolete' ? 'tangerine' : 'transparent'"
@@ -97,9 +167,9 @@ onBeforeRouteUpdate(async to => {
               </router-link>
             </Field>
           </Box>
-          <Field v-if="sign._created" name="Created" display="above">
+          <Field v-if="sign.created" name="Created" display="above">
             {{
-              new Date(Date.parse(sign._created.toString())).toLocaleString(
+              new Date(Date.parse(sign.created.toString())).toLocaleString(
                 'en-US',
                 {
                   dateStyle: 'long',
@@ -108,12 +178,12 @@ onBeforeRouteUpdate(async to => {
               )
             }}
           </Field>
-          <Field v-if="sign._createdBy" name="Created by" display="above">
-            {{ sign._createdBy }}
+          <Field v-if="sign.creator" name="Created by" display="above">
+            {{ sign.creator }}
           </Field>
-          <Field v-if="sign._changed" name="Changed" display="above">
+          <Field v-if="sign.updated" name="Changed" display="above">
             {{
-              new Date(Date.parse(sign._changed.toString())).toLocaleString(
+              new Date(Date.parse(sign.updated.toString())).toLocaleString(
                 'en-US',
                 {
                   dateStyle: 'long',
@@ -122,8 +192,8 @@ onBeforeRouteUpdate(async to => {
               )
             }}
           </Field>
-          <Field v-if="sign._changedBy" name="Changed by" display="above">
-            {{ sign._changedBy }}
+          <Field v-if="sign.updater" name="Changed by" display="above">
+            {{ sign.updater }}
           </Field>
           <Field
             v-if="sign._revisions"
@@ -142,69 +212,7 @@ onBeforeRouteUpdate(async to => {
             </router-link>
           </Field>
         </FieldList>
-      </header>
-      <section class="md:w-3/4">
-        <FieldList class="space-y-2">
-          <Field
-            v-if="
-              sign.image &&
-              (sign.image.design || sign.image.full || sign.image.thumbnail)
-            "
-            name="Image"
-            display="inline"
-            class="not-prose"
-          >
-            <ul class="flex gap-1 list-none">
-              <li v-if="sign.image.thumbnail">
-                <Anchor :url="sign.image.thumbnail" class="no-underline">
-                  Thumbnail
-                </Anchor>
-              </li>
-              <li v-if="sign.image.full">
-                <Anchor :url="sign.image.full" class="no-underline">
-                  Full
-                </Anchor>
-              </li>
-              <li>
-                <Anchor
-                  v-if="sign.image.design"
-                  :url="sign.image.design"
-                  class="no-underline"
-                >
-                  Design file
-                </Anchor>
-              </li>
-            </ul>
-          </Field>
-          <Field name="Type" display="inline">
-            {{ sign.type || 'NULL' }}
-          </Field>
-          <Field v-if="sign.mutcdCode" name="MUTCD code" display="inline">
-            {{ sign.mutcdCode }}
-          </Field>
-          <Field v-if="sign.odotCode" name="ODOT code" display="inline">
-            {{ sign.odotCode }}
-          </Field>
-          <Field name="Shape" display="inline">
-            {{ sign.shape || 'NULL' }}
-          </Field>
-          <Field name="Color" display="inline">
-            {{ sign.color || 'NULL' }}
-          </Field>
-          <Field name="Size" display="inline">
-            {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
-          </Field>
-          <Field name="Legend" display="inline">
-            {{ sign.legend || 'NULL' }}
-          </Field>
-          <Field v-if="sign.source" name="Source" display="inline">
-            {{ sign.source }}
-          </Field>
-          <Field v-if="sign.comment" name="Comments" display="inline">
-            {{ sign.comment || 'NULL' }}
-          </Field>
-        </FieldList>
-      </section>
+      </aside>
     </main>
   </article>
   <span v-else>Loading...</span>

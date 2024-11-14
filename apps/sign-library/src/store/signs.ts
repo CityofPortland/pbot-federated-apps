@@ -1,18 +1,19 @@
 import { RuleType } from '@pbotapps/authorization';
 import { formData, query, GraphQLOptions } from '@pbotapps/components';
-import { DBSchema, openDB, OpenDBCallbacks } from 'idb';
 import { defineStore } from 'pinia';
-import { Sign, SignInput } from '../types';
 import { computed, ref } from 'vue';
+
+import { signDatabase } from '../service/db';
+import { Sign, SignInput } from '../types';
 import { useAuthStore } from './auth';
-import { useErrorStore } from './errors';
+import { useMessageStore } from './messages';
 
 const fragment = `
 fragment fields on SignInterface {
-  _changed
-  _changedBy
-  _created
-  _createdBy
+  updated
+  updater
+  created
+  creator
   code
   color
   comment
@@ -34,57 +35,42 @@ fragment fields on SignInterface {
   width
 }`;
 
-interface SignDB extends DBSchema {
-  sign: {
-    key: string;
-    value: Sign;
-  };
-}
-
-const dbCallbacks: OpenDBCallbacks<SignDB> = {
-  upgrade: db => {
-    db.createObjectStore('sign', {
-      keyPath: '_id',
-    });
-  },
-};
-
-function getDb() {
-  return openDB<SignDB>('sign-library', 1, dbCallbacks);
-}
-
 export const useSignStore = defineStore('signs', () => {
   const rules = ref<Array<RuleType>>([]);
-  const signs = ref<Array<Partial<Sign>>>([]);
+  const signs = ref<Array<Sign>>([]);
 
   const { getToken } = useAuthStore();
-  const errors = useErrorStore();
+  const messages = useMessageStore();
 
   const sign = computed(
     () => (code: string) => signs.value.find(s => s.code == code)
   );
 
   const init = async () => {
-    const db = await getDb();
+    const dbSigns = await signDatabase.all();
 
-    const dbSigns = await db.getAll('sign');
-
-    if (dbSigns.length == 0) {
+    if (dbSigns?.length == 0) {
       // No cached signs, refresh from service
+      console.debug('No signs in database. Refreshing from service...');
       refresh();
     } else {
-      signs.value = dbSigns;
+      signs.value = dbSigns ?? [];
     }
   };
 
   const refresh = async () => {
+    messages.add(
+      'signs:refresh',
+      'info',
+      new Error('Retrieving signs from service...')
+    );
     const token = await getToken();
 
     const options: GraphQLOptions = {
       operation: `
         query getSignsList {
           signs {
-            _id
+            id
             ...fields
             _revisions {
               ...fields
@@ -103,31 +89,33 @@ export const useSignStore = defineStore('signs', () => {
     const res = await query<{ signs: Array<Sign> }>(options)
       .then(res => {
         if (res.errors) {
-          errors.add(
+          messages.add(
             'signs:refresh',
-            Error('Error retrieving signs', { cause: res.errors })
+            'warning',
+            new Error('Errors with some signs data', {
+              cause:
+                'Some signs may be missing data or have incorrectly set values, likely due to importing from legacy data',
+            })
           );
+        } else {
+          messages.remove('signs:refresh');
         }
         return res.data;
       })
-      .then(data => data?.signs?.filter(s => (s ? true : false)))
+      .then(data => {
+        return data?.signs?.filter(s => (s ? true : false));
+      })
       .catch(reason => {
-        errors.add(
+        messages.add(
           'signs:refresh',
+          'error',
           Error('Error retrieving signs', { cause: reason })
         );
       });
 
     if (res && res.length) {
-      getDb().then(db =>
-        db.clear('sign').then(() =>
-          res.forEach(s => {
-            db.put('sign', JSON.parse(JSON.stringify(s)));
-          })
-        )
-      );
-
       signs.value = res;
+      signs.value.forEach(sign => signDatabase.put(sign.code, sign));
     }
   };
 
@@ -165,9 +153,20 @@ export const useSignStore = defineStore('signs', () => {
   };
 
   const add = async (payload: Partial<SignInput>) => {
+    messages.remove('signs:add');
+
     const token = await getToken();
 
-    if (!token) throw new Error('You are not logged in! Please sign in again.');
+    if (!token) {
+      messages.add(
+        'signs:add',
+        'error',
+        new Error('Error adding sign!', {
+          cause: new Error('You are not logged in! Please sign in again.'),
+        })
+      );
+      return;
+    }
 
     const { input, filelist, map } = createInput(payload);
 
@@ -177,9 +176,9 @@ export const useSignStore = defineStore('signs', () => {
       res = await formData<{ addSign: Sign }>(
         {
           operation: `
-          mutation addSign($input: SignInput!) {
-            addSign(input: $input) {
-              _id
+          mutation addSign($input: SignAddInput!) {
+            addSign(payload: $input) {
+              id
               ...fields
               _revisions {
                 ...fields
@@ -200,27 +199,37 @@ export const useSignStore = defineStore('signs', () => {
       )
         .then(res => {
           if (res.errors) {
-            errors.add(
+            messages.add(
               'sings:add',
+              'error',
               new Error('Error adding sign', {
                 cause: res.errors.map(e => e.message),
               })
             );
           }
+
           return res.data;
         })
         .then(data => data?.addSign);
     } catch (error: unknown) {
-      errors.add(
+      messages.add(
         'signs:add',
+        'error',
         new Error('Error adding sign!', { cause: error })
       );
     }
 
-    res && signs.value.push({ ...res });
+    if (res) {
+      signs.value.push({ ...res });
+      signDatabase.put(res.code, { ...res });
+    }
+
+    return res;
   };
 
-  const edit = async (payload: Partial<SignInput>) => {
+  const edit = async (code: string, payload: Partial<SignInput>) => {
+    messages.remove('signs:edit');
+
     const token = await getToken();
 
     if (!token) throw new Error('You are not logged in! Please sign in again.');
@@ -230,12 +239,12 @@ export const useSignStore = defineStore('signs', () => {
     let res: Sign | undefined;
 
     try {
-      res = await formData<{ addSign: Sign }>(
+      res = await formData<{ editSign: Sign }>(
         {
           operation: `
-          mutation editSign($input: SignInput!) {
-            editSign(input: $input) {
-              _id
+          mutation editSign($id: ID!, $input: SignEditInput!) {
+            editSign(id: $id, payload: $input) {
+              id
               ...fields
               _revisions {
                 ...fields
@@ -245,6 +254,7 @@ export const useSignStore = defineStore('signs', () => {
           ${fragment}
           `,
           variables: {
+            id: code,
             input,
           },
           headers: {
@@ -256,8 +266,9 @@ export const useSignStore = defineStore('signs', () => {
       )
         .then(res => {
           if (res.errors) {
-            errors.add(
-              'sings:edit',
+            messages.add(
+              'signs:edit',
+              'error',
               new Error('Error editing sign', {
                 cause: res.errors.map(e => e.message),
               })
@@ -265,47 +276,69 @@ export const useSignStore = defineStore('signs', () => {
           }
           return res.data;
         })
-        .then(data => data?.addSign);
+        .then(data => data?.editSign);
     } catch (error: unknown) {
-      errors.add(
+      messages.add(
         'signs:edit',
+        'error',
         new Error('Error editing sign!', { cause: error })
       );
     }
 
-    res && signs.value.push({ ...res });
+    if (res) {
+      const idx = signs.value.findIndex(s => s.code == res.code);
+      signs.value.splice(idx, 1, { ...res });
+      signDatabase.put(code, { ...res });
+    }
+
+    return res;
   };
 
-  const get = async (code: string) => {
-    const res = await query<{ getSign: Sign[] }>({
-      operation: `
-      query getSign($input: SignInput!) {
-        getSign(code: $code) {
-          _id
-          ...fields
-          _revisions {
+  const get = async (code: string, useDb = true) => {
+    let sign: Sign | undefined = undefined;
+
+    if (useDb) {
+      sign = await signDatabase.get(code);
+    }
+
+    if (sign == undefined) {
+      const token = await getToken();
+
+      const res = await query<{ getSign: Sign }>({
+        operation: `
+        query getSign($code: String!) {
+          getSign(code: $code) {
+            id
             ...fields
+            _revisions {
+              ...fields
+            }
           }
         }
-      }
-      ${fragment}
+        ${fragment}
       `,
-      variables: {
-        code,
-      },
-    }).catch(err => {
-      errors.add(
-        'sings:get',
-        Error(`Error retrieving sign ${code}!`, { cause: err })
-      );
-    });
+        variables: {
+          code,
+        },
+        headers: {
+          Authorization: token != undefined ? `Bearer ${token}` : null,
+        },
+      }).catch(err => {
+        messages.add(
+          'signs:get',
+          'error',
+          Error(`Error retrieving sign ${code}!`, { cause: err })
+        );
+      });
 
-    if (res && res.data) return res.data.getSign;
+      if (res && res.data) sign = res.data.getSign;
+    }
+
+    return sign;
   };
 
   return {
     // state
-    errors,
     rules,
     signs,
     // getters

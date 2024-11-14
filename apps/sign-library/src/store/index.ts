@@ -1,4 +1,4 @@
 export { useAuthStore } from './auth';
-export { useErrorStore } from './errors';
+export { useMessageStore } from './messages';
 export { useRuleStore } from './rules';
 export { useSignStore } from './signs';
