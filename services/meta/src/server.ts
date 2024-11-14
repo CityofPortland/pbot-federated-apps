@@ -44,22 +44,22 @@ createServer({
   handlers: [
     handleUser({
       getUser: async user => {
-        const { _id, ...rest } = user;
+        const { id, ...rest } = user;
 
         const exists = await elasticsearchClient.exists({
           index: 'metabase_user',
-          id: _id,
+          id: id,
         });
 
         if (!exists) {
-          await elasticsearchClient.index<Partial<Omit<User, '_id'>>>({
+          await elasticsearchClient.index<Partial<Omit<User, 'id'>>>({
             index: 'metabase_user',
-            id: _id,
+            id: id,
             document: {
               _changed: new Date(),
-              _changedBy: _id,
+              _changedBy: id,
               _created: new Date(),
-              _createdBy: _id,
+              _createdBy: id,
               ...rest,
             },
           });
@@ -68,9 +68,9 @@ createServer({
         return elasticsearchClient
           .get<User>({
             index: 'metabase_user',
-            id: _id,
+            id: id,
           })
-          .then(hit => ({ _id: hit._id, ...hit._source }));
+          .then(hit => ({ id: hit.id, ...hit._source }));
       },
     }),
     handleRules(
@@ -79,36 +79,36 @@ createServer({
           const user = await elasticsearchClient
             .get<User>({
               index: 'metabase_user',
-              id: where.user._id,
+              id: where.user.id,
             })
-            .then(hit => ({ _id: hit._id, ...hit._source }));
+            .then(hit => ({ id: hit.id, ...hit._source }));
 
           if (!user.rules) return null;
 
           const results = [];
 
           // get the applications rules
-          for await (const hit of scrollSearch<Omit<Rule, '_id'>>(
+          for await (const hit of scrollSearch<Omit<Rule, 'id'>>(
             elasticsearchClient,
             {
               index: 'metabase_rule',
               query: {
                 match: {
-                  applicationId: where.application._id,
+                  applicationId: where.application.id,
                 },
               },
             }
           )) {
             // return the application rules in the user rules array
-            if (user.rules.some(r => r == hit._id)) {
-              results.push({ _id: hit._id, ...hit._source });
+            if (user.rules.some(r => r == hit.id)) {
+              results.push({ id: hit.id, ...hit._source });
             }
           }
 
           return results.length ? results : null;
         },
       },
-      { _id: 'meta' }
+      { id: 'meta' }
     ),
   ],
   loaderCallback: () => ({}),

@@ -1,17 +1,17 @@
-import { Context } from '@pbotapps/graphql';
 import {
-  GraphQLBoolean,
   GraphQLEnumType,
-  GraphQLID,
   GraphQLInputObjectType,
   GraphQLInt,
+  GraphQLInterfaceType,
+  GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
 
 import { Base, baseFields } from '../base/types.js';
-import { GraphQLEmailAddress } from 'graphql-scalars';
+import { FileUpload } from 'graphql-upload/processRequest.mjs';
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
 
 export enum SignColor {
   'black',
@@ -24,19 +24,20 @@ export enum SignColor {
   'yellow',
 }
 
-const GraphQLSignColor = new GraphQLEnumType({
-  name: 'SignColor',
-  values: {
-    BLACK: { value: 'black' },
-    BROWN: { value: 'brown' },
-    GREEN: { value: 'green' },
-    ORANGE: { value: 'orange' },
-    PINK: { value: 'pink' },
-    RED: { value: 'red' },
-    WHITE: { value: 'white' },
-    YELLOW: { value: 'yellow' },
-  },
-});
+// const GraphQLSignColorType = new GraphQLEnumType({
+//   name: 'SignColor',
+//   values: {
+//     black: { value: 'black' },
+//     blue: { value: 'blue' },
+//     brown: { value: 'brown' },
+//     green: { value: 'green' },
+//     orange: { value: 'orange' },
+//     pink: { value: 'pink' },
+//     red: { value: 'red' },
+//     white: { value: 'white' },
+//     yellow: { value: 'yellow' },
+//   },
+// });
 
 export enum SignShape {
   'diamond',
@@ -46,10 +47,29 @@ export enum SignShape {
   'triangle',
 }
 
+const GraphQLSignShapeType = new GraphQLEnumType({
+  name: 'SignShape',
+  values: {
+    diamond: { value: 'diamond' },
+    octagon: { value: 'octagon' },
+    rectangle: { value: 'rectangle' },
+    square: { value: 'square' },
+    triangle: { value: 'triangle' },
+  },
+});
+
 export enum SignStatus {
   'in_use',
   'obsolete',
 }
+
+const GraphQLSignStatusType = new GraphQLEnumType({
+  name: 'SignStatus',
+  values: {
+    in_use: { value: 'in_use' },
+    obsolete: { value: 'obsolete' },
+  },
+});
 
 export enum SignType {
   'bike',
@@ -61,6 +81,20 @@ export enum SignType {
   'school',
   'warning',
 }
+
+const GraphQLSignTypeType = new GraphQLEnumType({
+  name: 'SignType',
+  values: {
+    bike: { value: 'bike' },
+    construction: { value: 'construction' },
+    guide: { value: 'guide' },
+    parking: { value: 'parking' },
+    pedestrian: { value: 'pedestrian' },
+    regulatory: { value: 'regulatory' },
+    school: { value: 'school' },
+    warning: { value: 'warning' },
+  },
+});
 
 export type SignImage = {
   thumbnail: string;
@@ -98,66 +132,93 @@ export type Sign = Base & {
   width: number;
 };
 
-export const GraphQLSignType = new GraphQLObjectType<Sign>({
-  name: 'Sign',
-  description: 'A sign that can reserve a bus parking zone',
+const signFields = ({ required }: { required: boolean }) => {
+  return {
+    code: {
+      type: required ? new GraphQLNonNull(GraphQLString) : GraphQLString,
+    },
+    color: { type: new GraphQLList(GraphQLString) },
+    comment: { type: GraphQLString },
+    height: { type: required ? new GraphQLNonNull(GraphQLInt) : GraphQLInt },
+    image: { type: GraphQLSignImageType },
+    legend: {
+      type: required ? new GraphQLNonNull(GraphQLString) : GraphQLString,
+    },
+    mutcdCode: { type: GraphQLString },
+    obsoletePolicy: { type: GraphQLString },
+    odotCode: { type: GraphQLString },
+    replacedBy: { type: GraphQLString },
+    shape: { type: GraphQLSignShapeType },
+    source: { type: GraphQLString },
+    status: { type: GraphQLSignStatusType },
+    type: { type: new GraphQLList(GraphQLSignTypeType) },
+    width: { type: required ? new GraphQLNonNull(GraphQLInt) : GraphQLInt },
+  };
+};
+
+const GraphQLSignInterfaceType = new GraphQLInterfaceType({
+  name: 'SignInterface',
   fields() {
     return {
-      ...baseFields(),
-      _revisions: Array<Partial<Omit<Sign, '_revisions'>>>,
-      code: new GraphQLNonNull(GraphQLString),
-      color: Array<SignColor>,
-      comment: GraphQLString,
-      height: new GraphQLNonNull(GraphQLInt),
-      image: GraphQLSignImageType,
-      legend: new GraphQLNonNull(GraphQLString),
-      mutcdCode: GraphQLString,
-      obsoletePolicy: GraphQLString,
-      replacedBy: GraphQLString,
-      shape: SignShape,
-      source: GraphQLString,
-      status: SignStatus,
-      type: Array<SignType>,
-      width: GraphQLInt,
+      ...baseFields({ required: false }),
+      ...signFields({ required: false }),
     };
   },
 });
 
-export const GraphQLHotelAddInputType = new GraphQLInputObjectType({
-  name: 'HotelAddInput',
-  fields: {
-    email: {
-      type: new GraphQLNonNull(GraphQLEmailAddress),
-    },
-    enabled: {
-      type: new GraphQLNonNull(GraphQLBoolean),
-    },
-    label: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
+export const GraphQLSignType = new GraphQLObjectType<Sign>({
+  name: 'Sign',
+  description: 'A sign existing on the ',
+  interfaces: [GraphQLSignInterfaceType],
+  fields() {
+    return {
+      ...baseFields({ required: true }),
+      _revisions: {
+        type: new GraphQLList(
+          new GraphQLObjectType({
+            name: 'SignRevision',
+            interfaces: [GraphQLSignInterfaceType],
+            fields() {
+              return {
+                ...baseFields({ required: false }),
+                ...signFields({ required: false }),
+              };
+            },
+          })
+        ),
+      },
+      ...signFields({ required: true }),
+    };
   },
 });
 
-export const GraphQLHotelDeleteInputType = new GraphQLInputObjectType({
-  name: 'HotelDeleteInput',
-  fields: {
-    id: {
-      type: new GraphQLNonNull(GraphQLID),
-    },
+export type SignInput = Omit<Sign, keyof Base | '_revisions' | 'image'> & {
+  image: Promise<FileUpload>;
+  design: Promise<FileUpload>;
+};
+
+export const GraphQLSignAddInputType = new GraphQLInputObjectType({
+  name: 'SignAddInput',
+  fields() {
+    const { image, ...rest } = signFields({ required: true });
+
+    return {
+      ...rest,
+      design: { type: GraphQLUpload },
+      image: { type: GraphQLUpload },
+    };
   },
 });
 
-export const GraphQLHotelEditInputType = new GraphQLInputObjectType({
-  name: 'HotelEditInput',
-  fields: {
-    email: {
-      type: GraphQLEmailAddress,
-    },
-    enabled: {
-      type: GraphQLBoolean,
-    },
-    label: {
-      type: GraphQLString,
-    },
+export const GraphQLSignEditInputType = new GraphQLInputObjectType({
+  name: 'SignEditInput',
+  fields() {
+    const { image, ...rest } = signFields({ required: true });
+
+    return {
+      ...rest,
+      design: { type: GraphQLUpload },
+      image: { type: GraphQLUpload },
+    };
   },
 });

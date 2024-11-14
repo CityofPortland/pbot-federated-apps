@@ -10,9 +10,9 @@ export type Base = {
   updater: string;
 };
 
-export const baseFields = () => {
+export const baseFields = ({ required }: { required: boolean }) => {
   return {
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    id: { type: required ? new GraphQLNonNull(GraphQLID) : GraphQLID },
     creator: {
       type: GraphQLString,
       resolve: (parent: Base, _: unknown, context: Context) => {
@@ -23,7 +23,7 @@ export const baseFields = () => {
       },
     },
     created: {
-      type: new GraphQLNonNull(GraphQLDateTime),
+      type: required ? new GraphQLNonNull(GraphQLDateTime) : GraphQLDateTime,
     },
     updater: {
       type: GraphQLString,
@@ -35,7 +35,7 @@ export const baseFields = () => {
       },
     },
     updated: {
-      type: new GraphQLNonNull(GraphQLDateTime),
+      type: required ? new GraphQLNonNull(GraphQLDateTime) : GraphQLDateTime,
     },
   };
 };

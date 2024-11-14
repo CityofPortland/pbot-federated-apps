@@ -6,8 +6,8 @@ import {
 import { gql } from 'graphql-tag';
 
 export const typeDefs = gql(`
-  type User @key(fields: "_id") {
-    _id: ID!
+  type User @key(fields: "id") {
+    id: ID!
     _created: DateTime!
     _changed: DateTime!
     oauthId: String!
@@ -31,7 +31,7 @@ export const typeDefs = gql(`
 
   extend type Mutation {
     createUser(input: UserInput!): User
-    updateUser( _id: ID!, input: UserInput!): User
+    updateUser( id: ID!, input: UserInput!): User
   }
 `);
 
