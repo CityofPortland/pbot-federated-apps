@@ -213,7 +213,7 @@ export const GraphQLSignAddInputType = new GraphQLInputObjectType({
 export const GraphQLSignEditInputType = new GraphQLInputObjectType({
   name: 'SignEditInput',
   fields() {
-    const { image, ...rest } = signFields({ required: true });
+    const { image, ...rest } = signFields({ required: false });
 
     return {
       ...rest,
