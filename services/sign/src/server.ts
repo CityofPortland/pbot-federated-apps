@@ -91,7 +91,7 @@ app.all(
     async parseRequestParams(req) {
       const contentType = req.headers['content-type'];
 
-      if (contentType.startsWith('multipart/')) {
+      if (contentType && contentType.startsWith('multipart/')) {
         const params = await processRequest(req.raw, req.context.res);
 
         if (Array.isArray(params)) {
