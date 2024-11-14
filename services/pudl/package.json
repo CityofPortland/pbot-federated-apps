@@ -27,37 +27,37 @@
   },
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "dependencies": {
-    "@apollo/server": "^4.10.4",
-    "@apollo/subgraph": "^2.7.4",
+    "@apollo/server": "^4.11.2",
+    "@apollo/subgraph": "^2.9.3",
     "@casl/ability": "^5.4.4",
     "@graphql-tools/schema": "^8.5.1",
     "@pbotapps/graphql": "workspace:^",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "graphql": "^16.8.1",
+    "graphql": "^16.9.0",
     "graphql-scalars": "^1.23.0",
     "graphql-tag": "^2.12.6",
     "knex": "^2.5.1",
-    "pg": "^8.11.5"
+    "pg": "^8.13.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.12.7",
-    "@types/passport": "^1.0.16",
+    "@types/node": "^20.17.6",
+    "@types/passport": "^1.0.17",
     "@types/passport-anonymous": "^1.0.5",
     "@types/passport-azure-ad": "^4.3.6",
-    "@types/validator": "^13.11.9",
+    "@types/validator": "^13.12.2",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^8.10.0",
     "eslint-config-typescript": "^3.0.0",
     "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
-    "rollup": "^2.79.1",
+    "rollup": "^2.79.2",
     "ts-node": "^10.9.2",
-    "tslib": "^2.6.2",
-    "typescript": "^5.4.5"
+    "tslib": "^2.8.1",
+    "typescript": "^5.6.3"
   }
 }
