@@ -9,15 +9,15 @@
   },
   "dependencies": {
     "@pbotapps/components": "workspace:^",
-    "vue": "^3.4.25",
-    "vue-i18n": "^9.13.1"
+    "vue": "^3.5.12",
+    "vue-i18n": "^9.14.1"
   },
   "devDependencies": {
     "@intlify/unplugin-vue-i18n": "^0.12.3",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.17.6",
     "@vitejs/plugin-vue": "^4.6.2",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.10",
-    "vue-tsc": "^2.0.14"
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vue-tsc": "^2.1.10"
   }
 }
