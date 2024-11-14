@@ -14,9 +14,9 @@ export async function me(_root, _args, context: Context) {
   return elasticsearchClient
     .get<User>({
       index: 'metabase_user',
-      id: context.user._id,
+      id: context.user.id,
     })
-    .then(res => ({ _id: res._id, ...res._source }))
+    .then(res => ({ id: res.id, ...res._source }))
     .catch(() => undefined);
 }
 
@@ -29,11 +29,11 @@ export const resolvers: GraphQLResolverMap<Context> = {
           index: 'metabase_user',
           id: email,
         })
-        .then(hit => ({ _id: hit._id, ...hit._source })),
+        .then(hit => ({ id: hit.id, ...hit._source })),
     users: async () => {
       const results = [];
 
-      for await (const hit of scrollSearch<Omit<User, '_id'>>(
+      for await (const hit of scrollSearch<Omit<User, 'id'>>(
         elasticsearchClient,
         {
           index: 'metabase_user',
@@ -42,7 +42,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
           },
         }
       )) {
-        results.push({ _id: hit._id, ...hit._source });
+        results.push({ id: hit.id, ...hit._source });
       }
 
       return results;
@@ -62,76 +62,76 @@ export const resolvers: GraphQLResolverMap<Context> = {
 
       const _created = new Date();
 
-      const user: Omit<User, '_id'> = {
+      const user: Omit<User, 'id'> = {
         _created,
         _changed: _created,
         email,
         ...rest,
       };
 
-      await elasticsearchClient.index<Omit<User, '_id'>>({
+      await elasticsearchClient.index<Omit<User, 'id'>>({
         index: 'metabase_user',
         id: email,
         document: user,
       });
 
-      return { _id: email, ...user };
+      return { id: email, ...user };
     },
     updateUser: async (
       _,
-      { _id, data }: { _id: string; data: UserInput },
+      { id, data }: { id: string; data: UserInput },
       context
     ) => {
       ok(
         await elasticsearchClient.exists({
           index: 'metabase_user',
-          id: _id,
+          id: id,
         }),
-        `User with id '${_id}' does not exists!`
+        `User with id '${id}' does not exists!`
       );
 
       const result = await elasticsearchClient
         .get<User>({
           index: 'metabase_user',
-          id: _id,
+          id: id,
         })
-        .then(hit => ({ _id: hit._id, ...hit._source }));
+        .then(hit => ({ id: hit.id, ...hit._source }));
 
       const _changed = new Date();
-      const _changedBy = context.user._id;
+      const _changedBy = context.user.id;
 
-      const { _id: id, ...user } = {
+      const { id: id, ...user } = {
         ...result,
         ...data,
         _changed,
         _changedBy,
       };
 
-      await elasticsearchClient.index<Omit<User, '_id'>>({
+      await elasticsearchClient.index<Omit<User, 'id'>>({
         index: 'metabase_user',
         id: id,
         document: user,
       });
 
-      return { _id: id, ...user };
+      return { id: id, ...user };
     },
   },
   Rule: {
     users: async (rule: Rule) => {
       const results = [];
 
-      for await (const hit of scrollSearch<Omit<Rule, '_id'>>(
+      for await (const hit of scrollSearch<Omit<Rule, 'id'>>(
         elasticsearchClient,
         {
           index: 'metabase_user',
           query: {
             match: {
-              rules: rule._id,
+              rules: rule.id,
             },
           },
         }
       )) {
-        results.push({ _id: hit._id, ...hit._source });
+        results.push({ id: hit.id, ...hit._source });
       }
 
       return results.length ? results : undefined;

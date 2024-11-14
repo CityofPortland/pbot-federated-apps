@@ -151,21 +151,16 @@ jobs:
                       key: AZURE_CLIENT_SECRET
                 - name: AZURE_STORAGE_ACCOUNT
                   value: pbotapps
-                - name: ELASTICSEARCH_HOST
-                  value: https://pbotapps-es-http:9200
-                - name: ELASTICSEARCH_PASSWORD
+                - name: AZURE_COSMOS_URL
                   valueFrom:
                     secretKeyRef:
-                      name: pbotapps-es-elastic-user
-                      key: elastic
-              volumes:
-                - name: elastic-cert
-                  secret:
-                    secretName: pbotapps-es-http-ca-internal
-              volumeMounts:
-                - mountPath: /home/node/services/sign/dist/elastic.crt
-                  name: elastic-cert
-                  subPath: tls.crt
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_COSMOS_URL
+                - name: AZURE_COSMOS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: '{{ include "chart.fullname" . }}'
+                      key: AZURE_COSMOS_KEY
           - service: support
             directory: services/support
             repository: federation/service/support

@@ -2,7 +2,7 @@
   <Box
     :color="color"
     :variant="variant"
-    class="p-4 border border-current rounded shadow flex space-x-4"
+    class="p-4 border border-current rounded shadow flex gap-4 w-full"
   >
     <Icon
       v-if="icon"
@@ -14,6 +14,12 @@
       <p class="font-semibold" v-if="summary">{{ summary }}</p>
       <slot></slot>
     </div>
+    <Icon
+      type="outline"
+      name="x"
+      class="h-6 w-6 flex-shrink-0 ml-auto"
+      @click="$emit('close')"
+    />
   </Box>
 </template>
 
@@ -45,5 +51,6 @@ export default defineComponent({
       required: false,
     },
   },
+  emits: ['close']
 });
 </script>

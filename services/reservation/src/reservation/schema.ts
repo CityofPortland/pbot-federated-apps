@@ -139,9 +139,9 @@ export const GraphQLReservationSchema = new GraphQLSchema({
 
           const res: Partial<Reservation> = {
             created: new Date(),
-            creator: user._id,
+            creator: user.id,
             updated: new Date(),
-            updater: user._id,
+            updater: user.id,
             active: true,
             ...args.payload,
           };
@@ -226,7 +226,7 @@ export const GraphQLReservationSchema = new GraphQLSchema({
 
           let res: Partial<Reservation> = {
             updated: new Date(),
-            updater: user._id,
+            updater: user.id,
             ...args.payload,
           };
 

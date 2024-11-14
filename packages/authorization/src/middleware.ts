@@ -58,7 +58,7 @@ function userFromRequest(req: Request) {
   if (!token) return undefined;
 
   user = req['user'] = {
-    _id: token.upn,
+    id: token.upn,
     email: token.upn,
     oauthId: token.oid,
     firstName: token['given_name'],

@@ -2,8 +2,8 @@ import { BaseUserChangeableType } from '@pbotapps/objects';
 import { gql } from 'graphql-tag';
 
 export const typeDefs = gql(`
-  type Rule @key(fields: "_id") {
-    _id: ID!
+  type Rule @key(fields: "id") {
+    id: ID!
     _created: DateTime!
     _changed: DateTime!
     _createdBy: ID!
@@ -35,8 +35,8 @@ export const typeDefs = gql(`
 
   extend type Mutation {
     addRule(applicationId: ID!, input: RuleInput): Rule
-    updateRule(_id: ID!, input: RuleInput): Rule
-    removeRule(_id: ID!): ID
+    updateRule(id: ID!, input: RuleInput): Rule
+    removeRule(id: ID!): ID
     addRuleToUser(user_id: ID!, rule_id: ID!): ID
     removeRuleFromUser(user_id: ID!, rule_id: ID!): ID
   }

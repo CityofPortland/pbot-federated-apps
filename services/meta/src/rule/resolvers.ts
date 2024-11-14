@@ -27,7 +27,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
           index: 'metabase_rule',
           id,
         })
-        .then(hit => ({ _id: hit._id, ...hit._source }));
+        .then(hit => ({ id: hit.id, ...hit._source }));
     },
   },
   Mutation: {
@@ -52,9 +52,9 @@ export const resolvers: GraphQLResolverMap<Context> = {
       );
 
       const _created = new Date();
-      const _createdBy = context.user._id;
+      const _createdBy = context.user.id;
 
-      const rule: Omit<Rule, '_id'> = {
+      const rule: Omit<Rule, 'id'> = {
         _created,
         _createdBy,
         _changed: _created,
@@ -63,36 +63,36 @@ export const resolvers: GraphQLResolverMap<Context> = {
         ...input,
       };
 
-      await elasticsearchClient.index<Omit<Rule, '_id'>>({
+      await elasticsearchClient.index<Omit<Rule, 'id'>>({
         index: 'metabase_rule',
         id: hash,
         document: rule,
       });
 
-      return { _id: hash, ...rule };
+      return { id: hash, ...rule };
     },
     updateRule: async (
       _,
-      { _id, input }: { _id: string; input: RuleInput<unknown> },
+      { id, input }: { id: string; input: RuleInput<unknown> },
       context
     ) => {
       ok(
         !(await elasticsearchClient.exists({
           index: 'metabase_rule',
-          id: _id,
+          id: id,
         })),
-        `No rule with id '${_id}' found!`
+        `No rule with id '${id}' found!`
       );
 
       const result = await elasticsearchClient
-        .get<Omit<Rule, '_id'>>({
+        .get<Omit<Rule, 'id'>>({
           index: 'metabase_rule',
-          id: _id,
+          id: id,
         })
         .then(hit => ({ ...hit._source }));
 
       const _changed = new Date();
-      const _changedBy = context.user._id;
+      const _changedBy = context.user.id;
 
       const rule = {
         ...result,
@@ -101,26 +101,26 @@ export const resolvers: GraphQLResolverMap<Context> = {
         _changedBy,
       };
 
-      await elasticsearchClient.index<Omit<Rule, '_id'>>({
+      await elasticsearchClient.index<Omit<Rule, 'id'>>({
         index: 'metabase_application',
-        id: _id,
+        id: id,
         document: rule,
       });
 
-      return { _id: _id, ...rule };
+      return { id: id, ...rule };
     },
-    removeRule: async (_, { _id }: { _id: string }) => {
+    removeRule: async (_, { id }: { id: string }) => {
       ok(
         !(await elasticsearchClient.exists({
           index: 'metabase_rule',
-          id: _id,
+          id: id,
         })),
-        `No rule with id '${_id}' found!`
+        `No rule with id '${id}' found!`
       );
 
       await elasticsearchClient.delete({
         index: 'metabase_application',
-        id: _id,
+        id: id,
       });
     },
     addRuleToUser: async (
@@ -201,18 +201,18 @@ export const resolvers: GraphQLResolverMap<Context> = {
     rules: async (application: Application) => {
       const results = [];
 
-      for await (const hit of scrollSearch<Omit<Rule, '_id'>>(
+      for await (const hit of scrollSearch<Omit<Rule, 'id'>>(
         elasticsearchClient,
         {
           index: 'metabase_rule',
           query: {
             match: {
-              applicationId: application._id,
+              applicationId: application.id,
             },
           },
         }
       )) {
-        results.push({ _id: hit._id, ...hit._source });
+        results.push({ id: hit.id, ...hit._source });
       }
 
       return results;
@@ -223,7 +223,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
       const rules = await elasticsearchClient
         .get<{ rules: Array<string> }>({
           index: 'metabase_user',
-          id: user._id,
+          id: user.id,
         })
         .then(hit => hit._source.rules);
 
@@ -235,11 +235,11 @@ export const resolvers: GraphQLResolverMap<Context> = {
         rules.map(async rule =>
           results.push(
             await elasticsearchClient
-              .get<Omit<Rule, '_id'>>({
+              .get<Omit<Rule, 'id'>>({
                 index: 'metabase_rule',
                 id: rule,
               })
-              .then(hit => ({ _id: hit._id, ...hit._source }))
+              .then(hit => ({ id: hit.id, ...hit._source }))
           )
         )
       );

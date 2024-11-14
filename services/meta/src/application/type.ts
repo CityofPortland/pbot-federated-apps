@@ -5,8 +5,8 @@ import { gql } from 'graphql-tag';
 import { Rule } from '../rule/type.js';
 
 export const typeDefs = gql`
-  type Application @key(fields: "_id") {
-    _id: ID!
+  type Application @key(fields: "id") {
+    id: ID!
     _changed: DateTime!
     _changedBy: ID!
     _created: DateTime!
@@ -26,7 +26,7 @@ export const typeDefs = gql`
   }
 
   input FindApplicationInput {
-    _id: ID
+    id: ID
   }
 
   extend type Query {
@@ -35,7 +35,7 @@ export const typeDefs = gql`
 
   extend type Mutation {
     addApplication(input: ApplicationInput): Application
-    updateApplication(_id: ID!, input: ApplicationInput): Application
+    updateApplication(id: ID!, input: ApplicationInput): Application
   }
 ` as DocumentNode;
 

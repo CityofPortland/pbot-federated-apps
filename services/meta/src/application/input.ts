@@ -1,5 +1,5 @@
 export type FindApplicationInput = {
-  _id?: string;
+  id?: string;
 };
 
 export type ApplicationInput = {

@@ -24,6 +24,7 @@ export default {
     minus: 'M20 12H4',
     plus: 'M12 4v16m8-8H4',
     search: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+    x: 'M6 18 18 6M6 6l12 12',
     'x-circle':
       'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
   },

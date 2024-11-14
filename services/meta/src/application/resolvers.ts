@@ -13,26 +13,26 @@ import { User } from '../user/type.js';
 export const resolvers: GraphQLResolverMap<Context> = {
   Query: {
     applications: async (_, { input }: { input: FindApplicationInput }) => {
-      const { _id } = input || {};
+      const { id } = input || {};
 
       const results = new Array<Application>();
 
-      if (_id) {
-        for await (const hit of scrollSearch<Omit<Application, '_id'>>(
+      if (id) {
+        for await (const hit of scrollSearch<Omit<Application, 'id'>>(
           elasticsearchClient,
           {
             index: 'metabase_application',
             query: {
               match: {
-                name: _id,
+                name: id,
               },
             },
           }
         )) {
-          results.push({ _id: hit._id, ...hit._source });
+          results.push({ id: hit.id, ...hit._source });
         }
       } else {
-        for await (const hit of scrollSearch<Omit<Application, '_id'>>(
+        for await (const hit of scrollSearch<Omit<Application, 'id'>>(
           elasticsearchClient,
           {
             index: 'metabase_application',
@@ -41,7 +41,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
             },
           }
         )) {
-          results.push({ _id: hit._id, ...hit._source });
+          results.push({ id: hit.id, ...hit._source });
         }
       }
 
@@ -65,9 +65,9 @@ export const resolvers: GraphQLResolverMap<Context> = {
       );
 
       const _created = new Date();
-      const _createdBy = context.user._id;
+      const _createdBy = context.user.id;
 
-      const app: Omit<Application, '_id'> = {
+      const app: Omit<Application, 'id'> = {
         _created,
         _createdBy,
         _changed: _created,
@@ -76,21 +76,21 @@ export const resolvers: GraphQLResolverMap<Context> = {
         ...rest,
       };
 
-      await elasticsearchClient.index<Omit<Application, '_id'>>({
+      await elasticsearchClient.index<Omit<Application, 'id'>>({
         index: 'metabase_application',
         id: name,
         document: app,
       });
 
-      return { _id: name, ...app };
+      return { id: name, ...app };
     },
     updateApplication: async (
       _,
       {
-        _id,
+        id,
         input,
       }: {
-        _id: string;
+        id: string;
         input: Omit<Application, keyof BaseUserChangeableType>;
       },
       context
@@ -98,70 +98,70 @@ export const resolvers: GraphQLResolverMap<Context> = {
       ok(
         await elasticsearchClient.exists({
           index: 'metabase_application',
-          id: _id,
+          id: id,
         }),
-        `Application with id '${_id}' does not exists!`
+        `Application with id '${id}' does not exists!`
       );
 
       const result = await elasticsearchClient
         .get<Application>({
           index: 'metabase_application',
-          id: _id,
+          id: id,
         })
-        .then(hit => ({ _id: hit._id, ...hit._source }));
+        .then(hit => ({ id: hit.id, ...hit._source }));
 
       const _changed = new Date();
-      const _changedBy = context.user._id;
+      const _changedBy = context.user.id;
 
-      const { _id: id, ...app } = {
+      const { id: id, ...app } = {
         ...result,
         ...input,
         _changed,
         _changedBy,
       };
 
-      await elasticsearchClient.index<Omit<Application, '_id'>>({
+      await elasticsearchClient.index<Omit<Application, 'id'>>({
         index: 'metabase_application',
         id: id,
         document: app,
       });
 
-      return { _id: id, ...app };
+      return { id: id, ...app };
     },
-    deleteApplication: (_, { _id }: Pick<Application, keyof BaseType>) => {
+    deleteApplication: (_, { id }: Pick<Application, keyof BaseType>) => {
       return elasticsearchClient.delete({
         index: 'metabase_application',
-        id: _id,
+        id: id,
       });
     },
   },
   Rule: {
     application: (rule: Rule) =>
       elasticsearchClient
-        .get<Omit<Application, '_id'>>({
+        .get<Omit<Application, 'id'>>({
           index: 'metabase_application',
           id: rule.applicationId,
         })
-        .then(hit => ({ _id: hit._id, ...hit._source })),
+        .then(hit => ({ id: hit.id, ...hit._source })),
   },
   User: {
     applications: async (user: User) => {
       user = await elasticsearchClient
-        .get<Omit<User, '_id'>>({
+        .get<Omit<User, 'id'>>({
           index: 'metabase_user',
-          id: user._id,
+          id: user.id,
         })
-        .then(hit => ({ _id: hit._id, ...hit._source }));
+        .then(hit => ({ id: hit.id, ...hit._source }));
 
       if (!user.rules) return undefined;
 
-      const promises = user.rules.map(_id =>
+      const promises = user.rules.map(id =>
         elasticsearchClient
           .get<Rule>({
             index: 'metabase_rule',
-            id: _id,
+            id: id,
           })
-          .then(hit => ({ _id: hit._id, ...hit._source }))
+          .then(hit => ({ id: hit.id, ...hit._source }))
       );
 
       const applications = await Promise.all(promises).then(rules =>
@@ -174,11 +174,11 @@ export const resolvers: GraphQLResolverMap<Context> = {
       return Promise.all(
         [...applications.values()].map(app =>
           elasticsearchClient
-            .get<Omit<Application, '_id'>>({
+            .get<Omit<Application, 'id'>>({
               index: 'metabase_application',
               id: app,
             })
-            .then(hit => ({ _id: hit._id, ...hit._source }))
+            .then(hit => ({ id: hit.id, ...hit._source }))
         )
       );
     },

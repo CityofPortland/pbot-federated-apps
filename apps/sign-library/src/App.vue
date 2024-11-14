@@ -8,27 +8,36 @@ import {
   Header,
   LoggedIn,
   Logo,
+  Message,
   SignIn,
 } from '@pbotapps/components';
 
-import { useAuthStore, useStore } from './store';
+import {
+  useAuthStore,
+  useMessageStore,
+  useRuleStore,
+  useSignStore,
+} from './store';
 
 const menuOpen = ref(false);
 
 const { getToken } = useAuthStore();
-const store = useStore();
+const messages = useMessageStore();
+const rulesStore = useRuleStore();
+const signStore = useSignStore();
 const { currentRoute } = useRouter();
 
 const accessToken = ref<string>();
 
-store.getSigns();
-store.refreshRules();
+signStore.init();
+rulesStore.get();
 
 onMounted(async () => {
   accessToken.value = await getToken();
+  signStore.refresh();
 });
 
-watch(accessToken, () => store.refreshRules());
+watch(accessToken, () => rulesStore.get());
 
 const dev = computed(() => import.meta.env.MODE != 'production');
 </script>
@@ -49,13 +58,37 @@ const dev = computed(() => import.meta.env.MODE != 'production');
         </span>
       </template>
     </Header>
-    <section role="banner">
+    <section v-if="dev" role="banner">
       <Box
-        v-if="dev"
         color="orange"
         class="p-4 text-center text-xl font-semibold uppercase"
         >Development version</Box
       >
+    </section>
+    <section
+      role="notification"
+      v-if="messages.messages.size > 0"
+      class="flex-grow max-w-7xl w-full mx-auto px-4 my-4"
+    >
+      <ul class="grid grid-cols-1 gap-2">
+        <Message
+          v-for="message in messages.messages"
+          :key="message[0]"
+          as="li"
+          :color="
+            {
+              error: 'red',
+              info: 'blue',
+              warning: 'tangerine',
+            }[message[1][0]]
+          "
+          variant="light"
+          :summary="message[1][1].message"
+          @close="messages.remove(message[0])"
+        >
+          {{ message[1][1].cause }}
+        </Message>
+      </ul>
     </section>
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 my-4">
       <router-view />

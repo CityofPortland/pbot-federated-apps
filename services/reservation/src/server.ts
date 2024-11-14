@@ -38,6 +38,7 @@ app.use(
         const rules = new Array<Partial<RuleType>>();
 
         if (
+          process.env.NODE_ENV == 'developement' ||
           [
             'kristan.alldrin@portlandoregon.gov',
             'lori.steen@portlandoregon.gov',
@@ -50,7 +51,7 @@ app.use(
             'travis.hardaker@portlandoregon.gov',
           ].find(
             u =>
-              u.localeCompare(user._id, undefined, { sensitivity: 'base' }) == 0
+              u.localeCompare(user.id, undefined, { sensitivity: 'base' }) == 0
           )
         ) {
           rules.push(
@@ -68,7 +69,7 @@ app.use(
         return rules;
       },
     },
-    { _id: 'reservation' }
+    { id: 'reservation' }
   )
 );
 

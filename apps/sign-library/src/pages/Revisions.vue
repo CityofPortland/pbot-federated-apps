@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { FieldList, Field } from '@pbotapps/components';
 import { computed } from 'vue';
-import { useStore } from '../store';
+import { useSignStore } from '../store';
 
-const store = useStore();
+const store = useSignStore();
 
 const props = defineProps({
   code: { type: String, required: true },
@@ -23,7 +23,7 @@ const property = (key: string, object: Record<string, unknown>) => object[key];
       <ul>
         <li
           v-for="revision in sign?._revisions"
-          :key="revision._changed?.toString()"
+          :key="revision.updated?.toString()"
         >
           <article>
             <FieldList>

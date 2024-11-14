@@ -74,9 +74,9 @@ export const GraphQLApplicationSchema = new GraphQLSchema({
 
           const hotel: Partial<Application> = {
             created: new Date(),
-            creator: user._id,
+            creator: user.id,
             updated: new Date(),
-            updater: user._id,
+            updater: user.id,
             ...args.payload,
           };
 
@@ -116,7 +116,7 @@ export const GraphQLApplicationSchema = new GraphQLSchema({
 
           const app = {
             updated: new Date(),
-            updater: user._id,
+            updater: user.id,
             ...args.payload,
           };
 

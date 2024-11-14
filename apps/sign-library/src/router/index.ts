@@ -6,10 +6,12 @@ import {
   RouteRecordRaw,
 } from 'vue-router';
 
+import Add from '../pages/Add.vue';
 import Edit from '../pages/Edit.vue';
 import Home from '../pages/Home.vue';
 import Revisions from '../pages/Revisions.vue';
 import View from '../pages/View.vue';
+import { useAuthStore, useMessageStore } from '../store';
 
 const checkQuery =
   (prop: string, def: string | number) => (to: RouteLocationNormalized) => {
@@ -32,8 +34,8 @@ const routes: RouteRecordRaw[] = [
         status: 'in_use',
         pageSize: 10,
         page: 1,
-        sort: '_changed',
-        sortOrder: 'asc',
+        sort: 'updated',
+        sortOrder: 'desc',
       },
     }),
   },
@@ -44,21 +46,64 @@ const routes: RouteRecordRaw[] = [
       checkQuery('status', 'in_use'),
       checkQuery('pageSize', 10),
       checkQuery('page', 1),
-      checkQuery('sort', '_changed'),
-      checkQuery('sortOrder', 'asc'),
+      checkQuery('sort', 'updated'),
+      checkQuery('sortOrder', 'desc'),
     ],
   },
   { path: '/:code', component: View, props: true },
-  { path: '/:code/edit', component: Edit, props: true },
+  {
+    path: '/:code/edit',
+    component: Edit,
+    props: true,
+    beforeEnter: async to => {
+      const auth = useAuthStore();
+      const messages = useMessageStore();
+      const token = await auth.getToken();
+
+      if (token == undefined) {
+        messages.add(
+          'signs:router',
+          'error',
+          new Error('Unable to access edit page', {
+            cause: new Error('Not logged in!'),
+          })
+        );
+        return { path: `/${to.params.code}` };
+      }
+
+      return true;
+    },
+  },
   { path: '/:code/revisions', component: Revisions, props: true },
-  { path: '/add', component: Edit },
+  {
+    path: '/add',
+    component: Add,
+    beforeEnter: async _to => {
+      const auth = useAuthStore();
+      const messages = useMessageStore();
+      const token = await auth.getToken();
+
+      if (token == undefined) {
+        messages.add(
+          'signs:router',
+          'error',
+          new Error('Unable to access add page', {
+            cause: new Error('Not logged in!'),
+          })
+        );
+        return { path: '/' };
+      }
+
+      return true;
+    },
+  },
   ...authRoutes,
 ];
 
 export default createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(_to, _from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
     } else {
