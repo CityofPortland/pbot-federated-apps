@@ -164,11 +164,12 @@ jobs:
               ingress:
                 enabled: true
                 annotations:
-                  nginx.ingress.kubernetes.io/proxy-body-size: 8m
+                  nginx.ingress.kubernetes.io/use-regex: "true"
+                  nginx.ingress.kubernetes.io/rewrite-target: /
                 hosts:
                   - host: pbotapps-test.portland.gov
                     paths:
-                      - path: /graphql/sign
+                      - path: /(graphql/sign)
                         pathType: Prefix
                 tls:
                   - secretName: pbotapps-test-portland-gov-tls
