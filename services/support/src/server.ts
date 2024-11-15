@@ -11,7 +11,7 @@ if (process.env.NODE_ENV == 'development') dotenv.config();
 const schema: GraphQLSchemaModule = { typeDefs, resolvers };
 
 createServer({
-  application: 'resources',
+  application: 'support',
   requireToken: true,
   schema: buildSubgraphSchema(schema),
   handlers: [],

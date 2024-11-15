@@ -16,52 +16,52 @@ export async function createRepository<T extends Partial<BaseType>>(
 
   return {
     async add(item: T) {
-      const { _id, ...rest } = item;
-      await client.index<Omit<T, '_id'>>({
+      const { id, ...rest } = item;
+      await client.index<Omit<T, 'id'>>({
         index,
-        id: _id,
+        id,
         document: rest,
       });
       return item;
     },
-    async delete(_id) {
+    async delete(id) {
       await client.delete({
         index,
-        id: _id,
+        id,
       });
 
       return true;
     },
-    async edit(_id, item) {
-      const existing = await this.get(_id);
-      const { _id: _, ...rest } = item;
-      await client.index<Omit<T, '_id'>>({
+    async edit(id, item) {
+      const existing = await this.get(id);
+      const { id: _, ...rest } = item;
+      await client.index<Omit<T, 'id'>>({
         index,
-        id: _id,
+        id,
         document: {
           ...existing,
           ...rest,
         },
       });
-      const updated = await this.get(_id);
+      const updated = await this.get(id);
 
       return updated;
     },
-    async exists(_id) {
-      const res = await client.get<Omit<T, '_id'>>({
+    async exists(id) {
+      const res = await client.get<Omit<T, 'id'>>({
         index,
-        id: _id,
+        id: id,
       });
 
       return res.found;
     },
-    async get(_id) {
-      const res = await client.get<Omit<T, '_id'>>({
+    async get(id) {
+      const res = await client.get<Omit<T, 'id'>>({
         index,
-        id: _id,
+        id: id,
       });
 
-      return { _id, ...res._source } as T;
+      return { id, ...res._source } as T;
     },
     async getAll() {
       const results = new Array<T>();

@@ -1,4 +1,4 @@
-FROM node:20 as builder
+FROM node:22 as builder
 
 ARG WORKDIR
 
@@ -18,7 +18,7 @@ WORKDIR /home/node/${WORKDIR}
 RUN pnpm --filter "{.}..." install
 RUN pnpm --filter "{.}..." build
 
-FROM node:20-bookworm-slim
+FROM node:22-bookworm-slim
 
 ARG WORKDIR
 

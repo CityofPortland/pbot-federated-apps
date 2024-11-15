@@ -55,10 +55,9 @@
     "sharp": "^0.33.5"
   },
   "devDependencies": {
-    "@elastic/transport": "^8.9.1",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^8.5.9",
-    "@types/node": "^20.17.6",
+    "@types/node": "^22.9.0",
     "@types/passport-anonymous": "^1.0.5",
     "@types/passport-azure-ad": "^4.3.6",
     "@types/sharp": "^0.32.0",
