@@ -32,10 +32,10 @@
   "dependencies": {
     "@pbotapps/authorization": "workspace:^",
     "@vueuse/core": "^10.11.1",
-    "vue": "^3.5.12"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@arcgis/core": "^4.31.2",
+    "@arcgis/core": "^4.31.3",
     "@rushstack/eslint-patch": "^1.10.4",
     "@tsconfig/node20": "^20.1.4",
     "@types/crypto-js": "^4.2.2",
@@ -55,18 +55,18 @@
     "pinia": "^2.2.6",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.15",
-    "typescript": "~5.4.5",
+    "typescript": "^5.6.3",
     "vite": "^5.4.11",
     "vite-plugin-dts": "^3.9.1",
     "vue-router": "^4.4.5",
     "vue-tsc": "^2.1.10"
   },
   "peerDependencies": {
-    "@arcgis/core": "^4.29.10",
-    "axios": "^1.6.8",
+    "@arcgis/core": "^4.31.2",
+    "axios": "^1.7.7",
     "crypto-js": "^4.2.0",
     "lodash": "^4.17.21",
-    "pinia": "^2.1.7",
-    "vue-router": "^4.3.2"
+    "pinia": "^2.2.6",
+    "vue-router": "^4.4.5"
   }
 }

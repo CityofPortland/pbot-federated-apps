@@ -16,7 +16,7 @@
 <script lang="ts">
 import { useAuth } from '@pbotapps/authorization';
 import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import PBOTButton from '../../elements/button/Button.vue';
 import Spinner from '../../elements/icon/Spinner.vue';
@@ -41,7 +41,8 @@ export default defineComponent({
       tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
     });
 
-    const { currentRoute, resolve } = useRouter();
+    const currentRoute = useRoute();
+    const router = useRouter();
 
     const clicked = ref(false);
 
@@ -52,12 +53,12 @@ export default defineComponent({
         route.value = props.redirect
           ? { path: props.redirect }
           : {
-              path: currentRoute.value.fullPath
+              path: currentRoute.fullPath
             };
         getToken(
           props.scopes,
           'select_account',
-          `${window.location.origin}${resolve({ name: 'OAuthCallback' }).href}`
+          `${window.location.origin}${router.resolve({ name: 'OAuthCallback' }).href}`
         );
       },
     };

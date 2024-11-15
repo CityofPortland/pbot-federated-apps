@@ -25,7 +25,7 @@ const checkQuery =
       };
   };
 
-const routes: RouteRecordRaw[] = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: () => ({
@@ -78,7 +78,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/add',
     component: Add,
-    beforeEnter: async _to => {
+    beforeEnter: async () => {
       const auth = useAuthStore();
       const messages = useMessageStore();
       const token = await auth.getToken();
