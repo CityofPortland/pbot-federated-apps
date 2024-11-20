@@ -5,7 +5,6 @@ import cors from 'cors';
 import express, { Response, json } from 'express';
 import { RequestParams, parseRequestParams } from 'graphql-http';
 import { createHandler } from 'graphql-http/lib/use/express';
-//import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import processRequest from 'graphql-upload/processRequest.mjs';
 
 import { GraphQLSignSchema } from './sign/schema.js';
@@ -31,6 +30,7 @@ app.use(
         if (
           process.env.NODE_ENV == 'developement' ||
           [
+            'Alex.Garate@portlandoregon.gov',
             'Joel.Hudson@portlandoregon.gov',
             'Michael.McDonald@portlandoregon.gov',
             'Matthew.Machado@portlandoregon.gov',
@@ -58,7 +58,6 @@ app.use(
     },
     { id: 'reservation' }
   )
-  //graphqlUploadExpress()
 );
 
 app.get('/probe', (_, res) => res.status(200).send('Success!'));
