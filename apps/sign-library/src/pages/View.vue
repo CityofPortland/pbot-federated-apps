@@ -65,59 +65,59 @@ onBeforeRouteUpdate(async to => {
             :src="sign.image.full"
           />
         </figure>
-        <section>
+        <section class="flex flex-col gap-4">
+          <FieldList class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field
+              v-if="
+                sign.image &&
+                (sign.image.design || sign.image.full || sign.image.thumbnail)
+              "
+              name="Image"
+              display="above"
+              class="not-prose"
+            >
+              <ul class="flex gap-1 list-none">
+                <li v-if="sign.image.thumbnail">
+                  <Anchor :url="sign.image.thumbnail" class="no-underline">
+                    Thumbnail
+                  </Anchor>
+                </li>
+                <li v-if="sign.image.full">
+                  <Anchor :url="sign.image.full" class="no-underline">
+                    Full
+                  </Anchor>
+                </li>
+                <li>
+                  <Anchor
+                    v-if="sign.image.design"
+                    :url="sign.image.design"
+                    class="no-underline"
+                  >
+                    Design file
+                  </Anchor>
+                </li>
+              </ul>
+            </Field>
+            <Field name="Type" display="above">
+              {{ sign.type || 'NULL' }}
+            </Field>
+            <Field v-if="sign.mutcdCode" name="MUTCD code" display="above">
+              {{ sign.mutcdCode }}
+            </Field>
+            <Field v-if="sign.odotCode" name="ODOT code" display="above">
+              {{ sign.odotCode }}
+            </Field>
+            <Field name="Shape" display="above">
+              {{ sign.shape || 'NULL' }}
+            </Field>
+            <Field name="Color" display="above">
+              {{ sign.color || 'NULL' }}
+            </Field>
+            <Field name="Size" display="above">
+              {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
+            </Field>
+          </FieldList>
           <FieldList class="grid grid-cols-1 gap-4">
-            <section class="grid grid-cols-2 gap-4">
-              <Field
-                v-if="
-                  sign.image &&
-                  (sign.image.design || sign.image.full || sign.image.thumbnail)
-                "
-                name="Image"
-                display="above"
-                class="not-prose"
-              >
-                <ul class="flex gap-1 list-none">
-                  <li v-if="sign.image.thumbnail">
-                    <Anchor :url="sign.image.thumbnail" class="no-underline">
-                      Thumbnail
-                    </Anchor>
-                  </li>
-                  <li v-if="sign.image.full">
-                    <Anchor :url="sign.image.full" class="no-underline">
-                      Full
-                    </Anchor>
-                  </li>
-                  <li>
-                    <Anchor
-                      v-if="sign.image.design"
-                      :url="sign.image.design"
-                      class="no-underline"
-                    >
-                      Design file
-                    </Anchor>
-                  </li>
-                </ul>
-              </Field>
-              <Field name="Type" display="above">
-                {{ sign.type || 'NULL' }}
-              </Field>
-              <Field v-if="sign.mutcdCode" name="MUTCD code" display="above">
-                {{ sign.mutcdCode }}
-              </Field>
-              <Field v-if="sign.odotCode" name="ODOT code" display="above">
-                {{ sign.odotCode }}
-              </Field>
-              <Field name="Shape" display="above">
-                {{ sign.shape || 'NULL' }}
-              </Field>
-              <Field name="Color" display="above">
-                {{ sign.color || 'NULL' }}
-              </Field>
-              <Field name="Size" display="above">
-                {{ `${sign.width}" by ${sign.height}"` || 'NULL' }}
-              </Field>
-            </section>
             <Field name="Legend" display="above">
               {{ sign.legend || 'NULL' }}
             </Field>
