@@ -88,18 +88,8 @@ export const useSignStore = defineStore('signs', () => {
 
     const res = await query<{ signs: Array<Sign> }>(options)
       .then(res => {
-        if (res.errors) {
-          messages.add(
-            'signs:refresh',
-            'warning',
-            new Error('Errors with some signs data', {
-              cause:
-                'Some signs may be missing data or have incorrectly set values, likely due to importing from legacy data',
-            })
-          );
-        } else {
-          messages.remove('signs:refresh');
-        }
+        messages.remove('signs:refresh');
+
         return res.data;
       })
       .then(data => {

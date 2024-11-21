@@ -15,7 +15,6 @@ import { computed, defineComponent } from 'vue';
 type DisplayType = 'inline' | 'above' | 'hidden';
 
 export default defineComponent({
-  name: 'Field',
   props: {
     name: { type: String, required: true },
     display: {
@@ -25,23 +24,26 @@ export default defineComponent({
   },
   setup(props) {
     return {
-      layoutClasses: computed(() => {
-        const m = new Map<DisplayType, string[]>([
-          ['inline', ['sm:grid-cols-3']],
-        ]);
-
-        return ['grid', 'grid-cols-1', 'gap-1'].concat(
-          ...(m.get(props.display) || [])
-        );
-      }),
       labelClasses: computed(() => {
-        const m = new Map<DisplayType, string[]>([['hidden', ['sr-only']]]);
+        const m = new Map<DisplayType, string[]>([
+          ['hidden', ['sr-only']],
+          ['inline', ['sm:w-1/3']]
+        ]);
 
         return m.get(props.display) || [];
       }),
+      layoutClasses: computed(() => {
+        const m = new Map<DisplayType, string[]>([
+          ['inline', ['sm:flex-row']],
+        ]);
+
+        return ['flex', 'flex-col', 'gap-1'].concat(
+          ...(m.get(props.display) || [])
+        );
+      }),
       valueClasses: computed(() => {
         const m = new Map<DisplayType, string[]>([
-          ['inline', ['sm:col-span-2']],
+          ['inline', ['flex-1']],
         ]);
 
         return ['break-words', ...(m.get(props.display) || [])];
