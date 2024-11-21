@@ -38,17 +38,7 @@ export const useRuleStore = defineStore('rules', () => {
       })
       .then(data => data?.rules)
       .catch(reason => {
-        console.error(reason, reason.response, reason.response.status);
-        if (reason.response && reason.response.status == 401) {
-          addMessage(
-            'rules:get',
-            'warning',
-            new Error('Error retrieving rules', {
-              cause:
-                'You are not logged in. You will be unable to modify the sign library until you log in.',
-            })
-          );
-        } else {
+        if (reason.response && reason.response.status != 401) {
           addMessage(
             'rules:get',
             'error',
