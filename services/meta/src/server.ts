@@ -1,117 +1,87 @@
-import { GraphQLSchemaModule } from '@apollo/subgraph/dist/schema-helper';
-import { buildSubgraphSchema } from '@apollo/subgraph';
-import { handleRules, handleUser } from '@pbotapps/authorization/middleware';
-import { createServer } from '@pbotapps/graphql';
-import { config as loadenv } from 'dotenv';
-import { DateTimeResolver } from 'graphql-scalars';
-import { gql } from 'graphql-tag';
+import { mergeSchemas } from '@graphql-tools/schema';
+import { handleRules, handleToken } from '@pbotapps/authorization/middleware';
+import { RuleType } from '@pbotapps/authorization/rule';
+import cors from 'cors';
+import express, { Response, json } from 'express';
+import { RequestParams, parseRequestParams } from 'graphql-http';
+import { createHandler } from 'graphql-http/lib/use/express';
+import processRequest from 'graphql-upload/processRequest.mjs';
 
-import Application from './application/index.js';
-import { elasticsearchClient } from './client.js';
-import RuleModule from './rule/index.js';
-import UserModule from './user/index.js';
-import { User } from './user/type.js';
-import { scrollSearch } from '@pbotapps/elasticsearch';
-import { Rule } from './rule/type.js';
+import { GraphQLApplicationSchema } from './application/schema.js';
+import { GraphQLRuleSchema } from './rule/schema.js';
 
-if (process.env.NODE_ENV !== 'production') {
-  loadenv();
+const schema = mergeSchemas({
+  schemas: [GraphQLApplicationSchema, GraphQLRuleSchema],
+});
+
+// Create a express instance serving all methods on `/graphql`
+// where the GraphQL over HTTP express request handler is
+const app = express();
+
+app.use(
+  cors(),
+  json(),
+  handleToken({ fail: false }),
+  handleRules(
+    {
+      getRules: async ({}) => {
+        const rules = new Array<Partial<RuleType>>();
+
+        return rules;
+      },
+    },
+    { id: 'reservation' }
+  )
+);
+
+app.get('/probe', (_, res) => res.status(200).send('Success!'));
+
+if (process.env.NODE_ENV == 'development') {
+  import('graphql-playground-html').then(graphqlPlaygroundHtml => {
+    const graphqlPlayground = options => {
+      return function (_: unknown, res: Response) {
+        res.setHeader('Content-Type', 'text/html');
+        const playground = graphqlPlaygroundHtml.renderPlaygroundPage(options);
+        res.write(playground);
+        res.end();
+      };
+    };
+
+    app.get('/playground', graphqlPlayground({ endpoint: '/' }));
+  });
 }
 
-const typeDefs = gql(`
-extend schema
-  @link(
-    url: "https://specs.apollo.dev/federation/v2.0"
-    import: ["@external", "@key"]
-  )
+app.all(
+  '/',
+  createHandler({
+    schema,
+    context: async req => {
+      return {
+        user: req.raw['user'],
+        rules: req.raw['rules'],
+      };
+    },
+    async parseRequestParams(req) {
+      const contentType = req.headers['content-type'];
 
-  scalar DateTime
-`);
+      if (contentType && contentType.startsWith('multipart/')) {
+        const params = await processRequest(req.raw, req.context.res);
 
-const resolvers = {
-  DateTime: DateTimeResolver,
-};
-
-const schema = [
-  { typeDefs, resolvers },
-  Application,
-  RuleModule,
-  UserModule,
-] as GraphQLSchemaModule[];
-
-createServer({
-  application: 'meta',
-  handlers: [
-    handleUser({
-      getUser: async user => {
-        const { id, ...rest } = user;
-
-        const exists = await elasticsearchClient.exists({
-          index: 'metabase_user',
-          id: id,
-        });
-
-        if (!exists) {
-          await elasticsearchClient.index<Partial<Omit<User, 'id'>>>({
-            index: 'metabase_user',
-            id: id,
-            document: {
-              _changed: new Date(),
-              _changedBy: id,
-              _created: new Date(),
-              _createdBy: id,
-              ...rest,
-            },
-          });
+        if (Array.isArray(params)) {
+          throw new Error('Batching is not supported');
         }
 
-        return elasticsearchClient
-          .get<User>({
-            index: 'metabase_user',
-            id: id,
-          })
-          .then(hit => ({ id: hit.id, ...hit._source }));
-      },
-    }),
-    handleRules(
-      {
-        getRules: async where => {
-          const user = await elasticsearchClient
-            .get<User>({
-              index: 'metabase_user',
-              id: where.user.id,
-            })
-            .then(hit => ({ id: hit.id, ...hit._source }));
+        return {
+          ...(params as unknown as RequestParams),
+          // variables must be an object as per the GraphQL over HTTP spec
+          variables: Object(params.variables),
+        };
+      }
 
-          if (!user.rules) return null;
+      return parseRequestParams(req);
+    },
+  })
+);
 
-          const results = [];
-
-          // get the applications rules
-          for await (const hit of scrollSearch<Omit<Rule, 'id'>>(
-            elasticsearchClient,
-            {
-              index: 'metabase_rule',
-              query: {
-                match: {
-                  applicationId: where.application.id,
-                },
-              },
-            }
-          )) {
-            // return the application rules in the user rules array
-            if (user.rules.some(r => r == hit.id)) {
-              results.push({ id: hit.id, ...hit._source });
-            }
-          }
-
-          return results.length ? results : null;
-        },
-      },
-      { id: 'meta' }
-    ),
-  ],
-  loaderCallback: () => ({}),
-  requireToken: true,
-  schema: buildSubgraphSchema(schema),
-});
+app.listen({ port: 4000 });
+console.log('Listening to port 4000');
