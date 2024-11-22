@@ -60,19 +60,26 @@ export async function createRepository<
     return statusCode == 200;
   };
 
-  const get = async (id: string, partition?: string) => {
+  const get = async (
+    id: string,
+    partition?: string
+  ): Promise<T | undefined> => {
     const { resource: existing } = await container
       .item(id, partition || id)
       .read<T>();
     return existing;
   };
 
-  const getAll = async () => {
+  const getAll = async (
+    filter?: (value: T, index: number, array: Array<T>) => boolean
+  ) => {
     const results = new Array<T>();
     const iter = container.items.readAll<T>().getAsyncIterator();
 
     for await (const { resources } of iter) {
-      results.push(...resources);
+      results.push(
+        ...(filter != undefined ? resources.filter(filter) : resources)
+      );
     }
 
     return results;

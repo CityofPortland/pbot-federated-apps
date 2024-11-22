@@ -72,17 +72,17 @@ export const GraphQLApplicationSchema = new GraphQLSchema({
           )
             throw new Error('Unauthorized to add applications');
 
-          const hotel: Partial<Application> = {
-            created: new Date(),
-            creator: user.id,
-            updated: new Date(),
-            updater: user.id,
-            ...args.payload,
-          };
-
           return createRepository<Partial<Application>>('meta', 'application')
-            .then(repo => repo.add(hotel))
-            .then(hotel => hotel);
+            .then(repo =>
+              repo.add({
+                created: new Date(),
+                creator: user.id,
+                updated: new Date(),
+                updater: user.id,
+                ...args.payload,
+              })
+            )
+            .then(app => app);
         },
       },
       editApplication: {
@@ -114,16 +114,19 @@ export const GraphQLApplicationSchema = new GraphQLSchema({
           )
             throw new Error('Unauthorized to edit applications');
 
-          const app = {
-            updated: new Date(),
-            updater: user.id,
-            ...args.payload,
-          };
-
           return createRepository<Partial<Application>>(
             'meta',
             'application'
-          ).then(repo => repo.edit(app, args.id));
+          ).then(repo =>
+            repo.edit(
+              {
+                updated: new Date(),
+                updater: user.id,
+                ...args.payload,
+              },
+              args.id
+            )
+          );
         },
       },
     },
