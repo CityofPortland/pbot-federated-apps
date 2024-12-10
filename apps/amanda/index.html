@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/3.46/esri/css/esri.css"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        padding: 0;
+      }
+    </style>
+
+    <script>
+      var dojoConfig = {
+        has: {
+          'esri-featurelayer-webgl': 1,
+        },
+      };
+    </script>
+
+    <script src="/bluebird.js"></script>
+    <script src="https://js.arcgis.com/3.46/"></script>
+    <script src="/amanda-gis.js"></script>
+  </head>
+  <body>
+    <div id="app" class="claro"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

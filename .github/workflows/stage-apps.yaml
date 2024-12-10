@@ -17,6 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - app: amanda
+            directory: apps/amanda
+            registry: pbotapps
+            repository: federation/app/amanda
           - app: bus-reservation
             directory: apps/bus-reservation
             registry: pbotapps
@@ -88,6 +92,28 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - app: amanda
+            directory: apps/amanda
+            repository: federation/app/amanda
+            cluster-name: pbotapps-kube-1
+            cluster-rg: pbotapps-kube-rg
+            cluster-ns: pbotapps-test
+            values: |
+              ingress:
+                enabled: true
+                annotations:
+                  nginx.ingress.kubernetes.io/rewrite-target: /$2
+                  nginx.ingress.kubernetes.io/server-snippet: |-
+                    add_header X-Robots-Tag "noindex, nofollow";
+                hosts:
+                  - host: pbotapps-test.portland.gov
+                    paths:
+                      - path: /amanda(/|$)(.*)
+                        pathType: Prefix
+                tls:
+                  - secretName: pbotapps-test-portland-gov-tls
+                    hosts:
+                      - pbotapps-test.portland.gov
           - app: bus-reservation
             directory: apps/bus-reservation
             repository: federation/app/bus-reservation
