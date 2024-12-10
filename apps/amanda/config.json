@@ -1,7 +1,0 @@
-{
-    "serviceUrl": "https://play.csdcsystems.com/axis",
-    "serviceToken":  "mG8kZXrbYQMHsADK3XHVDQieie",
-    "pushpinImage": "widgets/AmandaGIS/images/map-marker-red-32.png",
-    "highlightedPushpinImage": "widgets/AmandaGIS/images/map-marker-blue-32.png",
-    "logLevel":  "DEBUG"
-}
