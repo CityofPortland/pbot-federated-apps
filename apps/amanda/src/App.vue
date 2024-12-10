@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 var map;
 require([
   'esri/map',
@@ -7,16 +7,9 @@ require([
   'esri/layers/ArcGISTiledMapServiceLayer',
   'esri/layers/FeatureLayer',
   'esri/SpatialReference',
-], function (
-  Map,
-  Basemap,
-  Extent,
-  TileLayer,
-  FeatureLayer,
-  SpatialReference,
-) {
+], function (Map, Basemap, Extent, TileLayer, FeatureLayer, SpatialReference) {
   const layers = [
-    'https://www.portlandmaps.com/arcgis/rest/services/Public/Basemap_Color_Complete/MapServer'
+    'https://www.portlandmaps.com/arcgis/rest/services/Public/Basemap_Color_Complete/MapServer',
   ].map(url => new TileLayer(url));
 
   map = new Map('map', {
@@ -33,14 +26,18 @@ require([
     zoom: 13,
   });
 
-  map.addLayer(new FeatureLayer('https://www.portlandmaps.com/arcgis/rest/services/Public/BDS_Property/FeatureServer/0'))
+  map.addLayer(
+    new FeatureLayer(
+      'https://www.portlandmaps.com/arcgis/rest/services/Public/BDS_Property/FeatureServer/0'
+    )
+  );
 
-  amanda.initialize(map, {
-    "serviceUrl": "https://play.csdcsystems.com/axis",
-    "serviceToken": "mG8kZXrbYQMHsADK3XHVDQieie",
-    "pushpinImage": "widgets/AmandaGIS/images/map-marker-red-32.png",
-    "highlightedPushpinImage": "widgets/AmandaGIS/images/map-marker-blue-32.png",
-    "logLevel": "DEBUG"
+  window.amanda.initialize(map, {
+    serviceUrl: import.meta.env.AMANDA_SERVICE_URL,
+    serviceToken: import.meta.env.AMANDA_SERVICE_TOKEN,
+    pushpinImage: 'images/map-marker-red-32.png',
+    highlightedPushpinImage: 'images/map-marker-blue-32.png',
+    logLevel: 'DEBUG',
   });
 });
 </script>
