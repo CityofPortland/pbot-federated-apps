@@ -138,7 +138,7 @@ const pageSize = computed(
 );
 
 const pageLength = computed(() => [
-  ...Array(Math.floor(signs.value.length / pageSize.value + 1)).keys(),
+  ...Array(Math.ceil(signs.value.length / pageSize.value)).keys(),
 ]);
 
 const getPage = () => {
