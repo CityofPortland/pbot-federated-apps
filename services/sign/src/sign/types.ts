@@ -139,7 +139,7 @@ const signFields = ({ required }: { required: boolean }) => {
     },
     color: { type: new GraphQLList(GraphQLString) },
     comment: { type: GraphQLString },
-    height: { type: required ? new GraphQLNonNull(GraphQLInt) : GraphQLInt },
+    height: { type: GraphQLInt },
     image: { type: GraphQLSignImageType },
     legend: {
       type: required ? new GraphQLNonNull(GraphQLString) : GraphQLString,
@@ -152,7 +152,7 @@ const signFields = ({ required }: { required: boolean }) => {
     source: { type: GraphQLString },
     status: { type: GraphQLSignStatusType },
     type: { type: new GraphQLList(GraphQLSignTypeType) },
-    width: { type: required ? new GraphQLNonNull(GraphQLInt) : GraphQLInt },
+    width: { type: GraphQLInt },
   };
 };
 
