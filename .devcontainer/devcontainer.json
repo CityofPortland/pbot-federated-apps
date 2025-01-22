@@ -4,7 +4,7 @@
   "name": "",
   "dockerComposeFile": "docker-compose.yml",
   "service": "dev",
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/home/node/pbot-federated-apps",
   "shutdownAction": "stopCompose",
   "customizations": {
     "vscode": {
@@ -16,13 +16,6 @@
           },
           "zsh": {
             "path": "zsh"
-          },
-          "fish": {
-            "path": "fish"
-          },
-          "tmux": {
-            "path": "tmux",
-            "icon": "terminal-tmux"
           },
           "pwsh": {
             "path": "pwsh",
