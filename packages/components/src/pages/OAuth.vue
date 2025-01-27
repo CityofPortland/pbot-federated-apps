@@ -25,7 +25,7 @@
 <script lang="ts">
 import { useAuth } from '@pbotapps/authorization';
 import axios from 'axios';
-import { defineComponent, onMounted, ref, type Ref } from 'vue';
+import { defineComponent, onMounted, ref, } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import Message from '../components/message/Message.vue';
@@ -35,10 +35,10 @@ export default defineComponent({
   name: 'OAuth',
   components: { Message, Spinner },
   setup() {
-    const loading = ref(true),
-      error: Ref<unknown | undefined> = ref(undefined);
+    const error = ref<string>();
+    const loading = ref(true);
 
-    const { authority, clientId, route, findRequest, setToken } =
+    const { authority, clientId, route, findRequest, getToken, removeRequest, setToken } =
       useAuth({
         clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
         tenantId: import.meta.env.VITE_AZURE_TENANT_ID,
@@ -47,7 +47,7 @@ export default defineComponent({
     const router = useRouter();
 
     onMounted(async () => {
-      const { code, state } = query;
+      const { code, error: error_code, error_description, state } = query;
       const params = new URLSearchParams();
 
       const request = findRequest(state as string);
@@ -56,6 +56,24 @@ export default defineComponent({
         error.value =
           'Could not find a corresponding request for this callback';
         return;
+      }
+
+      if (error_code !== undefined) {
+        if (error_code == "login_required") {
+          error.value = "You must interactively log in, redirecting to login portal again..."
+          // Re auth with Azure and make user interact
+
+          removeRequest(state as string);
+
+          await getToken(
+            request.scopes,
+            'select_account',
+            `${window.location.origin}${router.resolve({ name: 'OAuthCallback' }).href}`
+          );
+          return;
+        } else {
+          error.value = error_description as string;
+        }
       }
 
       params.append('client_id', clientId);
