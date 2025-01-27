@@ -24,6 +24,7 @@ export type AuthContext = {
     redirect_uri?: string
   ) => Promise<string | undefined>;
   redirect(request: AuthRequest, callback: (url: string) => void): void;
+  removeRequest(hash: string): void;
   setToken: (
     scopes: Array<string>,
     accessToken: string,
@@ -89,6 +90,10 @@ export function useAuth({
         } else return false;
       });
 
+  const removeRequest = (hash: string) =>
+    (requests.value = requests.value.filter(
+      r => generateScopeHash(r.scopes) != hash
+    ));
   /**
    * Method called when a token has been retrieved.
    * Clears requests that this token satisifies, modifies the token store, then resolves the next request.
@@ -226,6 +231,7 @@ export function useAuth({
     findRequest,
     getToken,
     redirect,
+    removeRequest,
     setToken,
   };
 }
