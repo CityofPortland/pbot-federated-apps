@@ -17,19 +17,19 @@ onMounted(async () => {
   const res = await query<{ applications: Array<Application> }>({
     operation: `
       query Query {
-        applications(input: { _id:"${currentRoute.value.params.id}" }){
-            _id
+        application(id:"${currentRoute.value.params.id}"){
+            id
             name
             description
             rules {
-              _id
+              id
               subject
               action
               conditions
               fields
               inverted
               users {
-                _id
+                id
               }
             }
         }
@@ -40,7 +40,7 @@ onMounted(async () => {
   });
 
   if (res.data) {
-    application.value = res.data.applications[0];
+    application.value = res.data.application;
   }
 });
 </script>
