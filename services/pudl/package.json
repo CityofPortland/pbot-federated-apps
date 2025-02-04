@@ -30,7 +30,7 @@
     "@apollo/server": "^4.11.2",
     "@apollo/subgraph": "^2.9.3",
     "@casl/ability": "^5.4.4",
-    "@graphql-tools/schema": "^8.5.1",
+    "@graphql-tools/schema": "^9.0.19",
     "@pbotapps/graphql": "workspace:^",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
