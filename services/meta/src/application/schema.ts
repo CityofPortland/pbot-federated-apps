@@ -13,6 +13,8 @@ import {
   GraphQLApplicationEditInputType,
   GraphQLApplicationType,
   Application,
+  ApplicationAddInput,
+  ApplicationEditInput,
 } from './types.js';
 
 export const GraphQLApplicationSchema = new GraphQLSchema({
@@ -20,19 +22,23 @@ export const GraphQLApplicationSchema = new GraphQLSchema({
     name: 'Query',
     fields() {
       return {
+        application: {
+          type: GraphQLApplicationType,
+          args: {
+            id: { type: new GraphQLNonNull(GraphQLID) },
+          },
+          async resolve(_parent, { id }: { id: string }) {
+            const repo = await createRepository<Application>(
+              'meta',
+              'application'
+            );
+
+            return repo.get(id);
+          },
+        },
         applications: {
           type: new GraphQLList(GraphQLApplicationType),
-          async resolve(_parent, _args, { rules }: Context) {
-            if (
-              !rules ||
-              !rules.some(
-                rule =>
-                  rule.subject == 'application' &&
-                  ['add', 'edit', 'read'].includes(rule.action)
-              )
-            )
-              throw new Error('Unauthorized to list appliations');
-
+          async resolve() {
             const repo = await createRepository<Application>(
               'meta',
               'application'
@@ -56,7 +62,7 @@ export const GraphQLApplicationSchema = new GraphQLSchema({
         },
         async resolve(
           _,
-          args: { payload: Pick<Application, 'name' | 'description'> },
+          args: { payload: ApplicationAddInput },
           { user, rules }: Context
         ) {
           if (!user) {
@@ -72,17 +78,31 @@ export const GraphQLApplicationSchema = new GraphQLSchema({
           )
             throw new Error('Unauthorized to add applications');
 
-          return createRepository<Partial<Application>>('meta', 'application')
-            .then(repo =>
-              repo.add({
-                created: new Date(),
-                creator: user.id,
-                updated: new Date(),
-                updater: user.id,
-                ...args.payload,
-              })
-            )
-            .then(app => app);
+          const repo = await createRepository<Partial<Application>>(
+            'meta',
+            'application'
+          );
+
+          const existing = await repo.query(
+            'select a.id from a where a.name = @name',
+            [{ name: '@name', value: args.payload.name }]
+          );
+
+          if (existing.length > 0) {
+            throw new Error(
+              `An application with the name ${args.payload.name} already exists!`
+            );
+          }
+
+          const hotel: Partial<Application> = {
+            created: new Date(),
+            creator: user.id,
+            updated: new Date(),
+            updater: user.id,
+            ...args.payload,
+          };
+
+          return repo.add(hotel);
         },
       },
       editApplication: {
@@ -97,7 +117,7 @@ export const GraphQLApplicationSchema = new GraphQLSchema({
           _,
           args: {
             id: string;
-            payload: Pick<Application, 'description' | 'name'>;
+            payload: ApplicationEditInput;
           },
           { user, rules }: Context
         ) {

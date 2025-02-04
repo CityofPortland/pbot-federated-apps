@@ -1,3 +1,4 @@
+import { createRepository } from '@pbotapps/cosmos';
 import {
   GraphQLInputObjectType,
   GraphQLList,
@@ -7,13 +8,16 @@ import {
 } from 'graphql';
 
 import { Base, baseFields } from '../base/types.js';
-import { createRepository } from '@pbotapps/cosmos';
+import { GraphQLRuleType } from '../rule/types.js';
 
 export type Application = Base & {
   description: string;
   name: string;
   slug: string;
 };
+
+export type ApplicationAddInput = Pick<Application, 'description' | 'name'>;
+export type ApplicationEditInput = Partial<ApplicationAddInput>;
 
 export const GraphQLApplicationType = new GraphQLObjectType<Application>({
   name: 'Application',
@@ -31,12 +35,12 @@ export const GraphQLApplicationType = new GraphQLObjectType<Application>({
         type: new GraphQLNonNull(GraphQLString),
       },
       rules: {
-        type: new GraphQLList(GraphQLString),
+        type: new GraphQLList(GraphQLRuleType),
         resolve: async (app: Application) => {
-          const repo = await createRepository('meta', 'rules');
+          const repo = await createRepository('meta', 'rule');
           const rules = await repo.query(
-            'select * from rules a where a.id = @id',
-            [{ name: 'id', value: app.id }]
+            'select * from rules a where a.applicationId = @id',
+            [{ name: '@id', value: app.id }]
           );
           return rules;
         },

@@ -8,13 +8,13 @@ import {
   GraphQLSchema,
 } from 'graphql';
 
-import { getRules } from './repository.js';
 import {
   GraphQLRuleAddInputType,
   GraphQLRuleEditInputType,
   GraphQLRuleType,
   Rule,
-  RuleInput,
+  RuleAddInput,
+  RuleEditInput,
 } from './types.js';
 
 export const GraphQLRuleSchema = new GraphQLSchema({
@@ -22,6 +22,17 @@ export const GraphQLRuleSchema = new GraphQLSchema({
     name: 'Query',
     fields() {
       return {
+        rule: {
+          type: GraphQLRuleType,
+          args: {
+            id: { type: new GraphQLNonNull(GraphQLID) },
+          },
+          async resolve(_, { id }: { id: string }) {
+            const repo = await createRepository<Rule>('meta', 'rule');
+
+            return repo.get(id);
+          },
+        },
         rules: {
           type: new GraphQLList(GraphQLRuleType),
           args: {
@@ -29,40 +40,27 @@ export const GraphQLRuleSchema = new GraphQLSchema({
           },
           async resolve(
             _parent,
-            args: { applicationId: string },
+            { applicationId }: { applicationId: string },
             { rules }: Context
           ) {
-            rules = rules.filter(rule => rule.subject == 'rule');
-
             if (
-              rules.length > 0 ||
-              !rules.some(rule => ['add', 'edit', 'read'].includes(rule.action))
+              !rules ||
+              !rules.some(
+                rule =>
+                  rule.subject == 'rule' &&
+                  ['add', 'edit', 'read'].includes(rule.action)
+              )
             )
               throw new Error('Unauthorized to list appliations');
 
-            const allowedApplications = rules.reduce(
-              (acc, curr) => acc.add(curr.applicationId),
-              new Set<string>()
-            );
-
             const repo = await createRepository<Rule>('meta', 'rule');
 
-            return repo
-              .getAll()
-              .then(rules =>
-                rules.filter(rule =>
-                  args.applicationId
-                    ? rule.applicationId == args.applicationId
-                    : true
+            return applicationId != undefined
+              ? repo.query(
+                  'select * from rules a where a.applicationId = @id',
+                  [{ name: '@id', value: applicationId }]
                 )
-              )
-              .then(rules =>
-                rules.filter(rule =>
-                  allowedApplications.size > 0
-                    ? allowedApplications.has(rule.applicationId)
-                    : true
-                )
-              );
+              : repo.getAll();
           },
         },
       };
@@ -74,13 +72,20 @@ export const GraphQLRuleSchema = new GraphQLSchema({
       addRule: {
         type: GraphQLRuleType,
         args: {
+          applicationId: { type: new GraphQLNonNull(GraphQLID) },
           payload: {
             type: new GraphQLNonNull(GraphQLRuleAddInputType),
           },
         },
         async resolve(
           _,
-          args: { payload: RuleInput<unknown> },
+          {
+            applicationId,
+            payload,
+          }: {
+            applicationId: string;
+            payload: RuleAddInput;
+          },
           { user, rules }: Context
         ) {
           if (!user) {
@@ -89,21 +94,29 @@ export const GraphQLRuleSchema = new GraphQLSchema({
 
           if (
             !rules ||
-            !rules.some(
-              rule =>
-                rule.subject == 'application' && ['add'].includes(rule.action)
-            )
+            !rules
+              .filter(
+                rule =>
+                  rule.application == undefined ||
+                  rule.application?.id == applicationId
+              )
+              .some(
+                rule => rule.subject == 'rule' && ['add'].includes(rule.action)
+              )
           )
-            throw new Error('Unauthorized to add applications');
+            throw new Error('Unauthorized to add rules');
+
+          const rule: Partial<Rule> = {
+            created: new Date(),
+            creator: user.id,
+            updated: new Date(),
+            updater: user.id,
+            applicationId,
+            ...payload,
+          };
 
           return createRepository<Partial<Rule>>('meta', 'rule').then(repo =>
-            repo.add({
-              created: new Date(),
-              creator: user.id,
-              updated: new Date(),
-              updater: user.id,
-              ...args.payload,
-            })
+            repo.add(rule)
           );
         },
       },
@@ -119,33 +132,30 @@ export const GraphQLRuleSchema = new GraphQLSchema({
           _,
           args: {
             id: string;
-            payload: RuleInput<unknown>;
+            payload: RuleEditInput;
           },
           { user, rules }: Context
         ) {
           if (!user) {
-            throw new Error('Must be logged in to edit applications');
+            throw new Error('Must be logged in to edit rules');
           }
 
           if (
             !rules ||
             !rules.some(
-              rule =>
-                rule.subject == 'application' && ['edit'].includes(rule.action)
+              rule => rule.subject == 'rule' && ['edit'].includes(rule.action)
             )
           )
-            throw new Error('Unauthorized to edit applications');
+            throw new Error('Unauthorized to edit rules');
 
-          return createRepository<Partial<Rule>>('meta', 'application').then(
-            repo =>
-              repo.edit(
-                {
-                  updated: new Date(),
-                  updater: user.id,
-                  ...args.payload,
-                },
-                args.id
-              )
+          const app = {
+            updated: new Date(),
+            updater: user.id,
+            ...args.payload,
+          };
+
+          return createRepository<Partial<Rule>>('meta', 'rule').then(repo =>
+            repo.edit(app, args.id)
           );
         },
       },

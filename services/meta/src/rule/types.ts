@@ -1,83 +1,70 @@
-import { BaseUserChangeableType } from '@pbotapps/objects';
+import { createRepository } from '@pbotapps/cosmos';
 import {
   GraphQLBoolean,
-  GraphQLID,
   GraphQLInputObjectType,
+  GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { GraphQLJSONObject } from 'graphql-scalars';
 
-import { getApplication } from '../application/repository.js';
+import { Base, baseFields } from '../base/types.js';
+import { GraphQLUserType } from '../user/types.js';
 import { GraphQLApplicationType } from '../application/types.js';
-import { baseFields } from '../base/types.js';
 
-export type Rule<T = unknown> = BaseUserChangeableType & {
-  /**
-   * Whether the rule is to be considered 'cannot' instead of 'can'.
-   */
+export type Rule = Base & {
+  applicationId: string;
   inverted: boolean;
-
-  /**
-   * What action the user can or cannot perform.
-   */
   action: string;
-
-  /**
-   * What object this rule applies to.
-   */
   subject: string;
-
-  /**
-   * Template to evaluate on the context to determine if this rule applies.
-   */
-  conditions?: Record<keyof T, string>;
-
-  /**
-   * Whether this rule is restricted to any fields.
-   */
-  fields?: Record<keyof T, boolean>;
-
-  applicationId?: string;
+  conditions: object;
+  fields: object;
 };
 
-export type RuleInput<T> = Omit<Rule<T>, keyof BaseUserChangeableType>;
+export type RuleAddInput = Pick<
+  Rule,
+  'inverted' | 'action' | 'subject' | 'conditions' | 'fields'
+>;
+export type RuleEditInput = Partial<RuleAddInput>;
 
-const ruleFields = ({ required }: { required: boolean }) => {
-  return {
-    applicationId: {
-      type: required ? new GraphQLNonNull(GraphQLID) : GraphQLID,
-    },
-    inverted: {
-      type: required ? new GraphQLNonNull(GraphQLBoolean) : GraphQLBoolean,
-    },
-    action: {
-      type: required ? new GraphQLNonNull(GraphQLString) : GraphQLString,
-    },
-    subject: {
-      type: GraphQLString,
-    },
-    conditions: {
-      type: GraphQLJSONObject,
-    },
-    fields: {
-      type: GraphQLJSONObject,
-    },
-  };
-};
-
-export const GraphQLRuleType = new GraphQLObjectType({
+export const GraphQLRuleType = new GraphQLObjectType<Rule>({
   name: 'Rule',
-  description: 'A rule applied to an application',
+  description: 'A rule for an application',
   fields() {
     return {
       ...baseFields(),
-      ...ruleFields({ required: true }),
+      inverted: {
+        type: new GraphQLNonNull(GraphQLBoolean),
+      },
+      action: {
+        type: new GraphQLNonNull(GraphQLString),
+      },
+      subject: {
+        type: new GraphQLNonNull(GraphQLString),
+      },
+      conditions: {
+        type: GraphQLString,
+      },
+      fields: {
+        type: GraphQLString,
+      },
       application: {
         type: GraphQLApplicationType,
-        resolve: async (rule: Rule) => {
-          return getApplication(rule.applicationId);
+        async resolve(rule: Rule) {
+          const repo = await createRepository('meta', 'application');
+
+          return repo.get(rule.applicationId);
+        },
+      },
+      users: {
+        type: new GraphQLList(GraphQLUserType),
+        async resolve(rule: Rule) {
+          const repo = await createRepository('meta', 'user');
+
+          return repo.query(
+            'select * from u where ARRAY_CONTAINS(u.rules, @id)',
+            [{ name: '@id', value: rule.id }]
+          );
         },
       },
     };
@@ -86,18 +73,42 @@ export const GraphQLRuleType = new GraphQLObjectType({
 
 export const GraphQLRuleAddInputType = new GraphQLInputObjectType({
   name: 'RuleAddInput',
-  fields() {
-    return {
-      ...ruleFields({ required: true }),
-    };
+  fields: {
+    inverted: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+    },
+    action: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    subject: {
+      type: new GraphQLNonNull(GraphQLString),
+    },
+    conditions: {
+      type: GraphQLString,
+    },
+    fields: {
+      type: GraphQLString,
+    },
   },
 });
 
 export const GraphQLRuleEditInputType = new GraphQLInputObjectType({
   name: 'RuleEditInput',
-  fields() {
-    return {
-      ...ruleFields({ required: false }),
-    };
+  fields: {
+    inverted: {
+      type: GraphQLBoolean,
+    },
+    action: {
+      type: GraphQLString,
+    },
+    subject: {
+      type: GraphQLString,
+    },
+    conditions: {
+      type: GraphQLString,
+    },
+    fields: {
+      type: GraphQLString,
+    },
   },
 });

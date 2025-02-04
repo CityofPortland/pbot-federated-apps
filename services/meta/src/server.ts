@@ -1,17 +1,29 @@
 import { mergeSchemas } from '@graphql-tools/schema';
-import { handleRules, handleToken } from '@pbotapps/authorization/middleware';
-import { RuleType } from '@pbotapps/authorization/rule';
+import {
+  handleRules,
+  handleToken,
+  handleUser,
+} from '@pbotapps/authorization/middleware';
+import { RuleType } from '@pbotapps/authorization';
+import { createRepository } from '@pbotapps/cosmos';
+import { BaseType } from '@pbotapps/objects';
 import cors from 'cors';
+import { config } from 'dotenv';
 import express, { Response, json } from 'express';
-import { RequestParams, parseRequestParams } from 'graphql-http';
 import { createHandler } from 'graphql-http/lib/use/express';
-import processRequest from 'graphql-upload/processRequest.mjs';
 
 import { GraphQLApplicationSchema } from './application/schema.js';
 import { GraphQLRuleSchema } from './rule/schema.js';
+import { GraphQLUserSchema } from './user/schema.js';
+import { User } from './user/types.js';
+import { Rule } from './rule/index.js';
+
+if (process.env.NODE_ENV == 'development') {
+  config();
+}
 
 const schema = mergeSchemas({
-  schemas: [GraphQLApplicationSchema, GraphQLRuleSchema],
+  schemas: [GraphQLApplicationSchema, GraphQLRuleSchema, GraphQLUserSchema],
 });
 
 // Create a express instance serving all methods on `/graphql`
@@ -22,15 +34,56 @@ app.use(
   cors(),
   json(),
   handleToken({ fail: false }),
+  handleUser({
+    getUser: async user => {
+      const repo = await createRepository<Partial<User>>('meta', 'user');
+      const existing = await repo.get(user.id);
+
+      if (existing) {
+        return existing;
+      }
+
+      return repo.add({
+        created: new Date(),
+        creator: user.id,
+        updated: new Date(),
+        updater: user.id,
+        ...user,
+        rules: [],
+      });
+    },
+  }),
   handleRules(
     {
-      getRules: async ({}) => {
-        const rules = new Array<Partial<RuleType>>();
+      getRules: async ({ user }) => {
+        const users = await createRepository<Partial<User>>('meta', 'user');
 
-        return rules;
+        const u = await users.get(user.id);
+
+        // guaranteed we have a user by this point from above
+        if (u.rules != undefined && u.rules.length > 0) {
+          const apps = await createRepository<Partial<User>>(
+            'meta',
+            'application'
+          );
+          const repo = await createRepository<Partial<RuleType & Rule>>(
+            'meta',
+            'rule'
+          );
+
+          const rules = await Promise.all(u.rules.map(r => repo.get(r)));
+
+          for (const rule of rules) {
+            rule.application = (await apps.get(rule.applicationId)) as BaseType;
+          }
+
+          return rules;
+        } else {
+          return [];
+        }
       },
     },
-    { id: 'reservation' }
+    { id: 'meta' }
   )
 );
 
@@ -60,25 +113,6 @@ app.all(
         user: req.raw['user'],
         rules: req.raw['rules'],
       };
-    },
-    async parseRequestParams(req) {
-      const contentType = req.headers['content-type'];
-
-      if (contentType && contentType.startsWith('multipart/')) {
-        const params = await processRequest(req.raw, req.context.res);
-
-        if (Array.isArray(params)) {
-          throw new Error('Batching is not supported');
-        }
-
-        return {
-          ...(params as unknown as RequestParams),
-          // variables must be an object as per the GraphQL over HTTP spec
-          variables: Object(params.variables),
-        };
-      }
-
-      return parseRequestParams(req);
     },
   })
 );
