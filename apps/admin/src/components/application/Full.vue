@@ -1,18 +1,27 @@
 <script setup lang="ts">
 import { Anchor, Box } from '@pbotapps/components';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import { Application } from '../../models/application.js';
 import Form from '../rule/Form.vue';
+import { useRuleStore } from '../../store/rule.js';
 
-defineProps({
+const props = defineProps({
   app: {
     type: Object as () => Application,
     required: true,
   },
 });
 
+const ruleStore = useRuleStore();
+
+const rules = computed(() => ruleStore.rules);
+
 const showForm = ref(false);
+
+onMounted(() => {
+  ruleStore.get(props.app);
+});
 </script>
 
 <template>
@@ -35,7 +44,7 @@ const showForm = ref(false);
           @cancel="showForm = false"
           class="my-4"
         />
-        <section v-if="app.rules && app.rules.length">
+        <section v-if="rules && rules.length">
           <table class="w-full">
             <thead>
               <Box as="tr" color="gray" variant="light">
@@ -58,7 +67,7 @@ const showForm = ref(false);
               </Box>
             </thead>
             <tbody>
-              <tr v-for="rule in app.rules" :key="rule._id">
+              <tr v-for="rule in rules" :key="rule.id">
                 <td class="border-b p-4">
                   {{ rule.inverted ? 'cannot' : 'can' }}
                 </td>
@@ -76,7 +85,7 @@ const showForm = ref(false);
                 </td>
                 <td class="border-b p-4">
                   <router-link
-                    :to="{ name: 'Rule', params: { id: rule._id } }"
+                    :to="{ name: 'Rule', params: { id: rule.id } }"
                     custom
                     v-slot="{ href, navigate }"
                   >
