@@ -97,8 +97,8 @@ export const GraphQLRuleSchema = new GraphQLSchema({
             !rules
               .filter(
                 rule =>
-                  rule.application == undefined ||
-                  rule.application?.id == applicationId
+                  rule.applicationId == undefined ||
+                  rule.applicationId == applicationId
               )
               .some(
                 rule => rule.subject == 'rule' && ['add'].includes(rule.action)

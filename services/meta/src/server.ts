@@ -6,7 +6,6 @@ import {
 } from '@pbotapps/authorization/middleware';
 import { RuleType } from '@pbotapps/authorization';
 import { createRepository } from '@pbotapps/cosmos';
-import { BaseType } from '@pbotapps/objects';
 import cors from 'cors';
 import { config } from 'dotenv';
 import express, { Response, json } from 'express';
@@ -62,20 +61,12 @@ app.use(
 
         // guaranteed we have a user by this point from above
         if (u.rules != undefined && u.rules.length > 0) {
-          const apps = await createRepository<Partial<User>>(
-            'meta',
-            'application'
-          );
           const repo = await createRepository<Partial<RuleType & Rule>>(
             'meta',
             'rule'
           );
 
           const rules = await Promise.all(u.rules.map(r => repo.get(r)));
-
-          for (const rule of rules) {
-            rule.application = (await apps.get(rule.applicationId)) as BaseType;
-          }
 
           return rules;
         } else {

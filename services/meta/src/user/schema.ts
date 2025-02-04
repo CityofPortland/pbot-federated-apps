@@ -108,8 +108,8 @@ export const GraphQLUserSchema = new GraphQLSchema({
             !userRules
               .filter(
                 r =>
-                  r.application == undefined ||
-                  r.application?.id == rule.applicationId
+                  r.applicationId == undefined ||
+                  r.applicationId == rule.applicationId
               )
               .some(r => r.subject == 'rule' && ['assign'].includes(r.action))
           )
