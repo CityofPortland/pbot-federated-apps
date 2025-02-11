@@ -279,7 +279,7 @@ jobs:
               tag: ${{ github.sha }}
             containerPort: 4000
             probePath: /probe
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.service }}-values
           path: values.yaml
