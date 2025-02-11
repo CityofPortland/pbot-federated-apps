@@ -13,6 +13,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - app: amanda
+            directory: apps/amanda
+            registry: pbotapps
+            repository: federation/app/amanda
           - app: bus-reservation
             directory: apps/bus-reservation
             registry: pbotapps
