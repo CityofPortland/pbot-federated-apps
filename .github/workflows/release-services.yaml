@@ -125,8 +125,9 @@ jobs:
               ingress:
                 enabled: true
                 annotations:
-                  nginx.ingress.kubernetes.io/use-regex: "true"
+                  nginx.ingress.kubernetes.io/proxy-body-size: 8m
                   nginx.ingress.kubernetes.io/rewrite-target: /
+                  nginx.ingress.kubernetes.io/use-regex: "true"
                 hosts:
                   - host: pbotapps.portland.gov
                     paths:
