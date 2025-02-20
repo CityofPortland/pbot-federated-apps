@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/sign",
-  "version": "1.4.14",
+  "version": "1.4.15",
   "description": "Catalog application for managing metadata of objects in the Federation",
   "main": "dist/index.js",
   "module": "dist/index",

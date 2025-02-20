@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/support",
-  "version": "1.4.14",
+  "version": "1.4.15",
   "description": "Service to serve markdown documents for technical support",
   "main": "dist/index.js",
   "module": "dist/index",
