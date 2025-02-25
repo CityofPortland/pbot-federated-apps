@@ -262,7 +262,7 @@ var amanda;
             .perform()
             .then(function (results) {
               var features = [];
-              if (results && results.features) {
+              if (results && results.features && results.features.length > 0) {
                 results.features.forEach(function (graphic) {
                   var id = _this._getPropertyByName(
                     graphic.attributes,
