@@ -262,7 +262,7 @@ var amanda;
             .perform()
             .then(function (results) {
               var features = [];
-              if (results && results.features && results.features.length > 0) {
+              if (results && results.features) {
                 results.features.forEach(function (graphic) {
                   var id = _this._getPropertyByName(
                     graphic.attributes,
@@ -1564,18 +1564,18 @@ var amanda;
           return null;
         }
 
-        const MAX_RETRIES = 10;
-        var retries = 0;
+        const MAX_TRIES = 10;
+
+        let tries = 0;
 
         while (this.layers.length === 0) {
-          // wait for layers to be populated
-          retries++;
+          tries++;
 
-          if (retries > MAX_RETRIES) {
+          if (tries > MAX_TRIES) {
             break;
           }
 
-          await new Promise(r => setTimeout(r, 1000));
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         for (var i = 0; i < this.layers.length; i++) {
