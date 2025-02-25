@@ -208,7 +208,7 @@ var amanda;
        * - `features`: The ID or IDs.
        * @params payload The commands {@link Payload}.
        */
-      EsriCommandImpl.prototype.select = function (payload) {
+      EsriCommandImpl.prototype.select = async function (payload) {
         var _this = this;
         var layerName = payload.layerName;
         var fieldName = payload.fieldName;
@@ -220,7 +220,7 @@ var amanda;
           );
           return;
         }
-        var layer = this.app.map.getLayerByName(layerName);
+        var layer = await this.app.map.getLayerByName(layerName);
         if (!layer) {
           this.app.trace.log(
             'Can not find a layer for {0}.'.format(layerName),
@@ -331,11 +331,11 @@ var amanda;
        * - `bufferUnit`: The unit to buffer by.
        * @params payload The commands {@link Payload}.
        */
-      EsriCommandImpl.prototype.setMapMode = function (payload) {
+      EsriCommandImpl.prototype.setMapMode = async function (payload) {
         var _this = this;
         var layerName = payload.layerName;
         var selectionType = payload.mapMode;
-        var layer = this.app.map.getLayerByName(payload.layerName);
+        var layer = await this.app.map.getLayerByName(payload.layerName);
         var fieldName = payload.fieldName;
         if (
           selectionType.toUpperCase() === amanda.map.SelectionType.defaultSelect
@@ -411,12 +411,12 @@ var amanda;
        * - `infoContent`: The content.
        * @params payload The commands {@link Payload}.
        */
-      EsriCommandImpl.prototype.activate = function (payload) {
+      EsriCommandImpl.prototype.activate = async function (payload) {
         var _this = this;
         var layerName = payload.layerName;
         var feature = payload.feature;
         var fieldName = payload.fieldName;
-        var layer = this.app.map.getLayerByName(layerName);
+        var layer = await this.app.map.getLayerByName(layerName);
         var stringType = amanda.utils.QueryHelper.isFieldStringType(
           layer,
           fieldName
@@ -487,12 +487,12 @@ var amanda;
        * - `feature`: The ID of the feature.
        * @params payload The commands {@link Payload}.
        */
-      EsriCommandImpl.prototype.highlight = function (payload) {
+      EsriCommandImpl.prototype.highlight = async function (payload) {
         var _this = this;
         var layerName = payload.layerName;
         var feature = payload.feature;
         var fieldName = payload.fieldName;
-        var layer = this.app.map.getLayerByName(layerName);
+        var layer = await this.app.map.getLayerByName(layerName);
         var stringType = amanda.utils.QueryHelper.isFieldStringType(
           layer,
           fieldName
@@ -555,14 +555,14 @@ var amanda;
        * - `bufferUnit`: The unit to buffer by. Default is 'meters'.
        * @params payload The commands {@link Payload}.
        */
-      EsriCommandImpl.prototype.bufferSearch = function (payload) {
+      EsriCommandImpl.prototype.bufferSearch = async function (payload) {
         var _this = this;
         var sourceLayerName = payload.sourceLayerName;
         var sourceFieldName = payload.sourceFieldName;
-        var sourceLayer = this.app.map.getLayerByName(sourceLayerName);
+        var sourceLayer = await this.app.map.getLayerByName(sourceLayerName);
         var layerName = payload.layerName;
         var fieldName = payload.fieldName;
-        var layer = this.app.map.getLayerByName(layerName);
+        var layer = await this.app.map.getLayerByName(layerName);
         var features = payload.features;
         var distance = payload.distance;
         var stringType = amanda.utils.QueryHelper.isFieldStringType(
@@ -701,10 +701,10 @@ var amanda;
        * - `visibility`: 'True' for visible, 'False' for invisible.
        * @params payload The commands {@link Payload}.
        */
-      EsriCommandImpl.prototype.setLayerVisibility = function (payload) {
+      EsriCommandImpl.prototype.setLayerVisibility = async function (payload) {
         var layerName = payload.layerName;
         var visibility = payload.visibility;
-        var layer = this.app.map.getLayerByName(layerName);
+        var layer = await this.app.map.getLayerByName(layerName);
         var changed = false;
         if (layer) {
           changed = layer.setVisibility(visibility);
@@ -1558,22 +1558,37 @@ var amanda;
        * @param name The name of the layer to find.
        * @returns The found {@link ErsiLayer}.
        */
-      EsriMap.prototype.getLayerByName = function (name) {
+      EsriMap.prototype.getLayerByName = async function (name) {
         var layer = null;
         if (!name) {
           return null;
-        } else {
-          for (var i = 0; i < this.layers.length; i++) {
-            if (
-              name.toLowerCase().trim() ===
-              this.layers[i].name.toLowerCase().trim()
-            ) {
-              //found the layer
-              layer = this.layers[i];
-              break;
-            }
+        }
+
+        const MAX_RETRIES = 10;
+        var retries = 0;
+
+        while (this.layers.length === 0) {
+          // wait for layers to be populated
+          retries++;
+
+          if (retries > MAX_RETRIES) {
+            break;
+          }
+
+          await new Promise(r => setTimeout(r, 1000));
+        }
+
+        for (var i = 0; i < this.layers.length; i++) {
+          if (
+            name.toLowerCase().trim() ===
+            this.layers[i].name.toLowerCase().trim()
+          ) {
+            //found the layer
+            layer = this.layers[i];
+            break;
           }
         }
+
         // none found
         if (!layer) {
           this.app.trace.log(
