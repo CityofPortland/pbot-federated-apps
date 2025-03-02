@@ -1,7 +1,7 @@
 export type Entity = {
-  _id?: string;
-  _created?: Date;
-  _createdBy?: string;
-  _changed?: Date;
-  _changedBy?: string;
+  id?: string;
+  created?: Date;
+  creator?: string;
+  updated?: Date;
+  updater?: string;
 };

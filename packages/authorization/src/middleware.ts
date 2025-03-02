@@ -35,7 +35,7 @@ export const handleToken =
           }
         );
         req['token'] = payload;
-      } catch {
+      } catch (err) {
         res.status(401);
         res.send({
           error: 'UNAUTHORIZED',
