@@ -10,13 +10,35 @@ This page provides guidance on submitting different types of requests to ensure 
 
 ### Incident
 
-An incident is when something is not working as expected. This could include issues like broken systems, unavailable services, or errors preventing you from completing your work. If you are experiencing an incident, please let us know so we can resolve it as quickly as possible.
+An incident refers to an unplanned disruption or degradation of an IT service, such as a system outage or hardware failure, that requires immediate attention to restore normal operations.
+
+**Submit an incident if:**
+
+- Something is broken or malfunctioning
+- You need immediate assistance
+
+**Target Response Time:**
+
+Within 3 business days of receiving the ticket.
 
 <a href="https://portland.service-now.com/sp?id=sc_cat_item&sys_id=baaae3c7932b9210a4a03eccebba1064" class="incident-request inline-flex rounded-md border border-red-800 px-4 py-2 font-semibold text-red-800 hover:bg-red-800 hover:text-red-100">Report an Incident</a>
 
 ### Request
 
-A request is when you need something new, such as access to a system, the installation of software, or initiating a new project. These types of requests help us ensure you have the tools and resources you need to succeed.
+A request is typically a planned action or inquiry, such as requesting software access, initiating an application improvement project, or gathering information about available services. Requests are proactive and generally less urgent than incidents. If a request has an estimated completion time greater than a couple of hours, it will be transitioned to the PBOT Tech Services project tracking platform, and you will be notified.
+
+**Submit a request if:**
+
+- You need access to an application or need something installed
+- Initiate a new technology enhancement or project request
+- Initiate a new software request
+- Initiate software procurement/renewal
+- You want to schedule training for a software
+- You’ve noticed a technology issue, but it isn’t critical
+
+**Target Response Time:**
+
+Within 7 business days of receiving the ticket.
 
 <a href="https://portland.service-now.com/sp?id=sc_cat_item&sys_id=7036cb9793635210f12f7844fbba1098&sysparm_category=32544a0293bfda50a4a03eccebba1021" class="new-request inline-flex rounded-md border border-blue-800 px-4 py-2 font-semibold text-blue-800 hover:bg-blue-800 hover:text-blue-100">Submit a Request</a>
 
