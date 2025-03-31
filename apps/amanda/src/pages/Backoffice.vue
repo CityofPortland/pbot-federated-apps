@@ -28,7 +28,19 @@ require([
 
   map.addLayer(
     new FeatureLayer(
-      'https://www.portlandmaps.com/arcgis/rest/services/Public/BDS_Property/FeatureServer/0'
+      'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/0'
+    )
+  );
+
+  map.addLayer(
+    new FeatureLayer(
+      'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/1'
+    )
+  );
+
+  map.addLayer(
+    new FeatureLayer(
+      'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/2'
     )
   );
 
