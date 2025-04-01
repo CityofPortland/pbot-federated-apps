@@ -28,52 +28,55 @@ require([
     zoom: 13,
   });
 
-  const featureLayer = new FeatureLayer(
-      'https://www.portlandmaps.com/arcgis/rest/services/Public/BDS_Property/FeatureServer/0'
-    );
-  map.addLayer(
-    featureLayer
-  );
+  const featureLayers = [
+    "https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/0",
+    "https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/1",
+    "https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/2",
+  ].map(url => new FeatureLayer(url));
 
-        var circle;
+  featureLayers.forEach(layer => {
+    map.addLayer(layer);
+  });
 
-        // When the map is clicked create a buffer around the click point of the specified distance
-        map.on("click", function(evt){
-          circle = new Circle({
-            center: evt.mapPoint,
-            geodesic: true,
-            radius: 10,
-            radiusUnit: "esriFeet"
-          });
+  // When the map is clicked create a buffer around the click point of the specified distance
+  map.on("click", function(evt){
+    const circle = new Circle({
+      center: evt.mapPoint,
+      geodesic: true,
+      radius: 10,
+      radiusUnit: "esriFeet"
+    });
 
-          var query = new Query();
-          query.geometry = circle.getExtent();
-          // Use a fast bounding box query. It will only go to the server if bounding box is outside of the visible map.
-          featureLayer.queryFeatures(query, selectInBuffer);
-        });
+    const query = new Query();
 
-        function selectInBuffer(response){
-          var feature = response.features[0];
+    query.geometry = circle.getExtent();
 
-          window.scrollBy(0, 700);
-          const pinInputContainer = window.parent.document.getElementsByClassName("gismap-pin-input")[0];
-          if (pinInputContainer) {
-            const inputElement = pinInputContainer.getElementsByTagName("INPUT")[0];
-            if (inputElement) {
-              inputElement.value = feature.attrs.PROPGISID1 + '-ADD';
-            } else {
-              console.error("Input element not found");
-            }
-          } else {
-            console.error("Pin input container not found");
-          }
-          const pinButton = window.parent.document.getElementsByClassName("gismap-pin-button")[0];
-          if (pinButton) {
-            pinButton.click();
-          } else {
-            console.error("Pin button not found");
-          }
-        }
+    // Use a fast bounding box query. It will only go to the server if bounding box is outside of the visible map.
+    featureLayers.forEach(featureLayer => featureLayer.queryFeatures(query, selectInBuffer));
+  });
+
+  function selectInBuffer(response){
+    const feature = response.features[0];
+
+    window.scrollBy(0, 700);
+    const pinInputContainer = window.parent.document.getElementsByClassName("gismap-pin-input")[0];
+    if (pinInputContainer) {
+      const inputElement = pinInputContainer.getElementsByTagName("INPUT")[0];
+      if (inputElement) {
+        inputElement.value = feature.attrs.PROPGISID1 + '-ADD';
+      } else {
+        console.error("Input element not found");
+      }
+    } else {
+      console.error("Pin input container not found");
+    }
+    const pinButton = window.parent.document.getElementsByClassName("gismap-pin-button")[0];
+    if (pinButton) {
+      pinButton.click();
+    } else {
+      console.error("Pin button not found");
+    }
+  }
 });
 </script>
 
