@@ -1,7 +1,7 @@
 {
   "name": "@pbotapps/pudl",
   "private": true,
-  "version": "1.4.15",
+  "version": "1.4.16",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",

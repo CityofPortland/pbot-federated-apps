@@ -1,7 +1,7 @@
 {
   "name": "@pbotapps/cosmos",
   "private": true,
-  "version": "1.4.15",
+  "version": "1.4.16",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
