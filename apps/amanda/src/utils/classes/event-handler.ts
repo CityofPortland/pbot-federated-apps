@@ -1,3 +1,5 @@
+import { EventType } from '../enums/event-type';
+import { LogLevel } from '../enums/log-level';
 import { AmandaApp } from './amanda-app';
 import { Payload } from './payload';
 
@@ -23,7 +25,7 @@ export class EventHandler {
       this._domain = options['domain'];
       this.app.trace.log(
         `Event handler using domain: ${this._domain}`,
-        this.app.diagnostics.LogLevel.debug
+        LogLevel.debug
       );
     }
     this.initialized = true;
@@ -35,8 +37,8 @@ export class EventHandler {
    * @param feature The id of the feature.
    */
   selectedClick(layerName: string, feature: any) {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.selectedclick;
+    const payload = new Payload();
+    payload.messageType = EventType.SelectedClick;
     payload.layerName = layerName;
     payload.feature = feature;
     this.emitEvent(payload);
@@ -46,8 +48,8 @@ export class EventHandler {
    * Fires the map ready event.
    */
   mapReady() {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.initialized;
+    const payload = new Payload();
+    payload.messageType = EventType.Initialized;
     this.emitEvent(payload);
   }
 
@@ -58,11 +60,11 @@ export class EventHandler {
    */
   featuresSelected(
     layerName: string,
-    features: any[],
+    features: string[],
     exceededTransferLimit = false
   ) {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.featuresSelected;
+    const payload = new Payload();
+    payload.messageType = EventType.FeaturesSelected;
     payload.layerName = layerName;
     payload.features = features;
     payload.exceededTransferLimit = exceededTransferLimit;
@@ -77,11 +79,11 @@ export class EventHandler {
   featuresSelectedByGeometry(
     layerName: string,
     attributes: any,
-    features: any[],
+    features: string[],
     exceededTransferLimit = false
   ) {
     const payload = new Payload();
-    payload.messageType = events.EventType.featuresSelectedByGeometry;
+    payload.messageType = EventType.FeaturesSelectedByGeometry;
     payload.layerName = layerName;
     payload.features = features;
     payload.attributes = attributes;
@@ -95,7 +97,7 @@ export class EventHandler {
    */
   mapModeChanged(mode: string) {
     const payload = new Payload();
-    payload.messageType = events.EventType.mapModeChanged;
+    payload.messageType = EventType.MapModeChanged;
     payload.mapMode = mode.toLowerCase();
     this.emitEvent(payload);
   }
@@ -104,8 +106,8 @@ export class EventHandler {
    * Fires the map extent changed event to tell AMANDA the GIS map extent is changed.
    */
   mapExtentChanged() {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.mapExtentChanged;
+    const payload = new Payload();
+    payload.messageType = EventType.MapExtentChanged;
     this.emitEvent(payload);
   }
 
@@ -114,9 +116,9 @@ export class EventHandler {
    * @param layerName The name of the layer.
    * @param feature The id of the feature.
    */
-  featureHover(layerName: string, feature: any) {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.featureHover;
+  featureHover(layerName: string, feature: string) {
+    const payload = new Payload();
+    payload.messageType = EventType.FeatureHover;
     payload.layerName = layerName;
     payload.feature = feature;
     this.emitEvent(payload);
@@ -126,9 +128,9 @@ export class EventHandler {
    * Fires the features selected event with the supplied parameters.
    * @param features The ids of the features.
    */
-  selectedFeaturesVisibleOnMap(features: any[]) {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.selectedFeaturesVisible;
+  selectedFeaturesVisibleOnMap(features: string[]) {
+    const payload = new Payload();
+    payload.messageType = EventType.SelectedFeaturesVisible;
     payload.visibleFeatures = features;
     this.emitEvent(payload);
   }
@@ -137,8 +139,8 @@ export class EventHandler {
    * Fires the deselected event.
    */
   deselected() {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.deselected;
+    const payload = new Payload();
+    payload.messageType = EventType.Deselected;
     this.emitEvent(payload);
   }
 
@@ -148,8 +150,8 @@ export class EventHandler {
    * @param features The ids of the features.
    */
   bufferSearchResults(layerName: string, features: any[]) {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.bufferSearchResults;
+    const payload = new Payload();
+    payload.messageType = EventType.BufferSearchResults;
     payload.layerName = layerName;
     payload.features = features;
     this.emitEvent(payload);
@@ -161,8 +163,8 @@ export class EventHandler {
    * @param visibility The visible state of the layer.
    */
   visibilityChanged(layerName: string, visibility: boolean) {
-    const payload = new events.Payload();
-    payload.messageType = events.EventType.visibilitySet;
+    const payload = new Payload();
+    payload.messageType = EventType.VisibilitySet;
     payload.layerName = layerName;
     payload.visibility = visibility;
     this.emitEvent(payload);
@@ -173,10 +175,10 @@ export class EventHandler {
    * @param event The {@link Payload} to pass to the browser as JSON.
    */
   emitEvent(event: any) {
-    if (!(event instanceof events.Payload)) {
+    if (!(event instanceof Payload)) {
       this.app.trace.log(
-        'Event must be of type amanda.events.Payload.',
-        amanda.diagnostics.LogLevel.error
+        'Event must be of type amanda.Payload.',
+        LogLevel.error
       );
       return;
     }
@@ -185,13 +187,18 @@ export class EventHandler {
       windowDomain = this._domain;
     }
     try {
-      top.postMessage(event.toJson(), windowDomain);
+      if (top) {
+        top.postMessage(event.toJson(), windowDomain);
+      } else {
+        this.app.trace.log('Top window is null.', LogLevel.error);
+        throw new Error('Top window is null.');
+      }
       this.app.trace.log(
-        "'{0}' was emitted from the map.".format(event.messageType),
-        amanda.diagnostics.LogLevel.debug
+        `'${event.messageType}' was emitted from the map.`,
+        LogLevel.debug
       );
     } catch (e) {
-      this.app.trace.logError('Post message failed', e);
+      this.app.trace.logError('Post message failed', e as Error);
     }
   }
 }

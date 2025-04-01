@@ -1,5 +1,10 @@
 import { CommandType } from '../enums/command-type.js';
+import { LogLevel } from '../enums/log-level.js';
 import { AmandaApp } from './amanda-app.js';
+import { Query } from './esri-query.js';
+import { GraphicHelper } from './graphic-helper.js';
+import { Payload } from './payload.js';
+import { QueryHelper } from './query-helper.js';
 
 export class EsriCommandImpl {
   private app: AmandaApp;
@@ -57,12 +62,12 @@ export class EsriCommandImpl {
     );
   }
 
-  setScale(payload) {
+  setScale(payload: Payload) {
     const scale = payload.scale;
     if (!scale) {
       this.app.trace.log(
         'Invalid payload for the scale command: Missing a valid scale.',
-        amanda.diagnostics.LogLevel.error
+        LogLevel.error
       );
       return;
     }
@@ -70,7 +75,7 @@ export class EsriCommandImpl {
     map.setScale(scale);
   }
 
-  select(payload) {
+  async select(payload: Payload) {
     const layerName = payload.layerName;
     const fieldName = payload.fieldName;
     const filterByCurrentMapExtent = payload.filterByCurrentMapExtent;
@@ -78,16 +83,16 @@ export class EsriCommandImpl {
     if (!payload || !layerName || !fieldName) {
       this.app.trace.log(
         'Invalid payload for the select command. Missing layerName and/or fieldName.',
-        amanda.diagnostics.LogLevel.error
+        LogLevel.error
       );
       return;
     }
 
-    const layer = this.app.map.getLayerByName(layerName);
+    const layer = await this.app.map.getLayerByName(layerName);
     if (!layer) {
       this.app.trace.log(
         `Can not find a layer for ${layerName}.`,
-        amanda.diagnostics.LogLevel.error
+        LogLevel.error
       );
       return;
     }
@@ -102,14 +107,14 @@ export class EsriCommandImpl {
       payload.features &&
       payload.features.length > 0
     ) {
-      whereAuto = amanda.utils.QueryHelper.generateWhereClause(
+      whereAuto = QueryHelper.generateWhereClause(
         payload.fieldName,
         payload.features,
-        amanda.utils.QueryHelper.isFieldStringType(layer, fieldName)
+        QueryHelper.isFieldStringType(layer, fieldName)
       );
     }
 
-    const selectQuery = new amanda.map.Query(layer.getUrl());
+    const selectQuery = new Query(layer.getUrl());
     selectQuery.queryParams.outFields.push('*');
     selectQuery.queryParams.outSpatialReference =
       this.app.map.getGISMap().spatialReference;
@@ -128,7 +133,7 @@ export class EsriCommandImpl {
     selectQuery
       .perform()
       .then(results => {
-        const features = [];
+        const features = new Array<string>();
         if (results && results.features) {
           results.features.forEach(graphic => {
             const id = this._getPropertyByName(graphic.attributes, fieldName);
@@ -145,7 +150,7 @@ export class EsriCommandImpl {
         } else {
           this.app.trace.log(
             'Select query returned no features',
-            amanda.diagnostics.LogLevel.warning
+            LogLevel.warning
           );
         }
       })
@@ -173,15 +178,13 @@ export class EsriCommandImpl {
     const layer = this.app.map.getLayerByName(payload.layerName);
     const fieldName = payload.fieldName;
 
-    if (
-      selectionType.toUpperCase() === amanda.map.SelectionType.defaultSelect
-    ) {
+    if (selectionType.toUpperCase() === SelectionType.defaultSelect) {
       this.app.map.clearMapMode();
     }
 
     if (layer && fieldName && selectionType) {
       const geometrySelected = geometry => {
-        const selectQuery = new amanda.map.Query(layer.getUrl());
+        const selectQuery = new Query(layer.getUrl());
         selectQuery.queryParams.geometry = geometry;
         selectQuery.queryParams.outFields.push('*');
         selectQuery.queryParams.outSpatialReference =
@@ -207,7 +210,7 @@ export class EsriCommandImpl {
               if (results.exceededTransferLimit) {
                 this.app.trace.log(
                   'Select by geometry returned the first {0} results. Server limit exceeded.',
-                  amanda.diagnostics.LogLevel.warning
+                  LogLevel.warning
                 );
               }
               this.app.events.featuresSelectedByGeometry(
@@ -219,7 +222,7 @@ export class EsriCommandImpl {
             } else {
               this.app.trace.log(
                 'Select by geometry returned no features',
-                amanda.diagnostics.LogLevel.warning
+                LogLevel.warning
               );
             }
           })
@@ -234,39 +237,35 @@ export class EsriCommandImpl {
     }
   }
 
-  activate(payload) {
+  async activate(payload: Payload) {
     const layerName = payload.layerName;
     const feature = payload.feature;
     const fieldName = payload.fieldName;
-    const layer = this.app.map.getLayerByName(layerName);
-    const stringType = amanda.utils.QueryHelper.isFieldStringType(
-      layer,
-      fieldName
-    );
-    const selectQuery = new amanda.map.Query(layer.getUrl());
+    const layer = await this.app.map.getLayerByName(layerName);
+    const stringType = QueryHelper.isFieldStringType(layer, fieldName);
+    const selectQuery = new Query(layer.getUrl());
     selectQuery.queryParams.outFields.push('*');
     selectQuery.queryParams.outSpatialReference =
       this.app.map.getGISMap().spatialReference;
-    selectQuery.queryParams.where =
-      amanda.utils.QueryHelper.generateWhereClause(
-        fieldName,
-        [feature],
-        stringType
-      );
+    selectQuery.queryParams.where = QueryHelper.generateWhereClause(
+      fieldName,
+      [feature],
+      stringType
+    );
     selectQuery
       .perform()
       .then(results => {
         if (results && results.features) {
           results.features.forEach(graphic => {
-            const point = amanda.utils.GraphicHelper.getCentroid(graphic);
+            const point = GraphicHelper.getCentroid(graphic);
             if (point) {
-              const pushpin = amanda.utils.GraphicHelper.createPushpinGraphic(
+              const pushpin = GraphicHelper.createPushpinGraphic(
                 point,
                 this.app.configOptions.pushpinImage
               );
               pushpin.attributes = graphic.attributes;
               const id = this._getPropertyByName(graphic.attributes, fieldName);
-              amanda.utils.GraphicHelper.setTags(
+              GraphicHelper.setTags(
                 pushpin,
                 layerName,
                 CommandType.activate,
@@ -289,7 +288,7 @@ export class EsriCommandImpl {
         } else {
           this.app.trace.log(
             'Activate query returned no features',
-            amanda.diagnostics.LogLevel.warning
+            LogLevel.warning
           );
         }
       })
@@ -298,25 +297,21 @@ export class EsriCommandImpl {
       });
   }
 
-  highlight(payload) {
+  highlight(payload: Payload) {
     const layerName = payload.layerName;
     const feature = payload.feature;
     const fieldName = payload.fieldName;
     const layer = this.app.map.getLayerByName(layerName);
-    const stringType = amanda.utils.QueryHelper.isFieldStringType(
-      layer,
-      fieldName
-    );
-    const selectQuery = new amanda.map.Query(layer.getUrl());
+    const stringType = QueryHelper.isFieldStringType(layer, fieldName);
+    const selectQuery = new Query(layer.getUrl());
     selectQuery.queryParams.outFields.push('*');
     selectQuery.queryParams.outSpatialReference =
       this.app.map.getGISMap().spatialReference;
-    selectQuery.queryParams.where =
-      amanda.utils.QueryHelper.generateWhereClause(
-        fieldName,
-        [feature],
-        stringType
-      );
+    selectQuery.queryParams.where = QueryHelper.generateWhereClause(
+      fieldName,
+      [feature],
+      stringType
+    );
     selectQuery
       .perform()
       .then(results => {
@@ -327,7 +322,7 @@ export class EsriCommandImpl {
                 highlightGraphic.attributes,
                 fieldName
               );
-              amanda.utils.GraphicHelper.setTags(
+              GraphicHelper.setTags(
                 highlightGraphic,
                 layerName,
                 CommandType.highlight,
@@ -340,7 +335,7 @@ export class EsriCommandImpl {
         } else {
           this.app.trace.log(
             'Highlight query returned no features',
-            amanda.diagnostics.LogLevel.warning
+            LogLevel.warning
           );
         }
       })
@@ -349,61 +344,58 @@ export class EsriCommandImpl {
       });
   }
 
-  bufferSearch(payload) {
+  async bufferSearch(payload: Payload) {
     const sourceLayerName = payload.sourceLayerName;
     const sourceFieldName = payload.sourceFieldName;
-    const sourceLayer = this.app.map.getLayerByName(sourceLayerName);
+    const sourceLayer = await this.app.map.getLayerByName(sourceLayerName);
     const layerName = payload.layerName;
     const fieldName = payload.fieldName;
     const layer = this.app.map.getLayerByName(layerName);
     const features = payload.features;
     const distance = payload.distance;
-    const stringType = amanda.utils.QueryHelper.isFieldStringType(
+    const stringType = QueryHelper.isFieldStringType(
       sourceLayer,
       sourceFieldName
     );
-    const selectQuery = new amanda.map.Query(sourceLayer.getUrl());
+    const selectQuery = new Query(sourceLayer.getUrl());
     selectQuery.queryParams.outFields.push('*');
     selectQuery.queryParams.outSpatialReference =
       this.app.map.getGISMap().spatialReference;
-    selectQuery.queryParams.where =
-      amanda.utils.QueryHelper.generateWhereClause(
-        sourceFieldName,
-        features,
-        stringType
-      );
+    selectQuery.queryParams.where = QueryHelper.generateWhereClause(
+      sourceFieldName,
+      features,
+      stringType
+    );
     selectQuery
       .perform()
       .then(results => {
-        const buffer = new amanda.map.Buffer(this.app.map.geometryServiceUrl);
+        const buffer = new Buffer(this.app.map.geometryServiceUrl);
+
         if (results && results.features && results.features.length > 0) {
           results.features.forEach(toBuffer => {
             if (toBuffer) {
               buffer.bufferParams.geometries.push(toBuffer.geometry);
               buffer.bufferParams.distances.push(distance);
               buffer.bufferParams.unionResults = true;
-              buffer.bufferParams.unit = amanda.map.Buffer.toEsriUnit(
-                payload.bufferUnit
-              );
+              buffer.bufferParams.unit = Buffer.toEsriUnit(payload.bufferUnit);
             }
           });
+
           return buffer.perform();
         } else {
           this.app.trace.log(
             'Source layer buffer search query returned no features',
-            amanda.diagnostics.LogLevel.warning
+            LogLevel.warning
           );
+
           return Promise.resolve([]);
         }
       })
       .then(bufferResults => {
         if (bufferResults && bufferResults.length > 0) {
           const geometryToQueryWith = bufferResults[0];
-          const stringType = amanda.utils.QueryHelper.isFieldStringType(
-            layer,
-            fieldName
-          );
-          const selectQuery = new amanda.map.Query(layer.getUrl());
+          const stringType = QueryHelper.isFieldStringType(layer, fieldName);
+          const selectQuery = new Query(layer.getUrl());
           selectQuery.queryParams.outFields.push('*');
           selectQuery.queryParams.outSpatialReference =
             this.app.map.getGISMap().spatialReference;
@@ -412,7 +404,7 @@ export class EsriCommandImpl {
         } else {
           this.app.trace.log(
             'No buffer could be determined from source input features',
-            amanda.diagnostics.LogLevel.warning
+            LogLevel.warning
           );
           return Promise.resolve(new esri.tasks.FeatureSet());
         }
@@ -435,7 +427,7 @@ export class EsriCommandImpl {
         } else {
           this.app.trace.log(
             'Buffered query did not return any results',
-            amanda.diagnostics.LogLevel.warning
+            LogLevel.warning
           );
         }
         return Promise.resolve();
@@ -452,12 +444,7 @@ export class EsriCommandImpl {
     this.app.map.ensurePushpinsOntop();
     graphics.forEach(graphic => {
       const id = this._getPropertyByName(graphic.attributes, fieldName);
-      amanda.utils.GraphicHelper.setTags(
-        graphic,
-        layerName,
-        CommandType.select,
-        id
-      );
+      GraphicHelper.setTags(graphic, layerName, CommandType.select, id);
       this.app.map.addPushpin(graphic);
     });
     this.app.map.zoomToSelection(null);
@@ -471,10 +458,10 @@ export class EsriCommandImpl {
     return val;
   }
 
-  setLayerVisibility(payload) {
+  async setLayerVisibility(payload) {
     const layerName = payload.layerName;
     const visibility = payload.visibility;
-    const layer = this.app.map.getLayerByName(layerName);
+    const layer = await this.app.map.getLayerByName(layerName);
     let changed = false;
     if (layer) {
       changed = layer.setVisibility(visibility);

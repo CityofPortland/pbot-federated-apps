@@ -1,20 +1,20 @@
 export class Payload extends Object {
   messageType!: string;
   layerName!: string;
-  features!: unknown[];
+  features!: string[];
   attributes!: Record<string, unknown>;
   exceededTransferLimit!: boolean;
   fieldName?: string;
   scale: unknown;
   filterByCurrentMapExtent: unknown;
-  where: unknown;
+  where?: string;
   feature: unknown;
   mapMode: unknown;
-  sourceLayerName: unknown;
+  sourceLayerName?: string;
   infoTitle: unknown;
   infoContent: unknown;
   distance: unknown;
-  sourceFieldName: unknown;
+  sourceFieldName?: string;
   visibility: unknown;
   custom: unknown;
   bufferUnit: unknown;
@@ -24,7 +24,7 @@ export class Payload extends Object {
    * @param json The JSON to deserialize.
    * @returns The created {@link Payload}.
    */
-  fromJson(json: string) {
+  static fromJson(json: string) {
     const jsonRep = JSON.parse(json);
     const payload = new Payload();
     if (jsonRep['messageType']) {

@@ -283,7 +283,7 @@ export class EsriMap {
     return new amanda.commands.EsriCommandImpl(this.app);
   }
 
-  public async getLayerByName(name: string) {
+  public async getLayerByName(name?: string) {
     if (!name) return null;
 
     while (this.layers.length === 0) {

@@ -1,18 +1,18 @@
-import { diagnostics } from 'some-module'; // Adjust the import according to your project structure
 import { LogLevel } from '../enums/log-level';
+import { AmandaApp } from './amanda-app';
 
 export class Logger {
   private logLevelMap: { level: any; order: number }[];
   private _logStart: string;
   private _logLevel: any;
   public initialized: boolean;
-  private app: any;
+  private app: AmandaApp;
 
   /**
    * Constructs a new instance of {@link Logger}.
    * @param app The {@link AmandaApp} which this component is linked to.
    */
-  constructor(app: any) {
+  constructor(app: AmandaApp) {
     this.logLevelMap = [
       { level: LogLevel.debug, order: 1 },
       { level: LogLevel.warning, order: 2 },
@@ -74,7 +74,7 @@ export class Logger {
     console.log(message);
   }
 
-  private _getLogLevel(level: any): number | undefined {
+  private _getLogLevel(level: LogLevel): number | undefined {
     for (let i = 0; i < this.logLevelMap.length; i++) {
       if (level === this.logLevelMap[i].level) {
         return this.logLevelMap[i].order;
@@ -101,9 +101,9 @@ export class Logger {
     if (options && !!options['logLevel']) {
       const level = options.logLevel;
       if (
-        level === diagnostics.LogLevel.debug ||
-        level === diagnostics.LogLevel.warning ||
-        level === diagnostics.LogLevel.error
+        level === LogLevel.debug ||
+        level === LogLevel.warning ||
+        level === LogLevel.error
       ) {
         this._logLevel = level;
         this.log(
@@ -112,8 +112,8 @@ export class Logger {
         );
       } else {
         this.log(
-          `Specified log level of ${level} was not recognized. Values must be ${diagnostics.LogLevel.debug}, ${diagnostics.LogLevel.warning} or ${diagnostics.LogLevel.error}`,
-          diagnostics.LogLevel.warning
+          `Specified log level of ${level} was not recognized. Values must be ${LogLevel.debug}, ${LogLevel.warning} or ${LogLevel.error}`,
+          LogLevel.warning
         );
       }
     }

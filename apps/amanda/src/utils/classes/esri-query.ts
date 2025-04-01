@@ -1,7 +1,5 @@
-import * as esri from 'esri';
-
 export class Query {
-  private queryParams: esri.tasks.Query;
+  queryParams: esri.tasks.Query;
   private _queryTask: esri.tasks.QueryTask;
 
   /**

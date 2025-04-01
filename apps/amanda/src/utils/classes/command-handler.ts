@@ -1,10 +1,15 @@
+import { LogLevel } from '../enums/log-level';
+import { AmandaApp } from './amanda-app';
+import { Command } from './command';
+import { Payload } from './payload';
+
 export class CommandHandler {
   /**
    * Map object of commands held in this registry.
    */
-  public namedCommands: { [key: string]: any } = {};
+  public namedCommands: { [key: string]: Command } = {};
 
-  public app: any;
+  public app: AmandaApp;
   public messageHandlerRegistered = false;
   public initialized = false;
 
@@ -12,15 +17,14 @@ export class CommandHandler {
    * Constructs a new {@link CommandHandler} object.
    * @param app The application.
    */
-  constructor(app: any) {
+  constructor(app: AmandaApp) {
     this.app = app;
   }
 
   /**
-   * Initializes the object from an {@link InitializationOptions}.
-   * @param options The {@link InitializationOptions}.
+   * Initializes the object
    */
-  public initialize(options: any): void {
+  public initialize(): void {
     this.initialized = true;
   }
 
@@ -36,23 +40,14 @@ export class CommandHandler {
       );
       this.app.trace.log(
         'FF,SA,CH,OP,IE9+ message handler registered',
-        amanda.diagnostics.LogLevel.debug
-      );
-      this.messageHandlerRegistered = true;
-    } else if (window.attachEvent) {
-      window.attachEvent('onmessage', event =>
-        this._handleAMANDACommand(event)
-      );
-      this.app.trace.log(
-        'IE8 message handler registered',
-        amanda.diagnostics.LogLevel.debug
+        LogLevel.debug
       );
       this.messageHandlerRegistered = true;
     } else {
       this.messageHandlerRegistered = false;
       this.app.trace.log(
         'Failed to register message handler, app cannot function',
-        amanda.diagnostics.LogLevel.error
+        LogLevel.error
       );
     }
   }
@@ -66,12 +61,12 @@ export class CommandHandler {
   public registerCommand(
     commandName: string,
     scope: any,
-    func: Function
+    func: ((payload: Payload) => void) | (() => void)
   ): void {
     if (!commandName || !scope || !func) {
       this.app.trace.log(
         "'commandName', 'scope' and 'func' are required for creating commands",
-        amanda.diagnostics.LogLevel.error
+        LogLevel.error
       );
       return;
     }
@@ -80,15 +75,15 @@ export class CommandHandler {
     if (this._commandExists(commandName)) {
       this.app.trace.log(
         `Overwriting the command '${commandName}'`,
-        amanda.diagnostics.LogLevel.warning
+        LogLevel.warning
       );
     }
 
-    const command = new commands.Command(this.app, commandName, scope, func);
+    const command = new Command(this.app, commandName, scope, func);
     this.namedCommands[commandName] = command;
     this.app.trace.log(
       `Command '${commandName}' added to the registry`,
-      amanda.diagnostics.LogLevel.debug
+      LogLevel.debug
     );
   }
 
@@ -102,7 +97,7 @@ export class CommandHandler {
       delete this.namedCommands[commandName];
       this.app.trace.log(
         `Unregistered command '${commandName}'`,
-        amanda.diagnostics.LogLevel.debug
+        LogLevel.debug
       );
     }
   }
@@ -122,24 +117,21 @@ export class CommandHandler {
    */
   private _handleAMANDACommand(browserEvent: any): void {
     if (!browserEvent || !browserEvent.data) {
-      this.app.trace.log(
-        'Command or Command data not found',
-        amanda.diagnostics.LogLevel.warning
-      );
+      this.app.trace.log('Command or Command data not found', LogLevel.warning);
       return;
     }
 
-    const commandPayload = commands.Payload.fromJson(browserEvent.data);
+    const commandPayload = Payload.fromJson(browserEvent.data);
     if (!commandPayload || !commandPayload.messageType) {
       this.app.trace.log(
         'Command received, but did not contain a messageType key. Cannot execute any command',
-        amanda.diagnostics.LogLevel.error
+        LogLevel.error
       );
       return;
     } else {
       this.app.trace.log(
         `Command '${commandPayload.messageType}' received from AMANDA`,
-        amanda.diagnostics.LogLevel.debug
+        LogLevel.debug
       );
     }
 
@@ -149,7 +141,7 @@ export class CommandHandler {
     } else {
       this.app.trace.log(
         `Command '${commandName}' not handled`,
-        amanda.diagnostics.LogLevel.error
+        LogLevel.error
       );
     }
   }

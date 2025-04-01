@@ -31,7 +31,7 @@ export class QueryHelper {
    * @param fieldName The field name.
    * @returns If the field is of string type or not.
    */
-  static isFieldStringType(layer: EsriLayer, fieldName: string): boolean {
+  static isFieldStringType(layer: EsriLayer, fieldName?: string): boolean {
     let isString = false;
     if (layer && layer.getLayerFields() && fieldName) {
       fieldName = fieldName.toUpperCase();

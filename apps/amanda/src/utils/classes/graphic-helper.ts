@@ -1,8 +1,6 @@
 import esri = __esri;
 
 export class GraphicHelper {
-  constructor() {}
-
   /**
    * Returns a graphic which has a selected style symbol.
    * @param point The point associated with the pushpin.
