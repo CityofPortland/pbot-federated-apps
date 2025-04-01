@@ -34,7 +34,7 @@ runs:
         docker save \
         --output ${{ github.sha }}.tar \
         ${{ format('{0}.azurecr.io', inputs.registry) }}/${{ inputs.repository }}:${{ inputs.tag }}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: inputs.artifact-name
       with:
         name: ${{ inputs.artifact-name }}
