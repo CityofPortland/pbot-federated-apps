@@ -220,75 +220,94 @@ var amanda;
           );
           return;
         }
-        var layer = await this.app.map.getLayerByName(layerName);
-        if (!layer) {
+
+        const layers = await this.app.map.getAllLayers();
+
+        if (!layers || layers.length === 0) {
           this.app.trace.log(
-            'Can not find a layer for {0}.'.format(layerName),
+            'No layers available in the map.',
             amanda.diagnostics.LogLevel.error
           );
           return;
         }
-        if (layer) {
-          var whereClause = '';
-          var whereCustom = payload.where;
-          var whereAuto = null;
-          if (
-            payload &&
-            payload.fieldName &&
-            payload.features &&
-            payload.features.length > 0
-          ) {
-            whereAuto = amanda.utils.QueryHelper.generateWhereClause(
-              payload.fieldName,
-              payload.features,
-              amanda.utils.QueryHelper.isFieldStringType(layer, fieldName)
-            );
-          }
-          var selectQuery = new amanda.map.Query(layer.getUrl());
+
+        var whereClause = '';
+        var whereCustom = payload.where;
+        var whereAuto = null;
+        if (
+          payload &&
+          payload.fieldName &&
+          payload.features &&
+          payload.features.length > 0
+        ) {
+          whereAuto = amanda.utils.QueryHelper.generateWhereClause(
+            payload.fieldName,
+            payload.features,
+            amanda.utils.QueryHelper.isFieldStringType(
+              await this.app.map.getLayerByName(layerName),
+              fieldName
+            )
+          );
+        }
+        // Use the precedence to prefer 'whereCustom' over 'whereAuto'.
+        if (whereCustom) {
+          whereClause = whereCustom;
+        } else if (whereAuto) {
+          whereClause = whereAuto;
+        }
+
+        const features = [];
+        const promises = [];
+
+        layers.forEach(layer => {
+          const selectQuery = new amanda.map.Query(layer.getUrl());
           selectQuery.queryParams.outFields.push('*');
           selectQuery.queryParams.outSpatialReference =
             this.app.map.getGISMap().spatialReference;
           if (filterByCurrentMapExtent) {
             selectQuery.queryParams.geometry = this.app.map.getGISMap().extent;
           }
-          // Use the precedence to prefer 'whereCustom' over 'whereAuto'.
-          if (whereCustom) {
-            whereClause = whereCustom;
-          } else if (whereAuto) {
-            whereClause = whereAuto;
-          }
           selectQuery.queryParams.where = whereClause;
-          selectQuery
-            .perform()
-            .then(function (results) {
-              var features = [];
-              if (results && results.features) {
-                results.features.forEach(function (graphic) {
-                  var id = _this._getPropertyByName(
-                    graphic.attributes,
-                    fieldName
+
+          promises.push(
+            selectQuery
+              .perform()
+              .then(function (results) {
+                if (
+                  results &&
+                  results.features &&
+                  results.features.length > 0
+                ) {
+                  results.features.forEach(function (graphic) {
+                    var id = _this._getPropertyByName(
+                      graphic.attributes,
+                      fieldName
+                    );
+                    if (id) {
+                      features.push(graphic);
+                    }
+                  });
+                } else {
+                  _this.app.trace.log(
+                    'Select query returned no features',
+                    amanda.diagnostics.LogLevel.warning
                   );
-                  if (id) {
-                    features.push(id);
-                  }
-                });
-                _this.app.events.featuresSelected(
-                  layerName,
-                  features,
-                  results.exceededTransferLimit
-                );
-                _this._selectFeatures(layerName, fieldName, results.features);
-              } else {
-                _this.app.trace.log(
-                  'Select query returned no features',
-                  amanda.diagnostics.LogLevel.warning
-                );
-              }
-            })
-            .catch(function (error) {
-              _this.app.trace.logError('Select query failed', error);
-            });
-        }
+                }
+              })
+              .catch(function (error) {
+                _this.app.trace.logError('Select query failed', error);
+              })
+          );
+        });
+
+        await Promise.all(promises);
+
+        _this.app.events.featuresSelected(
+          layerName,
+          features.map(f => _this._getPropertyByName(f.attributes, fieldName)),
+          false //results.exceededTransferLimit
+        );
+        _this._selectFeatures(layerName, fieldName, features);
       };
       /**
        * Perform a deselect operation. Clears all pushpins from the map.
@@ -344,56 +363,64 @@ var amanda;
         }
         if (layer && fieldName && selectionType) {
           // geometry selected callback
-          var geometrySelected = function (geometry) {
-            var selectQuery = new amanda.map.Query(layer.getUrl());
-            selectQuery.queryParams.geometry = geometry;
-            selectQuery.queryParams.outFields.push('*');
-            selectQuery.queryParams.outSpatialReference =
-              _this.app.map.getGISMap().spatialReference;
-            selectQuery
-              .perform()
-              .then(function (results) {
-                var ids = [];
-                var attributes = [];
-                if (results && results.features) {
-                  results.features.forEach(function (feature) {
-                    var id = _this._getPropertyByName(
-                      feature.attributes,
-                      fieldName
-                    );
-                    if (id) {
-                      ids.push(id);
+          var geometrySelected = async function (geometry) {
+            const layers = await _this.app.map.getAllLayers();
+
+            const features = [];
+            const promises = [];
+
+            layers.forEach(layer => {
+              const selectQuery = new amanda.map.Query(layer.getUrl());
+              selectQuery.queryParams.geometry = geometry;
+              selectQuery.queryParams.outFields.push('*');
+              selectQuery.queryParams.outSpatialReference =
+                _this.app.map.getGISMap().spatialReference;
+              selectQuery
+                .perform()
+                .then(function (results) {
+                  if (results && results.features) {
+                    results.features.forEach(function (feature) {
+                      var id = _this._getPropertyByName(
+                        feature.attributes,
+                        fieldName
+                      );
+                      if (id) {
+                        features.push(feature);
+                      }
+                    });
+                    if (results.exceededTransferLimit) {
+                      _this.app.trace.log(
+                        'Select by geometry returned the first {0} results. Server limit exceeded.',
+                        amanda.diagnostics.LogLevel.warning
+                      );
                     }
-                    if (feature.attributes) {
-                      attributes.push(feature.attributes);
-                    }
-                  });
-                  if (results.exceededTransferLimit) {
+                  } else {
                     _this.app.trace.log(
-                      'Select by geometry returned the first {0} results. Server limit exceeded.',
+                      'Select by geometry returned no features',
                       amanda.diagnostics.LogLevel.warning
                     );
                   }
-                  _this.app.events.featuresSelectedByGeometry(
-                    layerName,
-                    attributes,
-                    ids,
-                    results.exceededTransferLimit
+                })
+                .catch(function (error) {
+                  return _this.app.trace.logError(
+                    'Select by geometry query failed',
+                    error
                   );
-                } else {
-                  _this.app.trace.log(
-                    'Select by geometry returned no features',
-                    amanda.diagnostics.LogLevel.warning
-                  );
-                }
-              })
-              .catch(function (error) {
-                return _this.app.trace.logError(
-                  'Select by geometry query failed',
-                  error
-                );
-              });
+                });
+            });
+
+            await Promise.all(promises);
+
+            _this.app.events.featuresSelectedByGeometry(
+              layerName,
+              features.map(f => f.attributes),
+              features.map(f =>
+                _this._getPropertyByName(f.attributes, fieldName)
+              ),
+              false
+            );
           };
+
           this.app.map.captureSelection(selectionType, geometrySelected, {
             bufferUnit: payload.bufferUnit,
             bufferDistance: payload.distance,
@@ -1553,6 +1580,23 @@ var amanda;
       EsriMap.prototype.getMapCommandImplementation = function () {
         return new amanda.commands.EsriCommandImpl(this.app);
       };
+      EsriMap.prototype.getAllLayers = async function () {
+        const MAX_RETRIES = 10;
+        var retries = 0;
+
+        while (this.layers.length === 0) {
+          // wait for layers to be populated
+          retries++;
+
+          if (retries > MAX_RETRIES) {
+            break;
+          }
+
+          await new Promise(r => setTimeout(r, 1000));
+        }
+
+        return this.layers;
+      };
       /**
        * Gets a layer by layer name.
        * @param name The name of the layer to find.
@@ -1771,7 +1815,21 @@ var amanda;
                       amanda.events.EventType.geometrySelectionCaptured;
                     payload.mapMode = mode.toLowerCase();
                     _this.app.events.emitEvent(payload);
-                    selectedCallback(geometry);
+
+                    if (geometry.type == 'point') {
+                      // buffer points so they can select features in the map
+                      require(['esri/geometry/Circle'], function (Circle) {
+                        const circle = new Circle({
+                          center: [geometry.x, geometry.y],
+                          geodesic: true,
+                          radius: 10,
+                          radiusUnit: 'esriFeet',
+                        });
+                        selectedCallback(circle);
+                      });
+                    } else {
+                      selectedCallback(geometry);
+                    }
                   })
                   .catch(function (error) {
                     _this.app.trace.logError(
