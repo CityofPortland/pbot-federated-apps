@@ -375,38 +375,40 @@ var amanda;
               selectQuery.queryParams.outFields.push('*');
               selectQuery.queryParams.outSpatialReference =
                 _this.app.map.getGISMap().spatialReference;
-              selectQuery
-                .perform()
-                .then(function (results) {
-                  if (results && results.features) {
-                    results.features.forEach(function (feature) {
-                      var id = _this._getPropertyByName(
-                        feature.attributes,
-                        fieldName
-                      );
-                      if (id) {
-                        features.push(feature);
+              promises.push(
+                selectQuery
+                  .perform()
+                  .then(function (results) {
+                    if (results && results.features) {
+                      results.features.forEach(function (feature) {
+                        var id = _this._getPropertyByName(
+                          feature.attributes,
+                          fieldName
+                        );
+                        if (id) {
+                          features.push(feature);
+                        }
+                      });
+                      if (results.exceededTransferLimit) {
+                        _this.app.trace.log(
+                          'Select by geometry returned the first {0} results. Server limit exceeded.',
+                          amanda.diagnostics.LogLevel.warning
+                        );
                       }
-                    });
-                    if (results.exceededTransferLimit) {
+                    } else {
                       _this.app.trace.log(
-                        'Select by geometry returned the first {0} results. Server limit exceeded.',
+                        'Select by geometry returned no features',
                         amanda.diagnostics.LogLevel.warning
                       );
                     }
-                  } else {
-                    _this.app.trace.log(
-                      'Select by geometry returned no features',
-                      amanda.diagnostics.LogLevel.warning
+                  })
+                  .catch(function (error) {
+                    return _this.app.trace.logError(
+                      'Select by geometry query failed',
+                      error
                     );
-                  }
-                })
-                .catch(function (error) {
-                  return _this.app.trace.logError(
-                    'Select by geometry query failed',
-                    error
-                  );
-                });
+                  })
+              );
             });
 
             await Promise.all(promises);
