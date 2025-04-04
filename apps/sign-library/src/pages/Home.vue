@@ -32,8 +32,6 @@ const store = useSignStore();
 const field = ref(route.query.field as string);
 const query = ref(route.query.query as string);
 
-// onMounted(() => store.refresh().catch());
-
 const changeQuery = (query: Record<string, string | string[]>) => {
   changeRoute({
     query: {
@@ -68,7 +66,12 @@ const signs = computed(() => {
   let results = store.signs;
 
   if (route.query.query) {
-    const r = new RegExp(route.query.query as string, 'i');
+    const query = route.query.query as string;
+
+    // Escape all RegeX special characters in the query string
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const r = new RegExp(escapedQuery, 'i');
+
     results = results.filter(
       s =>
         r.test(s.code ?? '') ||
