@@ -1825,9 +1825,8 @@ var amanda;
                           center: [geometry.x, geometry.y],
                           geodesic: true,
                           radius: 10,
-                          radiusUnit: 'esriFeet',
                         });
-                        selectedCallback(circle);
+                        selectedCallback(circle.getExtent());
                       });
                     } else {
                       selectedCallback(geometry);
