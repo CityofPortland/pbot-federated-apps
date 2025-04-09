@@ -4,6 +4,10 @@ import CitizenPortal from '../pages/CitizenPortal.vue';
 
 const routes: RouteRecordRaw[] = [
   {
+    path: '/',
+    redirect: '/backoffice',
+  },
+  {
     path: '/backoffice',
     component: Backoffice,
   },
