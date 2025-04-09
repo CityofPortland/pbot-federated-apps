@@ -8,6 +8,7 @@ export type GraphQLError = {
 
 export type GraphQLOptions = {
   operation: string;
+  url?: string;
   headers?: RawAxiosRequestHeaders;
   variables?: Record<string, unknown>;
   cache?: boolean;
@@ -20,14 +21,23 @@ export type GraphQLResponse<T> = {
 
 const cache: Map<string, GraphQLResponse<unknown>> = new Map();
 
+// Helper function to resolve GraphQL URL
+function getGraphQLUrl(options: GraphQLOptions): string {
+  const url = options.url || import.meta.env.VITE_GRAPHQL_URL;
+  
+  if (!url) {
+    throw Error(
+      'GraphQL URL is not defined! Either provide a url in options or set VITE_GRAPHQL_URL environment variable.'
+    );
+  }
+  
+  return url;
+}
+
 export async function query<T>(
   options: GraphQLOptions
 ): Promise<GraphQLResponse<T>> {
-  if (!import.meta.env.VITE_GRAPHQL_URL) {
-    throw Error(
-      'GRAPHQL_URL is not defined and required to query the GraphQL server!'
-    );
-  }
+  const url = getGraphQLUrl(options);
 
   let { operation } = options;
 
@@ -47,7 +57,7 @@ export async function query<T>(
   const headers = options && options.headers;
 
   const res = await axios.post<GraphQLResponse<T>>(
-    import.meta.env.VITE_GRAPHQL_URL,
+    url,
     body,
     {
       headers: {
@@ -69,11 +79,7 @@ export async function formData<T>(
   files: Array<File> | FileList,
   map: Map<string, string>
 ): Promise<GraphQLResponse<T>> {
-  if (!import.meta.env.VITE_GRAPHQL_URL) {
-    throw Error(
-      'GRAPHQL_URL is not defined and required to query the GraphQL server!'
-    );
-  }
+  const url = getGraphQLUrl(options);
 
   let { operation } = options;
 
@@ -107,7 +113,7 @@ export async function formData<T>(
   }
 
   const res = await axios.post<GraphQLResponse<T>>(
-    import.meta.env.VITE_GRAPHQL_URL,
+    url,
     body,
     {
       headers: {
