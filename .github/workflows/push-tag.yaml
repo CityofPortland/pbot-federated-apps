@@ -17,6 +17,9 @@ jobs:
             directory: apps/amanda
             registry: pbotapps
             repository: federation/app/amanda
+            files: |
+              apps/amanda/.env.production.local:
+                - VITE_GRAPHQL_URL=https://pbotapps.portland.gov/graphql
           - app: bus-reservation
             directory: apps/bus-reservation
             registry: pbotapps
