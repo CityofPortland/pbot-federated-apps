@@ -22,7 +22,7 @@ jobs:
             registry: pbotapps
             repository: federation/app/amanda
             files: |
-              apps/amanda/.env.production.local:
+              apps/amanda/.env.staging.local:
                 - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql
           - app: bus-reservation
             directory: apps/bus-reservation
@@ -84,7 +84,7 @@ jobs:
       - name: Push
         uses: ./packages/actions/push
         with:
-          credentials: ${{ secrets. AZURE_CREDENTIALS }}
+          credentials: ${{ secrets.AZURE_CREDENTIALS }}
           registry: ${{ matrix.registry }}
           repository: ${{ matrix.repository }}
           tag: ${{ github.sha }}
