@@ -1825,19 +1825,21 @@ var amanda;
                         'esri/geometry/projection',
                         'esri/geometry/Circle',
                       ], function (SpatialReference, projection, Circle) {
-                        // Circle only seems to work with lon/lat pairs...
-                        const center = projection.project(
-                          geometry,
-                          new SpatialReference(4326)
-                        );
+                        projection.load().then(() => {
+                          // Circle only seems to work with lon/lat pairs...
+                          const center = projection.project(
+                            geometry,
+                            new SpatialReference(4326)
+                          );
 
-                        const circle = new Circle({
-                          center: [center.x, center.y],
-                          geodesic: true,
-                          radius: 10,
+                          const circle = new Circle({
+                            center: [center.x, center.y],
+                            geodesic: true,
+                            radius: 10,
+                          });
+
+                          selectedCallback(circle.getExtent());
                         });
-
-                        selectedCallback(circle.getExtent());
                       });
                     } else {
                       selectedCallback(geometry);
