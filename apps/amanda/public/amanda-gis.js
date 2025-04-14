@@ -1820,12 +1820,23 @@ var amanda;
 
                     if (geometry.type == 'point') {
                       // buffer points so they can select features in the map
-                      require(['esri/geometry/Circle'], function (Circle) {
+                      require([
+                        'esri/SpatialReference',
+                        'esri/geometry/projection',
+                        'esri/geometry/Circle',
+                      ], function (SpatialReference, projection, Circle) {
+                        // Circle only seems to work with lon/lat pairs...
+                        const center = projection.project(
+                          geometry,
+                          new SpatialReference(4326)
+                        );
+
                         const circle = new Circle({
-                          center: [geometry.x, geometry.y],
+                          center: [center.x, center.y],
                           geodesic: true,
                           radius: 10,
                         });
+
                         selectedCallback(circle.getExtent());
                       });
                     } else {
