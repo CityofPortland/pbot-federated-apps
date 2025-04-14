@@ -66,14 +66,18 @@ const handleSearch = async ({query: search,type}) => {
 
   const { data } = res;
 
-  const newCandidates = data[type == 'address' ? 'address' : 'taxLot'].map(
-    candidate => ({
-      name: candidate.name,
-      location: candidate.location,
-    })
-  );
+  require([
+    'esri/SpatialReference',
+  ], function (SpatialReference) {
+    const newCandidates = data[type == 'address' ? 'address' : 'taxLot'].map(
+      candidate => ({
+        name: candidate.name,
+        location: { ...candidate.location, spatialReference: new SpatialReference(candidate.location.spatialReference) },
+      })
+    );
 
-  candidates.splice(0, newCandidates.length, ...newCandidates);
+    candidates.splice(0, newCandidates.length, ...newCandidates);
+  });
 };
 
 const handleSelect = (candidate) => {
