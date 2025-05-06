@@ -1,7 +1,7 @@
 {
   "name": "@pbotapps/lcr",
   "private": true,
-  "version": "1.4.16",
+  "version": "1.4.17",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
