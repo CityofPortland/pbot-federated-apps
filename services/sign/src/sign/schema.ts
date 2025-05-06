@@ -37,7 +37,12 @@ async function uploadDesignFile(
     `${code}@design.${ext}`
   );
 
-  designClient.uploadStream(createReadStream());
+  await Promise.all([
+    designClient.uploadStream(createReadStream()),
+    designClient.setHTTPHeaders({
+      blobCacheControl: 'public, max-age=31536000',
+    }),
+  ]);
 
   return designClient.url;
 }
@@ -72,6 +77,10 @@ async function uploadImageFiles(
         .toFormat('png')
         .toBuffer()
     ),
+    fullClient.setHTTPHeaders({
+      blobContentType: 'image/png',
+      blobCacheControl: 'public, max-age=31536000',
+    }),
     thumbnailClient.uploadData(
       await sharp(new Uint8Array(await buffer))
         .resize({
@@ -81,6 +90,10 @@ async function uploadImageFiles(
         .toFormat('png')
         .toBuffer()
     ),
+    thumbnailClient.setHTTPHeaders({
+      blobContentType: 'image/png',
+      blobCacheControl: 'public, max-age=31536000',
+    }),
   ]);
 
   return { full: fullClient.url, thumbnail: thumbnailClient.url };
