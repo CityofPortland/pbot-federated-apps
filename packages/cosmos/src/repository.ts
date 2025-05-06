@@ -1,9 +1,35 @@
-import { CosmosClient, ItemDefinition, SqlParameter } from '@azure/cosmos';
+import {
+  Container,
+  CosmosClient,
+  Database,
+  ItemDefinition,
+  SqlParameter,
+} from '@azure/cosmos';
 import { BaseType } from '@pbotapps/objects';
+
+export type Repository<T> = {
+  client: CosmosClient;
+  container: Container;
+  database: Database;
+  add: (item: T) => Promise<T>;
+  delete: (id: string, partition?: string) => Promise<boolean>;
+  edit: (item: T, id: string, partition?: string) => Promise<T>;
+  exists: (id: string, partition?: string) => Promise<boolean>;
+  get: (id: string, partition?: string) => Promise<T>;
+  getAll: () => Promise<Array<T>>;
+  query: (
+    statement: string,
+    parameters: Array<SqlParameter>
+  ) => Promise<Array<T>>;
+};
 
 export async function createRepository<
   T extends ItemDefinition & Partial<BaseType>
->(databaseId: string, containerId: string, partitionKey = '/id') {
+>(
+  databaseId: string,
+  containerId: string,
+  partitionKey = '/id'
+): Promise<Repository<T>> {
   if (!process.env.AZURE_COSMOS_URL) {
     throw new Error(
       "You must provide 'AZURE_COSMOS_URL' environment variable!"
@@ -60,19 +86,26 @@ export async function createRepository<
     return statusCode == 200;
   };
 
-  const get = async (id: string, partition?: string) => {
+  const get = async (
+    id: string,
+    partition?: string
+  ): Promise<T | undefined> => {
     const { resource: existing } = await container
       .item(id, partition || id)
       .read<T>();
     return existing;
   };
 
-  const getAll = async () => {
+  const getAll = async (
+    filter?: (value: T, index: number, array: Array<T>) => boolean
+  ) => {
     const results = new Array<T>();
     const iter = container.items.readAll<T>().getAsyncIterator();
 
     for await (const { resources } of iter) {
-      results.push(...resources);
+      results.push(
+        ...(filter != undefined ? resources.filter(filter) : resources)
+      );
     }
 
     return results;

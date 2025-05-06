@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { Anchor, Field, FieldList } from '@pbotapps/components';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 
 import { Application } from '../models/application';
 import { useUserStore } from '../store/user';
 
 const store = useUserStore();
 
-store.getMe();
-
 const me = computed(() => {
+  if (store.me == undefined) {
+    return { applications: [] };
+  }
+
   const { rules, ...me } = store.me;
 
   const applications = rules.reduce((acc, curr) => {
-    acc.add(curr.application._id);
+    acc.add(curr.application.id);
     return acc;
   }, new Set<Application>());
 
@@ -21,6 +23,11 @@ const me = computed(() => {
 });
 
 const property = (key: string, object: Record<string, unknown>) => object[key];
+
+onMounted(() => {
+  console.debug('Calling getMe...');
+  store.getMe();
+});
 </script>
 
 <template>
