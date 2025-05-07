@@ -112,7 +112,7 @@ jobs:
                   - host: pbotapps-test.portland.gov
                     paths:
                       - path: /amanda(/|$)(.*)
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-test-portland-gov-tls
                     hosts:
@@ -134,7 +134,7 @@ jobs:
                   - host: pbotapps-test.portland.gov
                     paths:
                       - path: /bus-reservation(/|$)(.*)
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-test-portland-gov-tls
                     hosts:
@@ -155,7 +155,7 @@ jobs:
                   - host: pudl-test.portland.gov
                     paths:
                       - path: /
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pudl-test-portland-gov-tls
                     hosts:
@@ -177,7 +177,7 @@ jobs:
                   - host: pbotapps-test.portland.gov
                     paths:
                       - path: /sign-library(/|$)(.*)
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-test-portland-gov-tls
                     hosts:
@@ -199,7 +199,7 @@ jobs:
                   - host: pbotapps-test.portland.gov
                     paths:
                       - path: /support(/|$)(.*)
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-test-portland-gov-tls
                     hosts:
