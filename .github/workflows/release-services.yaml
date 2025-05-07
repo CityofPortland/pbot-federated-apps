@@ -29,7 +29,7 @@ jobs:
                   - host: pudl.portland.gov
                     paths:
                       - path: /graphql
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pudl-portland-gov-tls
                     hosts:
@@ -84,7 +84,7 @@ jobs:
                   - host: pbotapps.portland.gov
                     paths:
                       - path: /(graphql/reservation)
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-portland-gov-tls
                     hosts:
@@ -132,7 +132,7 @@ jobs:
                   - host: pbotapps.portland.gov
                     paths:
                       - path: /(graphql/sign)
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-portland-gov-tls
                     hosts:
@@ -178,7 +178,7 @@ jobs:
                   - host: pbotapps.portland.gov
                     paths:
                       - path: /graphql/support
-                        pathType: Prefix
+                        pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-portland-gov-tls
                     hosts:
