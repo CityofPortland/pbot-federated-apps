@@ -37,12 +37,11 @@ async function uploadDesignFile(
     `${code}@design.${ext}`
   );
 
-  await Promise.all([
-    designClient.uploadStream(createReadStream()),
+  await designClient.uploadStream(createReadStream()).then(() =>
     designClient.setHTTPHeaders({
       blobCacheControl: 'public, max-age=31536000',
-    }),
-  ]);
+    })
+  );
 
   return designClient.url;
 }
@@ -68,32 +67,38 @@ async function uploadImageFiles(
   const thumbnailClient = containerClient.getBlockBlobClient(`${code}@128.png`);
 
   await Promise.all([
-    fullClient.uploadData(
-      await sharp(new Uint8Array(await buffer))
-        .resize({
-          fit: 'contain',
-          width: 2048,
+    fullClient
+      .uploadData(
+        await sharp(new Uint8Array(await buffer))
+          .resize({
+            fit: 'contain',
+            width: 2048,
+          })
+          .toFormat('png')
+          .toBuffer()
+      )
+      .then(() =>
+        fullClient.setHTTPHeaders({
+          blobContentType: 'image/png',
+          blobCacheControl: 'public, max-age=31536000',
         })
-        .toFormat('png')
-        .toBuffer()
-    ),
-    fullClient.setHTTPHeaders({
-      blobContentType: 'image/png',
-      blobCacheControl: 'public, max-age=31536000',
-    }),
-    thumbnailClient.uploadData(
-      await sharp(new Uint8Array(await buffer))
-        .resize({
-          fit: 'contain',
-          width: 128,
+      ),
+    thumbnailClient
+      .uploadData(
+        await sharp(new Uint8Array(await buffer))
+          .resize({
+            fit: 'contain',
+            width: 128,
+          })
+          .toFormat('png')
+          .toBuffer()
+      )
+      .then(() =>
+        thumbnailClient.setHTTPHeaders({
+          blobContentType: 'image/png',
+          blobCacheControl: 'public, max-age=31536000',
         })
-        .toFormat('png')
-        .toBuffer()
-    ),
-    thumbnailClient.setHTTPHeaders({
-      blobContentType: 'image/png',
-      blobCacheControl: 'public, max-age=31536000',
-    }),
+      ),
   ]);
 
   return { full: fullClient.url, thumbnail: thumbnailClient.url };
