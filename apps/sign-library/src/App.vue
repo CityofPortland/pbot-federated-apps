@@ -84,6 +84,7 @@ const dev = computed(() => import.meta.env.MODE != 'production');
           "
           variant="light"
           :summary="message[1][1].message"
+          dismissible
           @close="messages.remove(message[0])"
         >
           {{ message[1][1].cause }}
