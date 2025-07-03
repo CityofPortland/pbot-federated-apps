@@ -95,8 +95,6 @@ jobs:
           - registry: pbotapps
             repository: federation/service/pudl
           - registry: pbotapps
-            repository: federation/service/reservation
-          - registry: pbotapps
             repository: federation/service/sign
           - registry: pbotapps
             repository: federation/service/support
