@@ -214,7 +214,7 @@ const change = (key: keyof SignInput, value: unknown) => {
     <Entry
       v-if="
         payload.status == 'obsolete' &&
-        ['replace_maintenance', 'replace_now', 'replace_workorder'].includes(
+        ['replace_maintenance', 'replace_now'].includes(
           payload.obsoletePolicy as string
         )
       "
