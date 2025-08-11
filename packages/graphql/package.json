@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/graphql",
-  "version": "1.4.19",
+  "version": "1.4.20",
   "description": "Things related to running an Apollo GraphQL Server",
   "type": "module",
   "main": "dist/index.js",

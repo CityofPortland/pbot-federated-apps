@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/pudl",
-  "version": "1.4.19",
+  "version": "1.4.20",
   "description": "Meta application for managing applications and users of applications",
   "type": "module",
   "main": "dist/index.js",
