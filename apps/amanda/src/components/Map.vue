@@ -32,13 +32,19 @@ require([
     zoom: 13,
   });
 
-  const layers = ['https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/0', 'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/1', 'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/2'].map(url => new FeatureLayer(url,
-  {outFields: ['PROPGISID1']}));
+  emit('map-ready', map);
+
+  const layers = [
+    'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/0',
+    'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/1',
+    'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/2'
+  ].map(url => new FeatureLayer(url,
+    {
+      outFields: ['PROPGISID1']
+    }
+  ));
 
   map.addLayers(layers);
-
-  emit('map-ready', map);
-  emit('layers-added', layers);
 });
 
 const handleSearch = async ({query: search,type}) => {
