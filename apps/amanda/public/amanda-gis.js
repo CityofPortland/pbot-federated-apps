@@ -1586,7 +1586,7 @@ var amanda;
         const MAX_RETRIES = 10;
         var retries = 0;
 
-        while (this.layers.length === 0) {
+        while (this.layers.length != 3) {
           // wait for layers to be populated
           retries++;
 
