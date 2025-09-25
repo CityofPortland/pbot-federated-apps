@@ -1,6 +1,6 @@
 {
   "name": "@pbotapps/components",
-  "version": "1.4.21",
+  "version": "1.4.22",
   "private": true,
   "description": "Common components for applications",
   "type": "module",

@@ -1,7 +1,7 @@
 {
   "name": "@pbotapps/sign-library",
   "private": true,
-  "version": "1.4.21",
+  "version": "1.4.22",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
