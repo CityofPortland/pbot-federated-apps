@@ -221,7 +221,7 @@ var amanda;
           return;
         }
 
-        const layers = await this.app.map.getAllLayers();
+        const layers = await this.app.map.layers;
 
         if (!layers || layers.length === 0) {
           this.app.trace.log(
@@ -364,7 +364,7 @@ var amanda;
         if (layer && fieldName && selectionType) {
           // geometry selected callback
           var geometrySelected = async function (geometry) {
-            const layers = await _this.app.map.getAllLayers();
+            const layers = await _this.app.map.layers;
 
             const features = [];
             const promises = [];
@@ -413,14 +413,16 @@ var amanda;
 
             await Promise.all(promises);
 
-            _this.app.events.featuresSelectedByGeometry(
-              layerName,
-              features.map(f => f.attributes),
-              features.map(f =>
-                _this._getPropertyByName(f.attributes, fieldName)
-              ),
-              false
-            );
+            if (features.length > 0) {
+              _this.app.events.featuresSelectedByGeometry(
+                layerName,
+                features.map(f => f.attributes),
+                features.map(f =>
+                  _this._getPropertyByName(f.attributes, fieldName)
+                ),
+                false
+              );
+            }
           };
 
           this.app.map.captureSelection(selectionType, geometrySelected, {
@@ -1581,23 +1583,6 @@ var amanda;
        */
       EsriMap.prototype.getMapCommandImplementation = function () {
         return new amanda.commands.EsriCommandImpl(this.app);
-      };
-      EsriMap.prototype.getAllLayers = async function () {
-        const MAX_RETRIES = 10;
-        var retries = 0;
-
-        while (this.layers.length != 3) {
-          // wait for layers to be populated
-          retries++;
-
-          if (retries > MAX_RETRIES) {
-            break;
-          }
-
-          await new Promise(r => setTimeout(r, 1000));
-        }
-
-        return this.layers;
       };
       /**
        * Gets a layer by layer name.
