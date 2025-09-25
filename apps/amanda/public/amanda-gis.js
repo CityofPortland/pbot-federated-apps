@@ -1599,7 +1599,7 @@ var amanda;
 
         let tries = 0;
 
-        while (this.layers.length === 0) {
+        while (this.layers.length != 3) {
           tries++;
 
           if (tries > MAX_TRIES) {
