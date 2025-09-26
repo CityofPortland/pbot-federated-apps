@@ -221,7 +221,7 @@ var amanda;
           return;
         }
 
-        const layers = await this.app.map.layers;
+        const layers = await this.app.map.getAllLayers();
 
         if (!layers || layers.length === 0) {
           this.app.trace.log(
@@ -364,7 +364,7 @@ var amanda;
         if (layer && fieldName && selectionType) {
           // geometry selected callback
           var geometrySelected = async function (geometry) {
-            const layers = await _this.app.map.layers;
+            const layers = await _this.app.map.getAllLayers();
 
             const features = [];
             const promises = [];
@@ -1583,6 +1583,23 @@ var amanda;
        */
       EsriMap.prototype.getMapCommandImplementation = function () {
         return new amanda.commands.EsriCommandImpl(this.app);
+      };
+      EsriMap.prototype.getAllLayers = async function () {
+        const MAX_RETRIES = 10;
+        var retries = 0;
+
+        while (this.layers.length != this._esriMap.graphicsLayerIds.length) {
+          // wait for layers to be populated
+          retries++;
+
+          if (retries > MAX_RETRIES) {
+            break;
+          }
+
+          await new Promise(r => setTimeout(r, 1000));
+        }
+
+        return this.layers;
       };
       /**
        * Gets a layer by layer name.
