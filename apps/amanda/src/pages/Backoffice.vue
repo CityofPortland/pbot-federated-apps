@@ -10,6 +10,20 @@ const handleMap = (map) => {
     pushpinImage: 'images/map-marker-red-32.png',
     highlightedPushpinImage: 'images/map-marker-blue-32.png',
     logLevel: 'DEBUG',
+    }).then(() => {
+    require([
+      'esri/layers/FeatureLayer',
+    ], function (FeatureLayer) {
+      map.addLayers([
+        'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/0',
+        'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/2',
+        'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/1',
+      ].map(url => new FeatureLayer(url,
+        {
+          outFields: ['PROPGISID1']
+        }
+      )));
+    });
   });
 }
 </script>

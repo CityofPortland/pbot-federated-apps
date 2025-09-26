@@ -1584,8 +1584,9 @@ var amanda;
       EsriMap.prototype.getMapCommandImplementation = function () {
         return new amanda.commands.EsriCommandImpl(this.app);
       };
-      EsriMap.prototype.getAllLayers = async function () {
+      EsriMap.prototype.awaitLayers = async function () {
         const MAX_RETRIES = 10;
+
         var retries = 0;
 
         while (
@@ -1604,6 +1605,9 @@ var amanda;
 
           await new Promise(r => setTimeout(r, 1000));
         }
+      };
+      EsriMap.prototype.getAllLayers = async function () {
+        await this.awaitLayers();
 
         return this.layers;
       };
@@ -1614,23 +1618,12 @@ var amanda;
        */
       EsriMap.prototype.getLayerByName = async function (name) {
         var layer = null;
+
         if (!name) {
           return null;
         }
 
-        const MAX_TRIES = 10;
-
-        let tries = 0;
-
-        while (this.layers.length != 3) {
-          tries++;
-
-          if (tries > MAX_TRIES) {
-            break;
-          }
-
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
+        await this.awaitLayers();
 
         for (var i = 0; i < this.layers.length; i++) {
           if (
