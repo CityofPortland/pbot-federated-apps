@@ -1588,7 +1588,13 @@ var amanda;
         const MAX_RETRIES = 10;
         var retries = 0;
 
-        while (this.layers.length != this._esriMap.graphicsLayerIds.length) {
+        while (
+          this.layers.length !=
+          this._esriMap.graphicsLayerIds.filter(
+            id =>
+              ![this._pushpinLayerName, this._hpushpinLayerName].includes(id)
+          ).length
+        ) {
           // wait for layers to be populated
           retries++;
 
