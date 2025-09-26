@@ -4,7 +4,7 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index",
-  "version": "1.4.22",
+  "version": "1.4.23",
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "bugs": {
     "url": "https://github.com/CityofPortland/pbotapps-federated-apps/issues"
