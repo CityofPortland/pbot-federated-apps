@@ -13,8 +13,9 @@ require([
   'esri/dijit/Basemap',
   'esri/geometry/Extent',
   'esri/layers/ArcGISTiledMapServiceLayer',
+  'esri/layers/FeatureLayer',
   'esri/SpatialReference',
-], function (Map, Basemap, Extent, TileLayer, SpatialReference) {
+], function (Map, Basemap, Extent, TileLayer, FeatureLayer, SpatialReference) {
   map = new Map('map', {
     basemap: new Basemap({
       layers: [
@@ -30,6 +31,16 @@ require([
     }),
     zoom: 13,
   });
+
+  map.addLayers([
+    'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/0',
+    'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/2',
+    'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_AMANDA/MapServer/1',
+  ].map(url => new FeatureLayer(url,
+    {
+      outFields: ['PROPGISID1']
+    }
+  )));
 
   emit('map-ready', map);
 });
