@@ -2,7 +2,7 @@ import { BaseType, User } from '@pbotapps/objects';
 import { RuleType } from './rule.js';
 
 export interface UserRepository {
-  getUser(user: Partial<User>): Promise<User | undefined>;
+  getUser(user: User): Promise<Partial<User> | undefined>;
 }
 
 export interface RuleRepository {

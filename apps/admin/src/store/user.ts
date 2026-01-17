@@ -20,18 +20,29 @@ export const useUserStore = defineStore('user', {
       const token = await getToken();
 
       try {
-        const res = await query<{ users: Array<User> }>({
+        const res = await query<{ addRuleToUser: User }>({
           operation: `
-          mutation addRule {
-            addRuleToUser(user_id: "${user._id}" rule_id: "${rule._id}")
+          mutation addRule($ruleId:ID! $userId:ID!) {
+            addRuleToUser(ruleId:$ruleId userId:$userId) {
+              id
+              email
+            }
           }`,
           headers: {
             Authorization: `Bearer ${token}`,
+          },
+          variables: {
+            ruleId: rule.id,
+            userId: user.id,
           },
         });
 
         if (res.errors) {
           // display them somehow
+        }
+
+        if (res.data && res.data.addRuleToUser) {
+          return { ...res.data.addRuleToUser };
         }
       } catch (err) {
         // display them?
@@ -46,9 +57,9 @@ export const useUserStore = defineStore('user', {
           operation: `
           query getUsers {
             users {
-              _id
-              _changed
-              _created
+              id
+              updated
+              created
               email
               firstName
               lastName
@@ -64,7 +75,7 @@ export const useUserStore = defineStore('user', {
         }
 
         if (res.data) {
-          this.users = res.data.users;
+          this.users = res.data.users.filter(u => u != undefined);
         }
       } catch (err) {
         // display them?
@@ -72,6 +83,7 @@ export const useUserStore = defineStore('user', {
       }
     },
     async getMe() {
+      console.debug('getMe');
       const token = await getToken();
 
       try {
@@ -79,16 +91,16 @@ export const useUserStore = defineStore('user', {
           operation: `
           query me {
             me {
-              _id
-              _changed
-              _created
+              id
+              updated
+              created
               email
               firstName
               lastName
               rules {
-                _id
+                id
                 application {
-                  _id
+                  id
                 }
               }
             }
@@ -117,7 +129,7 @@ export const useUserStore = defineStore('user', {
         const res = await query<{ users: Array<User> }>({
           operation: `
           mutation removeRule {
-            removeRuleFromUser(user_id: "${user._id}" rule_id: "${rule._id}")
+            removeRuleFromUser(user_id: "${user.id}" rule_id: "${rule.id}")
           }`,
           headers: {
             Authorization: `Bearer ${token}`,

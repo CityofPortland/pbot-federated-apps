@@ -20,8 +20,8 @@ onMounted(() => store.getApplications());
         <Anchor :url="href" @click="navigate">Add application</Anchor>
       </router-link>
     </header>
-    <ul class="grid grid-cols-1 gap-8">
-      <li v-for="application in applications" :key="application._id">
+    <ul class="grid grid-cols-1 gap-8" v-if="applications">
+      <li v-for="application in applications" :key="application.id">
         <Listing :app="application" />
       </li>
     </ul>

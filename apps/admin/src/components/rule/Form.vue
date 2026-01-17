@@ -6,19 +6,16 @@ import {
   Select,
   Textarea,
   Toggle,
-  query,
 } from '@pbotapps/components';
-import { computed, reactive, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onMounted, reactive, toRefs } from 'vue';
 
 import { useApplicationStore } from '../../store/application';
 import { Application } from '../../models/application';
 import { Rule } from '../../models/rule';
-import { useAuthStore } from '../../store/auth';
+import { useRuleStore } from '../../store/rule';
 
-const store = useApplicationStore();
-const { getToken } = useAuthStore();
-const router = useRouter();
+const appStore = useApplicationStore();
+const ruleStore = useRuleStore();
 
 const props = defineProps({
   application: {
@@ -36,47 +33,15 @@ const props = defineProps({
 const { application } = toRefs(props);
 const rule = reactive(props.rule);
 
-const applications = computed(() => store.applications);
+const applications = computed(() => appStore.applications);
 
 const handleSubmit = async () => {
-  const token = await getToken();
-  try {
-    const res = await query<{ addRule: Rule }>({
-      operation: `
-          mutation addRule($applicationId: ID! $input: RuleInput!) {
-            addRule(applicationId: $applicationId input:$input) {
-              _id
-            }
-          }`,
-      variables: {
-        applicationId: application.value._id,
-        input: {
-          ...rule,
-        },
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (res.errors) {
-      // display them somehow
-    }
-
-    const r = res.data?.addRule;
-
-    if (r && r._id) {
-      const to = {
-        name: 'Application',
-        params: { id: application.value._id },
-      };
-      // route to new application
-      router.push(to);
-    }
-  } catch (err) {
-    // display them?
-    console.error(err);
-  }
+  await ruleStore.add(rule, application.value);
 };
+
+onMounted(() => {
+  appStore.getApplications();
+});
 </script>
 
 <template>
@@ -90,8 +55,8 @@ const handleSubmit = async () => {
       <Select :id="id" :name="id" :required="required">
         <option
           v-for="a in applications"
-          :key="a._id"
-          :selected="a._id == application._id"
+          :key="a.id"
+          :selected="a.id == application.id"
         >
           {{ a.name }}
         </option>

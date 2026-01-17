@@ -18,18 +18,18 @@ async function getRule() {
     operation: `
       query Query {
         rule(id: "${currentRoute.value.params.id}"){
-            _id
+            id
             subject
             action
             conditions
             fields
             inverted
             application {
-                _id
+                id
                 name
             }
             users {
-                _id
+                id
                 email
                 firstName
                 lastName
