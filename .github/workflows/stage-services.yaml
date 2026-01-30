@@ -66,14 +66,14 @@ jobs:
                       - path: /graphql
                         pathType: ImplementationSpecific
                 tls:
-                  - secretName: pudl-test-portland-gov-tls
+                  - secretName: pudl-portland-gov-tls
                     hosts:
                       - pudl-test.portland.gov
               extraEnv:
                 - name: AIRFLOW_POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: pudl-test-airflow
+                      name: pudl-airflow
                       key: POSTGRES_PASSWORD
                 - name: AIRFLOW_POSTGRES_USERNAME
                   value: airflow_admin
@@ -95,10 +95,10 @@ jobs:
                 - name: PUDL_POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: pudl-test-metastore
+                      name: pudl-metastore
                       key: POSTGRES_PASSWORD
                 - name: PUDL_POSTGRES_HOST
-                  value: pudl-test-postgres
+                  value: pudl-postgres
                 - name: PUDL_POSTGRES_PORT
                   value: "5432"
                 - name: PUDL_POSTGRES_USERNAME

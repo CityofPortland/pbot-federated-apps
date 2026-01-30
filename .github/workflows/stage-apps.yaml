@@ -157,7 +157,7 @@ jobs:
                       - path: /
                         pathType: ImplementationSpecific
                 tls:
-                  - secretName: pudl-test-portland-gov-tls
+                  - secretName: pudl-portland-gov-tls
                     hosts:
                       - pudl-test.portland.gov
           - app: sign-library
