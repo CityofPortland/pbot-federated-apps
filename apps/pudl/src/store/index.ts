@@ -1,8 +1,8 @@
-import { createAuthStore } from '@pbotapps/authorization';
 import { query } from '@pbotapps/components';
 import cronstrue from 'cronstrue';
 import cron from 'cron-parser';
 import { defineStore } from 'pinia';
+import { getAccessToken } from '../auth';
 
 interface Zone {
   name: string;
@@ -38,11 +38,6 @@ interface Pipeline {
   };
 }
 
-export const useAuthStore = createAuthStore(
-  import.meta.env.VITE_AZURE_CLIENT_ID,
-  import.meta.env.VITE_AZURE_TENANT_ID
-);
-
 export const useStore = defineStore('pudl', {
   state: () => ({
     data: {
@@ -76,9 +71,7 @@ export const useStore = defineStore('pudl', {
   },
   actions: {
     async getZones() {
-      const { getToken } = useAuthStore();
-
-      const token = await getToken();
+      const token = await getAccessToken();
 
       this.data.zones = [] as Array<Zone>;
 
@@ -130,9 +123,7 @@ export const useStore = defineStore('pudl', {
       }
     },
     async getPipelines() {
-      const { getToken } = useAuthStore();
-
-      const token = await getToken();
+      const token = await getAccessToken();
 
       this.data.pipelines = [] as Array<Pipeline>;
 
