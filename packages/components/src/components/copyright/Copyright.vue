@@ -1,5 +1,5 @@
 <template>
-  <small class="grid grid-cols-1 gap-2">
+  <div class="grid grid-cols-1 gap-2">
     <slot>
       <h2 class="font-semibold text-lg">City of Portland, Oregon</h2>
       <div class="flex flex-wrap space-x-3 md:space-x-0 lg:space-x-3">
@@ -16,7 +16,7 @@
       </div>
       <p class="text-gray-700 text-base">© Copyright {{ copyrightDate }}</p>
     </slot>
-  </small>
+  </div>
 </template>
 
 <script lang="ts">
