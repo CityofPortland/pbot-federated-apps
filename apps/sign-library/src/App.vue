@@ -83,6 +83,7 @@ const dev = computed(() => import.meta.env.MODE != 'production');
             }[message[1][0]]
           "
           variant="light"
+          role="status"
           :summary="message[1][1].message"
           dismissible
           @close="messages.remove(message[0])"

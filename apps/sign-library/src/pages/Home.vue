@@ -178,10 +178,10 @@ const colors = computed(() => {
 
   return [...unique.values()]
     .map(c => ({
-      id: c,
+      id: c || 'colors-null',
       checked: includes.value.color ? includes.value.color.includes(c) : false,
       count: counts.get(c) || 0,
-      label: counts.get(c) ? `${c} (${counts.get(c)})` : `${c}`,
+      label: `${c || 'NULL'} (${counts.get(c) || 0})`,
       value: c,
     }))
     .sort((a, b) => b.count - a.count);
@@ -196,12 +196,12 @@ const shapes = computed(() => {
   }, new Map<string, number>());
 
   return SHAPES.map(x => ({
-    id: x,
+    id: x || 'shapes-null',
     checked: includes.value.shape
       ? includes.value.shape.some(i => i == x)
       : false,
     count: counts.get(x) || 0,
-    label: counts.get(x) ? `${x} (${counts.get(x)})` : `${x}`,
+    label: `${x || 'NULL'} (${counts.get(x) || 0})`,
     value: x,
   }));
 });
@@ -218,12 +218,12 @@ const statuses = computed(() => {
     const count = counts.get(x) || 0;
 
     return {
-      id: x,
+      id: x || 'statuses-null',
       checked: includes.value.status
         ? includes.value.status.some(i => i == x)
         : false,
       count,
-      label: counts.get(x) ? `${x} (${counts.get(x)})` : `${x}`,
+      label: `${x || 'NULL'} (${counts.get(x) || 0})`,
       value: x,
     };
   });
@@ -238,12 +238,12 @@ const types = computed(() => {
   }, new Map<string, number>());
 
   return TYPES.map(x => ({
-    id: x,
+    id: x || 'types-null',
     checked: includes.value.type
       ? includes.value.type.some(i => i == x)
       : false,
     count: counts.get(x) || 0,
-    label: counts.get(x) ? `${x} (${counts.get(x)})` : `${x}`,
+    label: `${x || 'NULL'} (${counts.get(x) || 0})`,
     value: x,
   }));
 });
@@ -309,10 +309,11 @@ const fieldValues = computed(() => {
       <aside>
         <form class="grid grid-cols-1 gap-4" @submit.prevent="">
           <Input
-            id="query"
+            id="search"
             type="search"
+            name="Search"
             v-model="query"
-            placeholder="Search..."
+            placeholder="Search"
             class="w-full"
             @changed="changeQuery({ query: $event })"
           />
@@ -325,13 +326,14 @@ const fieldValues = computed(() => {
             >
               <Select
                 :id="id"
-                :name="id"
+                name="Field"
                 v-model="field"
                 @changed="
                   field = $event;
                   includes[$event] = [];
                 "
                 class="px-2 py-1"
+                aria-label="Filter field"
               >
                 <option value="none">none</option>
                 <option
@@ -403,7 +405,7 @@ const fieldValues = computed(() => {
             <Entry id="pageSize" label="Page size" v-slot="{ id }">
               <Select
                 :id="id"
-                :name="id"
+                name="Page Size"
                 @changed="changeQuery({ pageSize: $event })"
                 class="px-2 py-1"
               >
@@ -415,7 +417,7 @@ const fieldValues = computed(() => {
             <Entry id="sort" label="Sort by" v-slot="{ id }">
               <Select
                 :id="id"
-                :name="id"
+                name="Sort By"
                 @changed="changeQuery({ sort: $event })"
                 class="px-2 py-1"
               >
@@ -431,7 +433,7 @@ const fieldValues = computed(() => {
             <Entry id="sortOrder" label="Sort order" v-slot="{ id }">
               <Select
                 :id="id"
-                :name="id"
+                name="Sort Order"
                 @changed="changeQuery({ sortOrder: $event })"
                 class="px-2 py-1"
               >
