@@ -309,12 +309,12 @@ const fieldValues = computed(() => {
       <aside>
         <form class="grid grid-cols-1 gap-4" @submit.prevent="">
           <Input
-            id="query"
+            id="search"
             type="search"
+            name="Search"
             v-model="query"
-            placeholder="Search..."
+            placeholder="Search"
             class="w-full"
-            aria-label="Search"
             @changed="changeQuery({ query: $event })"
           />
           <Box class="p-2 border border-current rounded-md space-y-2">
@@ -326,7 +326,7 @@ const fieldValues = computed(() => {
             >
               <Select
                 :id="id"
-                :name="id"
+                name="Field"
                 v-model="field"
                 @changed="
                   field = $event;
@@ -405,7 +405,7 @@ const fieldValues = computed(() => {
             <Entry id="pageSize" label="Page size" v-slot="{ id }">
               <Select
                 :id="id"
-                :name="id"
+                name="Page Size"
                 @changed="changeQuery({ pageSize: $event })"
                 class="px-2 py-1"
               >
@@ -417,7 +417,7 @@ const fieldValues = computed(() => {
             <Entry id="sort" label="Sort by" v-slot="{ id }">
               <Select
                 :id="id"
-                :name="id"
+                name="Sort By"
                 @changed="changeQuery({ sort: $event })"
                 class="px-2 py-1"
               >
@@ -433,7 +433,7 @@ const fieldValues = computed(() => {
             <Entry id="sortOrder" label="Sort order" v-slot="{ id }">
               <Select
                 :id="id"
-                :name="id"
+                name="Sort Order"
                 @changed="changeQuery({ sortOrder: $event })"
                 class="px-2 py-1"
               >
