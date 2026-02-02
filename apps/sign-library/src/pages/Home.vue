@@ -178,10 +178,10 @@ const colors = computed(() => {
 
   return [...unique.values()]
     .map(c => ({
-      id: c,
+      id: c || 'colors-null',
       checked: includes.value.color ? includes.value.color.includes(c) : false,
       count: counts.get(c) || 0,
-      label: counts.get(c) ? `${c} (${counts.get(c)})` : `${c}`,
+      label: `${c || 'NULL'} (${counts.get(c) || 0})`,
       value: c,
     }))
     .sort((a, b) => b.count - a.count);
@@ -196,12 +196,12 @@ const shapes = computed(() => {
   }, new Map<string, number>());
 
   return SHAPES.map(x => ({
-    id: x,
+    id: x || 'shapes-null',
     checked: includes.value.shape
       ? includes.value.shape.some(i => i == x)
       : false,
     count: counts.get(x) || 0,
-    label: counts.get(x) ? `${x} (${counts.get(x)})` : `${x}`,
+    label: `${x || 'NULL'} (${counts.get(x) || 0})`,
     value: x,
   }));
 });
@@ -218,12 +218,12 @@ const statuses = computed(() => {
     const count = counts.get(x) || 0;
 
     return {
-      id: x,
+      id: x || 'statuses-null',
       checked: includes.value.status
         ? includes.value.status.some(i => i == x)
         : false,
       count,
-      label: counts.get(x) ? `${x} (${counts.get(x)})` : `${x}`,
+      label: `${x || 'NULL'} (${counts.get(x) || 0})`,
       value: x,
     };
   });
@@ -238,12 +238,12 @@ const types = computed(() => {
   }, new Map<string, number>());
 
   return TYPES.map(x => ({
-    id: x,
+    id: x || 'types-null',
     checked: includes.value.type
       ? includes.value.type.some(i => i == x)
       : false,
     count: counts.get(x) || 0,
-    label: counts.get(x) ? `${x} (${counts.get(x)})` : `${x}`,
+    label: `${x || 'NULL'} (${counts.get(x) || 0})`,
     value: x,
   }));
 });
