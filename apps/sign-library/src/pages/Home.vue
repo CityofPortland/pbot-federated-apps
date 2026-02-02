@@ -314,6 +314,7 @@ const fieldValues = computed(() => {
             v-model="query"
             placeholder="Search..."
             class="w-full"
+            aria-label="Search"
             @changed="changeQuery({ query: $event })"
           />
           <Box class="p-2 border border-current rounded-md space-y-2">
@@ -332,6 +333,7 @@ const fieldValues = computed(() => {
                   includes[$event] = [];
                 "
                 class="px-2 py-1"
+                aria-label="Filter field"
               >
                 <option value="none">none</option>
                 <option
