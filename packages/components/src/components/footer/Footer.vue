@@ -4,7 +4,6 @@
       <div class="grid grid-cols-1 gap-3">
         <section>
           <div class="grid grid-cols-1 gap-3">
-            <h2 class="sr-only">ADA accommodations</h2>
             <p>
               The City of Portland ensures meaningful access to city programs,
               services, and activities to comply with Civil Rights Title VI and
