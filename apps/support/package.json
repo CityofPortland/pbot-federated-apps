@@ -2,16 +2,15 @@
   "name": "@pbotapps/support",
   "description": "Frontend app for displaying technical support documents",
   "private": true,
-  "version": "1.4.23",
+  "version": "1.4.24",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pbotapps/authorization": "workspace:^",
+    "@azure/msal-browser": "^3.27.0",
     "@pbotapps/components": "workspace:^",
-    "jose": "^4.15.9",
     "pinia": "^2.2.6",
     "showdown": "^2.1.0",
     "vue": "^3.5.13",
