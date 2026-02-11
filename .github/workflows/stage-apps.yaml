@@ -127,7 +127,7 @@ jobs:
               ingress:
                 enabled: true
                 annotations:
-                  nginx.ingress.kubernetes.io/permanent-redirect: https://www.portland.gov/transportation/permitting/temporary-street-use-permitting-tsup#toc-on-street-bus-or-motorcoach-parking
+                  nginx.ingress.kubernetes.io/permanent-redirect: "https://www.portland.gov/transportation/permitting/temporary-street-use-permitting-tsup"
 
                 hosts:
                   - host: pbotapps-test.portland.gov
