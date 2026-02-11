@@ -45,13 +45,6 @@ jobs:
             files: |
               packages/components/.env.production.local:
                 - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql/sign
-          - app: support
-            directory: apps/support
-            registry: pbotapps
-            repository: federation/app/support
-            files: |
-              packages/components/.env.production.local:
-                - VITE_GRAPHQL_URL=https://pbotapps-test.portland.gov/graphql/support
     steps:
       - uses: actions/checkout@v3
       - uses: ./packages/actions/file-writer
@@ -176,28 +169,6 @@ jobs:
                   - host: pbotapps-test.portland.gov
                     paths:
                       - path: /sign-library(/|$)(.*)
-                        pathType: ImplementationSpecific
-                tls:
-                  - secretName: pbotapps-test-portland-gov-tls
-                    hosts:
-                      - pbotapps-test.portland.gov
-          - app: support
-            directory: apps/support
-            repository: federation/app/support
-            cluster-name: pbotapps-kube-1
-            cluster-rg: pbotapps-kube-rg
-            cluster-ns: pbotapps-test
-            values: |
-              ingress:
-                enabled: true
-                annotations:
-                  nginx.ingress.kubernetes.io/rewrite-target: /$2
-                  nginx.ingress.kubernetes.io/server-snippet: |-
-                    add_header X-Robots-Tag "noindex, nofollow";
-                hosts:
-                  - host: pbotapps-test.portland.gov
-                    paths:
-                      - path: /support(/|$)(.*)
                         pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-test-portland-gov-tls
