@@ -1,7 +1,7 @@
 <template>
   <article>
     <h1 class="text-2xl font-bold mb-8">Legal disclaimer</h1>
-    <main class="grid grid-cols-1 gap-3 prose">
+    <section class="grid grid-cols-1 gap-3 prose">
       <p>
         In an effort to make parking information more accessible, the Bureau of
         Transportation has created this application. Every effort has been made
@@ -35,7 +35,7 @@
         Computer Fraud and Abuse Act of 1984 and the National Information
         Infrastructure Protection Act of 1996.
       </p>
-    </main>
+    </section>
   </article>
 </template>
 
