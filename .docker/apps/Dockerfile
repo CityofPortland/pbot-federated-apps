@@ -14,8 +14,9 @@ RUN npm install -g pnpm &&\
 
 WORKDIR /home/node/${WORKDIR}
 
-RUN pnpm approve-builds --all
+
 RUN pnpm --filter "{.}..." install && \
+    pnpm approve-builds --all && \
     pnpm --filter "{.}^..." build && \
     pnpm build --mode ${MODE}
 
