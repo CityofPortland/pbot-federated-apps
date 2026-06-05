@@ -4,6 +4,7 @@
   "description": "PBOT applications relying on federated graphs",
   "author": "Mike McDonald <michael.mcdonald@portlandoregon.gov>",
   "license": "MIT",
+  "packageManager": "pnpm@10.28.2",
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
     "@typescript-eslint/eslint-plugin": "^5.62.0",

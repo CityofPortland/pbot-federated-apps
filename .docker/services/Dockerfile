@@ -6,7 +6,7 @@ ENV NODE_ENV=ci
 
 COPY .docker/services/rootfs /
 
-RUN npm install -g pnpm &&\
+RUN npm install -g pnpm@10.28.2 &&\
     pnpm config set store-dir /home/node/.pnpm-store
 
 WORKDIR /home/node/
@@ -16,7 +16,6 @@ COPY . /home/node/
 WORKDIR /home/node/${WORKDIR}
 
 RUN pnpm --filter "{.}..." install
-RUN pnpm approve-builds --all
 RUN pnpm --filter "{.}..." build
 
 FROM node:22-bookworm-slim
@@ -27,7 +26,7 @@ ENV NODE_ENV=production
 
 COPY --from=builder /home/node /home/node
 
-RUN npm install -g pnpm && \
+RUN npm install -g pnpm@10.28.2 && \
     # remove any node_modules folders
     find /home/node/ -name "node_modules" -type d -prune -exec rm -rf '{}' +
 
