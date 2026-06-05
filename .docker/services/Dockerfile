@@ -15,6 +15,7 @@ COPY . /home/node/
 
 WORKDIR /home/node/${WORKDIR}
 
+RUN pnpm approve-builds --all
 RUN pnpm --filter "{.}..." install
 RUN pnpm --filter "{.}..." build
 
