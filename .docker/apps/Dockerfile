@@ -9,14 +9,13 @@ WORKDIR /home/node/
 
 COPY . .
 
-RUN npm install -g pnpm &&\
+RUN npm install -g pnpm@10.28.2 &&\
     pnpm config set store-dir /home/node/.pnpm-store
 
 WORKDIR /home/node/${WORKDIR}
 
 
 RUN pnpm --filter "{.}..." install && \
-    pnpm approve-builds --all && \
     pnpm --filter "{.}^..." build && \
     pnpm build --mode ${MODE}
 
