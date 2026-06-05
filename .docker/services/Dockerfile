@@ -15,8 +15,8 @@ COPY . /home/node/
 
 WORKDIR /home/node/${WORKDIR}
 
-RUN pnpm approve-builds --all
 RUN pnpm --filter "{.}..." install
+RUN pnpm approve-builds --all
 RUN pnpm --filter "{.}..." build
 
 FROM node:22-bookworm-slim
