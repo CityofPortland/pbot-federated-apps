@@ -50,6 +50,8 @@ app.use(
             'tim.pittman@portlandoregon.gov',
             'travis.hardaker@portlandoregon.gov',
             'jenny.oh@portlandoregon.gov',
+            'taylor.huschka@portlandoregon.gov',
+            'michael.s.williams@portlandoregon.gov',
           ].find(
             u =>
               u.localeCompare(user.id, undefined, { sensitivity: 'base' }) == 0
