@@ -1,7 +1,7 @@
 <template>
   <input
     :id="id"
-    :name="id"
+    :name="name || id"
     :type="type"
     :required="required"
     :disabled="disabled"
@@ -23,6 +23,9 @@ export default defineComponent({
     id: {
       type: String,
       required: true,
+    },
+    name: {
+      type: String,
     },
     type: {
       type: String as () => TextInputType,

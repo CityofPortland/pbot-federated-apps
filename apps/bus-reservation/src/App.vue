@@ -41,15 +41,34 @@ onMounted(async () => {
           <span class="truncate text-xl">Bus Reservations</span>
         </router-link>
       </template>
+      <template #menu>
+        <div class="flex gap-2">
+          <RouterLink to="/reservations" custom v-slot="{ href, navigate }">
+            <Anchor :url="href" @click="navigate">Reservations</Anchor>
+          </RouterLink>
+          <RouterLink
+            v-if="store.rules.find(r => r.subject == 'hotel')"
+            to="/hotels"
+            custom
+            v-slot="{ href, navigate }"
+          >
+            <Anchor :url="href" @click="navigate">Hotels</Anchor>
+          </RouterLink>
+        </div>
+        <Nav class="mt-3 md:mt-0 md:ml-auto">
+          <SignIn v-if="!accessToken" />
+          <LoggedIn v-else />
+        </Nav>
+      </template>
     </Header>
-    <section role="banner">
+    <!-- <section role="banner">
       <Box
         v-if="dev"
         color="orange"
         class="p-4 text-center text-xl font-semibold uppercase"
         >Development version</Box
       >
-    </section>
+    </section> -->
     <main class="flex-grow">
       <Breadcrumbs v-if="path != '/'" :path="path" class="mb-4 px-4" />
       <router-view />

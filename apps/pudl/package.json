@@ -1,15 +1,15 @@
 {
   "name": "@pbotapps/pudl",
   "private": true,
-  "version": "1.4.23",
+  "version": "1.4.25",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pbotapps/authorization": "workspace:^",
     "@pbotapps/components": "workspace:^",
+    "@pbotapps/msal-authorization": "workspace:^",
     "axios": "^1.7.7",
     "cron-parser": "^4.9.0",
     "cronstrue": "^2.51.0",

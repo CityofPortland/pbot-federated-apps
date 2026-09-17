@@ -49,7 +49,7 @@ jobs:
               ingress:
                 enabled: true
                 annotations:
-                  nginx.ingress.kubernetes.io/rewrite-target: /$2
+                  nginx.ingress.kubernetes.io/permanent-redirect: "https://www.portland.gov/transportation/permitting/temporary-street-use-permitting-tsup"
                 hosts:
                   - host: pbotapps.portland.gov
                     paths:
@@ -92,26 +92,6 @@ jobs:
                   - host: pbotapps.portland.gov
                     paths:
                       - path: /sign-library(/|$)(.*)
-                        pathType: ImplementationSpecific
-                tls:
-                  - secretName: pbotapps-portland-gov-tls
-                    hosts:
-                      - pbotapps.portland.gov
-          - app: support
-            directory: apps/support
-            repository: federation/app/support
-            cluster-name: pbotapps-kube-1
-            cluster-rg: pbotapps-kube-rg
-            cluster-ns: pbotapps
-            values: |
-              ingress:
-                enabled: true
-                annotations:
-                  nginx.ingress.kubernetes.io/rewrite-target: /$2
-                hosts:
-                  - host: pbotapps.portland.gov
-                    paths:
-                      - path: /support(/|$)(.*)
                         pathType: ImplementationSpecific
                 tls:
                   - secretName: pbotapps-portland-gov-tls

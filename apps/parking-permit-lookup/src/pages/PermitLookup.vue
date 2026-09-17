@@ -10,7 +10,7 @@
         alt="PBOT Area Parking Permit Program logo"
       />
     </header>
-    <main class="max-w-xl flex flex-col space-y-4">
+    <section class="max-w-xl flex flex-col space-y-4">
       <i18n-t keypath="help" tag="p">
         <template v-slot:licenseFAQLink>
           <Anchor
@@ -28,6 +28,7 @@
       <form
         class="flex flex-col md:flex-row md:space-x-4 md:space-y-0 space-y-4"
         @submit.prevent="handleSubmit"
+        aria-label="Parking permit lookup"
       >
         <Input
           id="licensePlateInput"
@@ -79,12 +80,18 @@
           }"
           :disabled="isLoading || error"
         >
-          <div v-if="isLoading" class="flex items-center justify-center px-3">
+          <div
+            v-if="isLoading"
+            class="flex items-center justify-center px-3"
+            role="status"
+            aria-label="Loading"
+          >
             <svg
               class="animate-spin h-6 w-6"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <circle
                 class="opacity-25"
@@ -124,7 +131,7 @@
           </template>
         </i18n-t>
       </Message>
-    </main>
+    </section>
   </article>
 </template>
 
