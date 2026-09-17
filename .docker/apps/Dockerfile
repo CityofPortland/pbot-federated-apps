@@ -18,7 +18,7 @@ RUN pnpm --filter "{.}..." install && \
     pnpm --filter "{.}^..." build && \
     pnpm build --mode ${MODE}
 
-FROM nginx
+FROM nginx:stable
 
 ARG WORKDIR
 
@@ -29,7 +29,7 @@ COPY .docker/apps/rootfs /
 WORKDIR /usr/share/nginx/html
 
 # Clean any existing files from the directory
-RUN rm -rf ./*
+RUN rm -rf /usr/share/nginx/html/*
 
 # Copy built application from previous stage
-COPY --from=builder /home/node/${WORKDIR}/dist .
+COPY --from=builder /home/node/${WORKDIR}/dist/ /usr/share/nginx/html
