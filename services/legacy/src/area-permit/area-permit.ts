@@ -1,11 +1,11 @@
 import assert from 'assert';
 
 import { GraphQLBoolean, GraphQLObjectType, GraphQLString } from 'graphql';
-import axios from 'axios';
+import axios from '../api/cale.js';
 
 import { XMLParser } from 'fast-xml-parser';
-import { AreaPermit, AreaPermitZone } from './types';
-import { areaPermitZoneType, getAreaPermitZones } from './area-permit-zone';
+import { AreaPermit, AreaPermitZone } from './types.js';
+import { areaPermitZoneType, getAreaPermitZones } from './area-permit-zone.js';
 
 const CALE_ENFORCEMENT_API_URL = `${process.env.CALE_WEBOFFICE_HOST}/cwo2exportservice/Enforcement/5/EnforcementService.svc`;
 
@@ -25,29 +25,36 @@ export const areaPermitType: GraphQLObjectType = new GraphQLObjectType({
   fields: () => ({
     licensePlate: {
       type: GraphQLString,
-      description: 'Licence plate that owns the area parking permit.'
+      description: 'Licence plate that owns the area parking permit.',
     },
     zone: {
       type: areaPermitZoneType,
-      description: 'Area parking permit zone for this permit.'
+      description: 'Area parking permit zone for this permit.',
     },
     isValid: {
       type: GraphQLBoolean,
-      description: 'Whether the area parking permit is valid (i.e., active, and not expired).'
-    }
-  })
+      description:
+        'Whether the area parking permit is valid (i.e., active, and not expired).',
+    },
+  }),
 });
 
 async function callCaleAPI(id: string): Promise<string> {
-  if (!process.env.AREA_PERMIT_CALE_USERNAME || !process.env.AREA_PERMIT_CALE_PASSWORD) {
+  if (
+    !process.env.AREA_PERMIT_CALE_USERNAME ||
+    !process.env.AREA_PERMIT_CALE_PASSWORD
+  ) {
     throw Error('No API credentials found, unable to call Cale API');
   }
 
   const result = await axios.get(`${CALE_ENFORCEMENT_API_URL}/get/${id}/5`, {
-    auth: { username: process.env.AREA_PERMIT_CALE_USERNAME, password: process.env.AREA_PERMIT_CALE_PASSWORD },
+    auth: {
+      username: process.env.AREA_PERMIT_CALE_USERNAME,
+      password: process.env.AREA_PERMIT_CALE_PASSWORD,
+    },
     headers: {
-      'content-type': 'application/json'
-    }
+      'content-type': 'application/json',
+    },
   });
 
   return result.data;
@@ -55,16 +62,22 @@ async function callCaleAPI(id: string): Promise<string> {
 
 async function findZone(
   id: string,
-  predicate?: (value: AreaPermitZone, index: number, obj: AreaPermitZone[]) => unknown
+  predicate?: (
+    value: AreaPermitZone,
+    index: number,
+    obj: AreaPermitZone[]
+  ) => unknown
 ) {
   if (!predicate) {
-    predicate = (z) => z.id == id;
+    predicate = z => z.id == id;
   }
   const zones = await getAreaPermitZones(false);
   return zones && zones.find(predicate);
 }
 
-async function reduceCaleParkingData(data: CaleParkingData): Promise<AreaPermit> {
+async function reduceCaleParkingData(
+  data: CaleParkingData
+): Promise<AreaPermit> {
   const startDate: Date = new Date(data.StartDateUtc);
   const endDate: Date = new Date(data.EndDateUtc);
 
@@ -72,12 +85,15 @@ async function reduceCaleParkingData(data: CaleParkingData): Promise<AreaPermit>
 
   return {
     licensePlate: data.Code,
-    zone: await findZone(data.Zone, (z) => data.Zone == z.name),
-    isValid: startDate <= currentDate && endDate >= currentDate
+    zone: await findZone(data.Zone, z => data.Zone == z.name),
+    isValid: startDate <= currentDate && endDate >= currentDate,
   };
 }
 
-export async function lookupAreaPermit(licensePlate: string, areaPermitZone: string): Promise<AreaPermit | null> {
+export async function lookupAreaPermit(
+  licensePlate: string,
+  areaPermitZone: string
+): Promise<AreaPermit | null> {
   assert.ok(licensePlate, 'Must pass a license plate to search Cale API');
   assert.ok(areaPermitZone, 'Must pass an area parking permit zone to query');
 
@@ -91,7 +107,7 @@ export async function lookupAreaPermit(licensePlate: string, areaPermitZone: str
     let returnData: AreaPermit = {
       licensePlate,
       zone: await findZone(areaPermitZone),
-      isValid: false
+      isValid: false,
     };
 
     // If no records are returned, there is no valid parking data for that license plate
@@ -101,17 +117,22 @@ export async function lookupAreaPermit(licensePlate: string, areaPermitZone: str
 
     // We could get multiple parking data results or only one
     //  so we'll cast any return values as an array to reduce code duplication
-    const parkingData = Array.isArray(xmlResponseObj.ArrayOfValidParkingData.ValidParkingData)
+    const parkingData = Array.isArray(
+      xmlResponseObj.ArrayOfValidParkingData.ValidParkingData
+    )
       ? xmlResponseObj.ArrayOfValidParkingData.ValidParkingData
       : [xmlResponseObj.ArrayOfValidParkingData.ValidParkingData];
 
-    returnData = parkingData.reduce(async (acc: AreaPermit, curr: CaleParkingData) => {
-      const permit = await reduceCaleParkingData(curr);
-      if (permit.zone && permit.zone.id == areaPermitZone && permit.isValid) {
-        acc = permit;
-      }
-      return acc;
-    }, returnData);
+    returnData = parkingData.reduce(
+      async (acc: AreaPermit, curr: CaleParkingData) => {
+        const permit = await reduceCaleParkingData(curr);
+        if (permit.zone && permit.zone.id == areaPermitZone && permit.isValid) {
+          acc = permit;
+        }
+        return acc;
+      },
+      returnData
+    );
 
     return returnData;
   } catch {

@@ -1,6 +1,9 @@
-import { Geometry } from '@turf/helpers';
+import ESRIGeometry from '@arcgis/core/geometry/Geometry.js';
+import { Geometry as GeoJSONGeometry } from 'geojson';
 
-export function esriGeometryType(geometry: Geometry): string | undefined {
+export function esriGeometryType(
+  geometry: GeoJSONGeometry
+): string | undefined {
   switch (geometry.type) {
     case 'Point':
       return 'esriGeometryPoint';
@@ -19,29 +22,32 @@ export function esriGeometryType(geometry: Geometry): string | undefined {
   }
 }
 
-export function esriGeometry(geometry: Geometry): __esri.Geometry | undefined {
-  let esriProperties = { spatialReference: { wkid: 4326 } };
+export function esriGeometry(
+  geometry: GeoJSONGeometry
+): ESRIGeometry | undefined {
+  const esriProperties: ESRIGeometry = { spatialReference: { wkid: 4326 } };
 
   switch (geometry.type) {
     case 'Point':
-      esriProperties = Object.assign(esriProperties, { x: geometry.coordinates[0], y: geometry.coordinates[1] });
+      esriProperties.x = geometry.coordinates[0];
+      esriProperties.y = geometry.coordinates[1];
       break;
     case 'LineString':
-      esriProperties = Object.assign(esriProperties, { paths: [geometry.coordinates] });
+      esriProperties.paths = [geometry.coordinates];
       break;
     case 'Polygon':
-      esriProperties = Object.assign(esriProperties, { rings: geometry.coordinates });
+      esriProperties.rings = geometry.coordinates;
       break;
     case 'MultiPoint':
-      esriProperties = Object.assign(esriProperties, { points: geometry.coordinates });
+      esriProperties.points = geometry.coordinates;
       break;
     case 'MultiLineString':
-      esriProperties = Object.assign(esriProperties, { paths: geometry.coordinates });
+      esriProperties.paths = geometry.coordinates;
       break;
     case 'MultiPolygon':
-      esriProperties = Object.assign(esriProperties, { rings: [geometry.coordinates] });
+      esriProperties.rings = [geometry.coordinates];
       break;
   }
 
-  return esriProperties as __esri.Geometry;
+  return esriProperties as ESRIGeometry;
 }

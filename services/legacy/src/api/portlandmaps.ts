@@ -1,19 +1,21 @@
 import qs from 'querystring';
 
 import axios from 'axios';
+import { traceRequests } from './logging.js';
 
-import { AddressCandidate } from '@/address/types';
-import { SpatialReference } from '@/types';
+import { AddressCandidate } from '../address/types.js';
+import { SpatialReference } from '../types.js';
 
 const axiosInstance = axios.create({
   baseURL: 'https://www.portlandmaps.com/api',
   headers: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
 });
+traceRequests(axiosInstance, 'portlandmaps');
 
-axiosInstance.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use(config => {
   config.data.api_key = process.env.PORTLANDMAPS_API_KEY;
   config.data = qs.stringify(config.data);
 

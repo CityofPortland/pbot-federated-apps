@@ -1,4 +1,4 @@
-import { BaseType, User } from '@pbotapps/objects';
+import { BaseType } from '@pbotapps/objects';
 import axios from 'axios';
 import { Request, RequestHandler } from 'express';
 import { createRemoteJWKSet, JWTPayload, jwtVerify } from 'jose';
@@ -8,13 +8,22 @@ import { RuleRepository, UserRepository } from './repository.js';
 export const handleToken =
   ({ fail = true }): RequestHandler =>
   async (req, res, next) => {
-    const token = req['token'] || req.header('Authorization')?.split(' ')[1];
+    if (!process.env.AZURE_TENANT_ID || !process.env.AZURE_CLIENT_ID) {
+      throw new Error(
+        'Missing required environment variable: AZURE_TENANT_ID and/or AZURE_CLIENT_ID'
+      );
+    }
+
+    const token = (
+      req['token'] || req.header('Authorization')?.split(' ').pop()
+    )?.toString();
 
     if (!token && fail) {
       res.status(401);
       res.send({
         error: 'UNAUTHORIZED',
-        message: 'You must pass a token to make requests.',
+        message:
+          'You must pass a token in the Authorization header to make requests.',
       });
       return;
     } else if (token) {
@@ -53,7 +62,12 @@ function userFromRequest(req: Request) {
 
   if (user) return user;
 
-  const token = req['token'] as JWTPayload;
+  const token = req['token'] as JWTPayload & {
+    upn: string;
+    oid: string;
+    given_name: string;
+    family_name: string;
+  };
 
   if (!token) return undefined;
 
@@ -61,8 +75,8 @@ function userFromRequest(req: Request) {
     id: token.upn,
     email: token.upn,
     oauthId: token.oid,
-    firstName: token['given_name'],
-    lastName: token['family_name'],
+    firstName: token.given_name,
+    lastName: token.family_name,
   };
 
   return user;
@@ -82,7 +96,7 @@ export const handleRules =
   (repository: RuleRepository, application: BaseType): RequestHandler =>
   async (req, _, next) => {
     // Presuming this to be set by handleUser?
-    const user = userFromRequest(req) as User;
+    const user = userFromRequest(req);
 
     if (user) req['rules'] = await repository.getRules({ user, application });
 

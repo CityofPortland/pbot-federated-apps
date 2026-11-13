@@ -1,21 +1,11 @@
 {
+  "extends": "../../tsconfig.build.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "ESNext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "composite": true,
+    "declaration": true,
+    "moduleResolution": "nodenext",
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"]
 }

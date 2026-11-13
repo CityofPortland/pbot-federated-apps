@@ -1,6 +1,11 @@
-import { GraphQLObjectType, GraphQLFloat, GraphQLNonNull, GraphQLInt } from 'graphql';
+import {
+  GraphQLObjectType,
+  GraphQLFloat,
+  GraphQLNonNull,
+  GraphQLInt,
+} from 'graphql';
 
-import { SpatialReference } from './types';
+import { SpatialReference } from './types.js';
 
 export type Location = {
   x: number;
@@ -15,13 +20,14 @@ const spatialReferenceType: GraphQLObjectType = new GraphQLObjectType({
   fields: {
     wkid: {
       type: GraphQLInt,
-      description: 'A well-known identifier for this spatial reference.'
+      description: 'A well-known identifier for this spatial reference.',
     },
     latestWkid: {
       type: GraphQLInt,
-      description: 'The latest (and greatest?) well-known identifier for this spatial reference.'
-    }
-  }
+      description:
+        'The latest (and greatest?) well-known identifier for this spatial reference.',
+    },
+  },
 });
 
 export const locationType: GraphQLObjectType = new GraphQLObjectType({
@@ -30,16 +36,16 @@ export const locationType: GraphQLObjectType = new GraphQLObjectType({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   fields: {
     x: {
-      type: GraphQLNonNull(GraphQLFloat),
-      description: 'The location along the x axis.'
+      type: new GraphQLNonNull(GraphQLFloat),
+      description: 'The location along the x axis.',
     },
     y: {
-      type: GraphQLNonNull(GraphQLFloat),
-      description: 'The location along the y axis.'
+      type: new GraphQLNonNull(GraphQLFloat),
+      description: 'The location along the y axis.',
     },
     spatialReference: {
       type: spatialReferenceType,
-      description: 'The spatial reference these coordinates are in.'
-    }
-  }
+      description: 'The spatial reference these coordinates are in.',
+    },
+  },
 });

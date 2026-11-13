@@ -5,11 +5,16 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import Metalsmith, { Files } from 'metalsmith';
+import Metalsmith from 'metalsmith';
 import markdown from '@metalsmith/markdown';
 import path, { dirname } from 'path';
-import simpleGit, { SimpleGit } from 'simple-git';
+import { simpleGit } from 'simple-git';
 import { fileURLToPath } from 'url';
+import { z } from 'zod';
+import { createDocumentCache } from './cache.js';
+import { errorProperties, getLogger } from '../logging.js';
+
+const logger = getLogger(['legacy', 'document']);
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const __filename = fileURLToPath(import.meta.url);
@@ -28,29 +33,6 @@ const database = {
     branch: 'master',
   },
 } as { [document: string]: Document };
-
-for (const document in database) {
-  const dir = path.resolve(__dirname, 'document', document);
-
-  if (!fs.existsSync(dir)) {
-    const git: SimpleGit = simpleGit();
-    await git.clone(database[document].repository, dir);
-  }
-}
-
-for (const document of Object.keys(database)) {
-  const dir = path.resolve(__dirname, 'document', document);
-
-  if (!fs.existsSync(dir)) {
-    const git: SimpleGit = simpleGit();
-    await git.clone(database[document].repository, dir);
-  }
-
-  const git: SimpleGit = simpleGit(dir);
-
-  await git.pull();
-  await git.checkout(database[document].branch);
-}
 
 export type Language = {
   code: string;
@@ -99,75 +81,99 @@ export const sectionType: GraphQLObjectType = new GraphQLObjectType({
   },
 });
 
-let refreshing = false;
+const configuredRefreshInterval = Number(
+  process.env.DOCUMENT_REFRESH_INTERVAL_MS
+);
+const refreshInterval =
+  Number.isFinite(configuredRefreshInterval) && configuredRefreshInterval > 0
+    ? configuredRefreshInterval
+    : 5 * 60 * 1000;
 
-export const getDocument = (documentName: string): Promise<Section[]> =>
-  new Promise<Section[]>((resolve, reject) => {
-    if (
-      Object.keys(database).findIndex(value => value === documentName) == -1
-    ) {
-      reject(
-        new Error(`No document named ${documentName} in list of documents.`)
-      );
-    }
+const readRevision = async (documentName: string): Promise<string> => {
+  logger.debug('Checking document revision', { document: documentName });
+  const document = database[documentName];
 
-    Metalsmith(__dirname)
-      .source(
-        path.resolve(
-          __dirname,
-          'document',
-          documentName,
-          database[documentName].subDir || ''
-        )
+  const dir = path.resolve(__dirname, 'document', documentName);
+
+  if (!fs.existsSync(dir)) {
+    await simpleGit().clone(document.repository, dir, [
+      '--branch',
+      document.branch,
+      '--single-branch',
+    ]);
+  } else {
+    const git = simpleGit(dir);
+    await git.checkout(document.branch);
+    await git.pull('origin', document.branch, ['--ff-only']);
+  }
+
+  return simpleGit(dir).revparse(['HEAD']);
+};
+
+const compile = async (documentName: string): Promise<Section[]> => {
+  const started = performance.now();
+  logger.debug('Compiling document', { document: documentName });
+  const files = await Metalsmith(__dirname)
+    .source(
+      path.resolve(
+        __dirname,
+        'document',
+        documentName,
+        database[documentName].subDir || ''
       )
-      .ignore('.git')
-      .destination(`./build/${documentName}`)
-      .clean(true)
-      .use(markdown())
-      .build((err: Error | null, files: Files) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+    )
+    .ignore('.git')
+    .use(markdown())
+    .process();
 
-        const sections = new Array<Section>();
+  const sections: Section[] = [];
 
-        Object.keys(files).forEach(key => {
-          const text = files[key];
-
-          try {
-            const tree: number[] = text.tree;
-
-            // ignore files that aren't attached to a tree
-            if (tree) {
-              const section: Section = {
-                id: text.id,
-                name: text.name,
-                number: tree.pop(),
-                tree: [...tree],
-                depth: tree.length,
-                content: text.contents.toString(),
-              };
-
-              sections.push(section);
-            }
-          } catch (error) {
-            console.error(`Error parsing ${key}: ${JSON.stringify(error)}`);
-          }
-        });
-
-        resolve(sections);
-      });
-
-    if (!refreshing) {
-      refreshing = true;
-      const git: SimpleGit = simpleGit(
-        path.resolve(__dirname, 'document', documentName)
-      );
-      try {
-        git.pull('origin', database[documentName].branch);
-      } finally {
-        refreshing = false;
-      }
+  for (const [, text] of Object.entries(files)) {
+    // Ignore files that aren't attached to a tree.
+    if (text.tree === undefined || text.tree === null) {
+      continue;
     }
+
+    const metadata = await z
+      .object({
+        tree: z.array(z.number().int()),
+        id: z.string().optional(),
+        name: z.string().optional(),
+      })
+      .parseAsync(text);
+
+    sections.push({
+      id: metadata.id,
+      name: metadata.name,
+      number: metadata.tree[metadata.tree.length - 1],
+      tree: metadata.tree,
+      depth: metadata.tree.length,
+      content: text.contents.toString(),
+    });
+  }
+  logger.debug('Document compiled', {
+    document: documentName,
+    count: sections.length,
+    durationMs: performance.now() - started,
   });
+  return sections;
+};
+
+const cachedDocument = createDocumentCache<Section[]>({
+  refreshInterval,
+  readRevision,
+  compile,
+  onError: (name, error) => {
+    logger.error('Document refresh failed', {
+      document: name,
+      ...errorProperties(error),
+    });
+  },
+});
+
+export const getDocument = async (documentName: string): Promise<Section[]> => {
+  if (!Object.prototype.hasOwnProperty.call(database, documentName)) {
+    throw new Error(`No document named ${documentName} in list of documents.`);
+  }
+  return cachedDocument(documentName);
+};

@@ -1,5 +1,5 @@
 import bboxf from '@turf/bbox';
-import { BBox, Feature, Geometry } from '@turf/helpers';
+import { BBox, Feature, Geometry } from 'geojson';
 import {
   GraphQLFloat,
   GraphQLList,
@@ -7,10 +7,10 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import proj4 from 'proj4';
 
-import axios from '../api/arcgis';
-import { GeometryObject } from '../geojson';
+import axios from '../api/arcgis.js';
+import { GeometryObject } from '../geojson.js';
+import proj4 from '../proj4.js';
 
 const PLANS_URLS = [
   'https://www.portlandmaps.com/arcgis/rest/services/Public/Transportation_System_Plan/MapServer/26',
