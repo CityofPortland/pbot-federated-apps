@@ -5,5 +5,5 @@ export interface Repository<T> {
   exists(_id: string): Promise<boolean>;
   get(_id: string): Promise<T | undefined>;
   getAll(): Promise<Array<T>>;
-  query(where: Record<keyof T, any>): Promise<Array<T>>;
+  query(where: Record<keyof T, unknown>): Promise<Array<T>>;
 }
