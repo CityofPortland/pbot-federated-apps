@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from '../api/cale.js';
 import { XMLParser } from 'fast-xml-parser';
 import { GraphQLObjectType, GraphQLString } from 'graphql';
-import { AreaPermitZone } from './types';
+import { AreaPermitZone } from './types.js';
 
 let REFRESHING = false;
 
@@ -15,28 +15,32 @@ export const areaPermitZoneType = new GraphQLObjectType({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   fields: {
     id: {
-      type: GraphQLString
+      type: GraphQLString,
     },
     name: {
       type: GraphQLString,
-      description: 'Name of the zone as it appears in the system of record'
+      description: 'Name of the zone as it appears in the system of record',
     },
     displayName: {
       type: GraphQLString,
-      description: 'String for use in things like labels or selections'
+      description: 'String for use in things like labels or selections',
     },
     subSection: {
       type: GraphQLString,
-      description: 'Portion of Zone name that signifies a sub-section of the larger zone'
-    }
-  }
+      description:
+        'Portion of Zone name that signifies a sub-section of the larger zone',
+    },
+  },
 });
 
 async function refreshAreaPermitZones(): Promise<AreaPermitZone[] | null> {
   REFRESHING = true;
 
   try {
-    if (!process.env.AREA_PERMIT_CALE_USERNAME || !process.env.AREA_PERMIT_CALE_PASSWORD) {
+    if (
+      !process.env.AREA_PERMIT_CALE_USERNAME ||
+      !process.env.AREA_PERMIT_CALE_PASSWORD
+    ) {
       throw Error('No API credentials found, unable to call Cale API');
     }
 
@@ -44,35 +48,43 @@ async function refreshAreaPermitZones(): Promise<AreaPermitZone[] | null> {
     const res = await axios.get(
       `${process.env.CALE_WEBOFFICE_HOST}/cwo2exportservice/Enforcement/1/EnforcementService.svc/getenforcementzones`,
       {
-        auth: { username: process.env.AREA_PERMIT_CALE_USERNAME, password: process.env.AREA_PERMIT_CALE_PASSWORD },
+        auth: {
+          username: process.env.AREA_PERMIT_CALE_USERNAME,
+          password: process.env.AREA_PERMIT_CALE_PASSWORD,
+        },
         headers: {
-          'content-type': 'application/json'
-        }
+          'content-type': 'application/json',
+        },
       }
     );
 
     if (res.status == 200 && res.data) {
       const parser = new XMLParser();
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      const zones: { Description: string; Name: string }[] = parser.parse(res.data).ArrayOfEnforcementZone
-        .EnforcementZone;
+      const zones: { Description: string; Name: string }[] = parser.parse(
+        res.data
+      ).ArrayOfEnforcementZone.EnforcementZone;
 
       return zones
-        .filter((zone) => AREA_PERMIT_ZONE_REGEX.test(zone.Name))
+        .filter(zone => AREA_PERMIT_ZONE_REGEX.test(zone.Name))
         .reduce((acc, curr) => {
           const matches = AREA_PERMIT_ZONE_REGEX.exec(curr.Name);
 
           if (matches) {
             // We only want to display the description of zones that are the 'main' section
             const displayName = () => {
-              return `Zone ${matches[1]}${curr.Description && !matches[2] ? ' (' + curr.Description + ')' : ''}`;
+              return `Zone ${matches[1]}${
+                curr.Description && !matches[2]
+                  ? ' (' + curr.Description + ')'
+                  : ''
+              }`;
             };
 
             const z = {
               id: matches[1].toUpperCase(),
               name: curr.Name,
               displayName: displayName(),
-              subSection: matches[2]
+              subSection: matches[2],
             } as AreaPermitZone;
 
             acc.push(z);
@@ -81,8 +93,6 @@ async function refreshAreaPermitZones(): Promise<AreaPermitZone[] | null> {
           return acc;
         }, new Array<AreaPermitZone>());
     }
-  } catch (err) {
-    throw err;
   } finally {
     REFRESHING = false;
   }
@@ -90,7 +100,9 @@ async function refreshAreaPermitZones(): Promise<AreaPermitZone[] | null> {
   return null;
 }
 
-export async function getAreaPermitZones(refreshFromSource = true): Promise<Array<AreaPermitZone> | null> {
+export async function getAreaPermitZones(
+  refreshFromSource = true
+): Promise<Array<AreaPermitZone> | null> {
   if (areaPermitZones == null) {
     // Haven't retrieved the zones yet...
     // look them up

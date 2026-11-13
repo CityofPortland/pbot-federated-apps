@@ -3,9 +3,11 @@ import { GraphQLBoolean, GraphQLFloat } from 'graphql';
 // @flow strict
 import along from '@turf/along';
 import bboxf from '@turf/bbox';
+import buffer from '@turf/buffer';
 import distance from '@turf/distance';
-import * as turf from '@turf/helpers';
+import { feature, Units } from '@turf/helpers';
 import length from '@turf/length';
+import { BBox, Feature, FeatureCollection, LineString, Point } from 'geojson';
 import {
   GraphQLInt,
   GraphQLList,
@@ -13,21 +15,25 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import proj4 from 'proj4';
 import { arcgisToGeoJSON } from '@terraformer/arcgis';
-import Graphic from '@arcgis/core/Graphic';
+import Graphic from '@arcgis/core/Graphic.js';
 
-import axios from './api/arcgis';
-import { esriGeometry, esriGeometryType } from './common/geojson';
-import { GeometryObject } from './geojson';
-import { AreaPlan, areaPlanType, getAreaPlansByBBox } from './plan/area-plan';
+import axios from './api/arcgis.js';
+import { errorProperties, getLogger } from './logging.js';
+import { esriGeometry, esriGeometryType } from './common/geojson.js';
+import { GeometryObject } from './geojson.js';
+import {
+  AreaPlan,
+  areaPlanType,
+  getAreaPlansByBBox,
+} from './plan/area-plan.js';
 import {
   getMasterStreetPlansByBBox,
   masterStreetPlanType,
-} from './plan/master-street-plan';
-import { MasterStreetPlan } from './plan/types';
-import { getProjects, Project, projectType } from './project';
-import buffer from '@turf/buffer';
+} from './plan/master-street-plan.js';
+import { MasterStreetPlan } from './plan/types.js';
+import proj4 from './proj4.js';
+import { getProjects, Project, projectType } from './project.js';
 
 const URLS = [
   'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_Planning/MapServer/15',
@@ -39,10 +45,6 @@ const URLS = [
   'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_Planning/MapServer/31',
 ];
 
-// ESRI maps use this wkid
-proj4.defs('102100', proj4.defs('EPSG:3857'));
-proj4.defs('EPSG:102100', proj4.defs('EPSG:3857'));
-
 export type Street = {
   id?: string;
   name?: string;
@@ -50,8 +52,8 @@ export type Street = {
   width?: number;
   classifications?: Classification;
   projects?: Array<string>;
-  midpoint: turf.Point;
-  geometry: turf.LineString;
+  midpoint: Point;
+  geometry: LineString;
 };
 
 export type Classification = {
@@ -65,10 +67,24 @@ export type Classification = {
   greenscape?: string;
 };
 
-const midpoint = (geometry: turf.LineString) =>
-  along(geometry, length(turf.feature(geometry), { units: 'meters' }) / 2, {
+const midpoint = (geometry: LineString) =>
+  along(geometry, length(feature(geometry), { units: 'meters' }) / 2, {
     units: 'meters',
   }).geometry;
+
+const buffered = (
+  geometry: LineString,
+  distance: number,
+  unit: Units = 'meters'
+) => {
+  const value = buffer(geometry, distance, { units: unit });
+
+  if (!value) {
+    throw new EvalError('Failed to buffer geometry');
+  }
+
+  return value.geometry;
+};
 
 export const classificationType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Classification',
@@ -121,7 +137,7 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   fields: () => ({
     id: {
-      type: GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString),
       description: 'The PBOT planning id of the street.',
     },
     name: {
@@ -137,7 +153,7 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
       description: 'The block number of the street.',
       resolve: async (street: Street): Promise<number | undefined> => {
         const url =
-          'https://www.portlandmaps.com/arcgis/rest/services/Public/COP_OpenData_Transportation/MapServer/68';
+          'https://www.portlandmaps.com/arcgis/rest/services/Public/Street_Centerlines/MapServer/0';
 
         try {
           const res = await axios.get(`${url}/query`, {
@@ -162,8 +178,8 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
             // find midpoints
             // sort array by distance
             const features: Array<
-              turf.Feature<
-                turf.LineString,
+              Feature<
+                LineString,
                 {
                   LEFTADD1: number;
                   LEFTADD2: number;
@@ -172,11 +188,10 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
                 }
               >
             > = res.data.features
-              .filter(
-                (f: turf.Feature<turf.LineString, { FULL_NAME: string }>) =>
-                  street.name?.startsWith(f.properties.FULL_NAME)
+              .filter((f: Feature<LineString, { FULL_NAME: string }>) =>
+                street.name?.startsWith(f.properties.FULL_NAME)
               )
-              .map((f: turf.Feature<turf.LineString, { distance: number }>) => {
+              .map((f: Feature<LineString, { distance: number }>) => {
                 f.properties.distance = distance(
                   street.midpoint,
                   midpoint(f.geometry),
@@ -187,8 +202,8 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
               })
               .sort(
                 (
-                  a: turf.Feature<turf.LineString, { distance: number }>,
-                  b: turf.Feature<turf.LineString, { distance: number }>
+                  a: Feature<LineString, { distance: number }>,
+                  b: Feature<LineString, { distance: number }>
                 ) => a.properties.distance - b.properties.distance
               );
 
@@ -204,7 +219,10 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
             }
           }
         } catch (err) {
-          console.debug(JSON.stringify(err));
+          getLogger(['legacy', 'streets']).warning(
+            'Unable to resolve street block',
+            errorProperties(err)
+          );
         }
 
         return undefined;
@@ -217,15 +235,13 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
         const url =
           'https://www.portlandmaps.com/arcgis/rest/services/Public/PBOT_Assets/MapServer/139';
 
-        const geometry = buffer(street.geometry, 10, {
-          units: 'meters',
-        }).geometry;
+        const geometry = buffered(street.geometry, 10);
 
         if (geometry) {
           try {
             const res = await axios.get<
-              turf.FeatureCollection<
-                turf.LineString,
+              FeatureCollection<
+                LineString,
                 { distance: number; RoadWidth: number; Streetname: string }
               >
             >(`${url}/query`, {
@@ -263,7 +279,10 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
               return features.shift()?.properties.RoadWidth;
             }
           } catch (err) {
-            console.debug(err);
+            getLogger(['legacy', 'streets']).warning(
+              'Unable to resolve street width',
+              errorProperties(err)
+            );
           }
         }
 
@@ -277,14 +296,14 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
         const url =
           'https://www.portlandmaps.com/arcgis/rest/services/Public/COP_OpenData_Transportation/MapServer/68';
 
-        const bbox = bboxf(buffer(street.geometry, 10, { units: 'meters' }));
+        const bbox = bboxf(buffered(street.geometry, 10));
 
         if (bbox) {
           const [xmin, ymin, xmax, ymax] = bbox;
           try {
             const res = await axios.get<
-              turf.FeatureCollection<
-                turf.LineString,
+              FeatureCollection<
+                LineString,
                 { DIRECTION: number; distance: number; FULL_NAME: string }
               >
             >(`${url}/query`, {
@@ -332,7 +351,10 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
               return direction ? new Set([2, 3]).has(direction) : undefined;
             }
           } catch (err) {
-            console.debug(err);
+            getLogger(['legacy', 'streets']).warning(
+              'Unable to resolve street direction',
+              errorProperties(err)
+            );
           }
         }
 
@@ -342,8 +364,8 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
     centroid: {
       type: GeometryObject,
       description: 'The midpoint of the street',
-      resolve: (street: Street): turf.Point => {
-        return along(street.geometry, length(turf.feature(street.geometry)) / 2)
+      resolve: (street: Street): Point => {
+        return along(street.geometry, length(feature(street.geometry)) / 2)
           .geometry;
       },
     },
@@ -352,27 +374,27 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
       description: 'The list of classifications associated with this street',
     },
     projects: {
-      type: GraphQLList(projectType),
+      type: new GraphQLList(projectType),
       description:
         'The projects that intersect with the bounding box of this street',
       resolve: (street: Street): Promise<Project[]> => getProjects(street),
     },
     areaPlans: {
-      type: GraphQLList(areaPlanType),
+      type: new GraphQLList(areaPlanType),
       description:
         'The area plans that intersect with the bounding box of this street',
       resolve: (street: Street): Promise<AreaPlan[] | null> =>
         getAreaPlansByBBox(bboxf(street.geometry), 4326),
     },
     masterStreetPlans: {
-      type: GraphQLList(masterStreetPlanType),
+      type: new GraphQLList(masterStreetPlanType),
       description:
         'The master street plans that intersect with the bounding box of this street',
       resolve: (street: Street): Promise<MasterStreetPlan[] | null> =>
         getMasterStreetPlansByBBox(bboxf(street.geometry), 4326),
     },
     relatedStreets: {
-      type: GraphQLList(streetType),
+      type: new GraphQLList(streetType),
       description: 'The street segments that adjoin this street segment',
       resolve: async (street: Street): Promise<Street[] | null> => {
         return getStreets(bboxf(street.geometry), 4326);
@@ -386,7 +408,7 @@ export const streetType: GraphQLObjectType = new GraphQLObjectType({
  * @param feature GeoJSON Feature from a portlandmaps ArcGIS REST API
  */
 export function parseStreet(feature: Graphic): Street {
-  const geometry = arcgisToGeoJSON(feature.geometry) as turf.LineString;
+  const geometry = arcgisToGeoJSON(feature.geometry) as LineString;
 
   if (!feature.attributes) {
     return {
@@ -448,7 +470,7 @@ export async function getStreet(id: string): Promise<Street | null> {
  * Helper function to get a streets within a bounding box.
  */
 export async function getStreets(
-  bbox: turf.BBox,
+  bbox: BBox,
   spatialReference: number
 ): Promise<Street[] | null> {
   if (spatialReference != 4326) {

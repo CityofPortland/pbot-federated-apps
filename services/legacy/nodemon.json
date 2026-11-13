@@ -1,16 +1,10 @@
 {
   "restartable": "rs",
-  "ignore": [
-    ".git",
-    "node_modules/**/node_modules",
-    "src/**/*.spec.ts"
-  ],
-  "watch": [
-    "src"
-  ],
+  "ignore": [".git", "node_modules/**/node_modules", "src/**/*.spec.ts"],
+  "watch": ["src"],
   "env": {
     "NODE_ENV": "development"
   },
-  "ext": "ts,md",
-  "exec": "npm run build && node dist/index.js"
+  "ext": "ts",
+  "exec": "pnpm --filter=\"{.}...\" build && node dist/server.js"
 }
