@@ -1,6 +1,6 @@
 import { BaseType, BaseUserChangeableType } from '@pbotapps/objects';
 
-export type RuleType<T = unknown> = BaseUserChangeableType & {
+export type Rule<T = unknown> = BaseUserChangeableType & {
   application?: BaseType;
   inverted: boolean;
   subject: string;
