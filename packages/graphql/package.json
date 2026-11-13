@@ -1,7 +1,7 @@
 {
   "name": "@pbotapps/graphql",
   "version": "1.4.24",
-  "description": "Things related to running an Apollo GraphQL Server",
+  "description": "Shared GraphQL HTTP service setup and resolver utilities",
   "type": "module",
   "main": "dist/index.js",
   "typings": "dist/index",
@@ -12,7 +12,8 @@
     "build": "tsc -b tsconfig.build.json",
     "lint": "eslint ./src/**/*.ts",
     "dev": "nodemon",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "typeorm-ts-node-commonjs",
+    "test": "pnpm run build && node --test test/*.test.mjs"
   },
   "repository": {
     "type": "git",
@@ -25,33 +26,35 @@
   },
   "homepage": "https://github.com/CityofPortland/pbotapps-federated-apps#readme",
   "devDependencies": {
-    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^8.5.9",
-    "@types/passport": "^1.0.17",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.57.1",
-    "eslint-config-prettier": "^8.10.0",
+    "eslint-config-prettier": "^8.10.2",
     "eslint-config-typescript": "^3.0.0",
+    "express": "^5.3.0",
     "knex": "^2.5.1",
-    "typescript": "^5.6.3"
+    "pino": "^9.14.0",
+    "pino-http": "^10.5.0",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@apollo/server": "^4.11.2",
-    "@apollo/subgraph": "^2.9.3",
     "@pbotapps/authorization": "workspace:^",
     "@pbotapps/objects": "workspace:^",
-    "axios": "^1.7.7",
-    "cors": "^2.8.5",
-    "dataloader": "^2.2.2",
-    "express": "^4.21.1",
-    "graphql": "^16.9.0",
-    "graphql-tag": "^2.12.6",
-    "jsonwebtoken": "^8.5.1",
-    "passport": "^0.5.3",
-    "passport-anonymous": "^1.0.1"
+    "axios": "^1.21.0",
+    "cors": "^2.8.6",
+    "dataloader": "^2.2.3",
+    "graphql": "^17.0.2",
+    "graphql-http": "^1.23.1",
+    "graphql-tag": "^2.12.7",
+    "jsonwebtoken": "^8.5.1"
   },
   "peerDependencies": {
-    "knex": "^2.3.0"
+    "express": "^5.3.0",
+    "knex": "^2.3.0",
+    "pino": "^9.14.0",
+    "pino-http": "^10.5.0"
   }
 }
